@@ -1,0 +1,235 @@
+"use client";
+
+import { motion, AnimatePresence } from "framer-motion";
+import { useState } from "react";
+import { ArrowRight, X } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useEventStore } from "@/store/useEventStore";
+import ProgressMap from "@/components/ProgressMap";
+
+const cuisines = [
+  { id: "italian", name: "Italian", color: "#FF6B6B" },
+  { id: "fusion", name: "Fusion", color: "#4ECDC4" },
+  { id: "vegan", name: "Vegan", color: "#95E1D3" },
+  { id: "indian", name: "Indian", color: "#F38181" },
+  { id: "coastal", name: "Coastal", color: "#AA96DA" },
+];
+
+const dishesData = {
+  italian: [
+    { name: "Margherita Pizza", type: "Main" },
+    { name: "Pasta Carbonara", type: "Main" },
+    { name: "Caprese Salad", type: "Appetizer" },
+    { name: "Tiramisu", type: "Dessert" },
+    { name: "Bruschetta", type: "Appetizer" },
+    { name: "Risotto", type: "Main" },
+  ],
+  fusion: [
+    { name: "Korean Tacos", type: "Appetizer" },
+    { name: "Sushi Burrito", type: "Main" },
+    { name: "Thai Pizza", type: "Main" },
+    { name: "Matcha Cheesecake", type: "Dessert" },
+    { name: "Kimchi Quesadilla", type: "Appetizer" },
+    { name: "Ramen Burger", type: "Main" },
+  ],
+  vegan: [
+    { name: "Quinoa Bowl", type: "Main" },
+    { name: "Jackfruit Tacos", type: "Main" },
+    { name: "Buddha Bowl", type: "Main" },
+    { name: "Avocado Toast", type: "Appetizer" },
+    { name: "Chia Pudding", type: "Dessert" },
+    { name: "Hummus Platter", type: "Appetizer" },
+  ],
+  indian: [
+    { name: "Paneer Tikka", type: "Appetizer" },
+    { name: "Biryani", type: "Main" },
+    { name: "Butter Chicken", type: "Main" },
+    { name: "Gulab Jamun", type: "Dessert" },
+    { name: "Samosa", type: "Appetizer" },
+    { name: "Dal Makhani", type: "Main" },
+  ],
+  coastal: [
+    { name: "Grilled Fish", type: "Main" },
+    { name: "Shrimp Scampi", type: "Main" },
+    { name: "Crab Cakes", type: "Appetizer" },
+    { name: "Clam Chowder", type: "Appetizer" },
+    { name: "Lobster Roll", type: "Main" },
+    { name: "Key Lime Pie", type: "Dessert" },
+  ],
+};
+
+export default function MenuBuilder({ onNext }) {
+    const router = useRouter(); 
+  const [selectedCuisine, setSelectedCuisine] = useState(null);
+  const [plate, setPlate] = useState([]);
+  const [currentStep, setCurrentStep] = useState(5);
+  const completeStep = useEventStore((state) => state.completeStep);
+  const setStep = useEventStore((state) => state.setStep);
+
+  const handleDishDrop = (dish, cuisineId) => {
+    const newDish = {
+      id: `${cuisineId}-${dish.name}-${Date.now()}`,
+      name: dish.name,
+      cuisine: cuisines.find((c) => c.id === cuisineId)?.name || "",
+    };
+    setPlate((prev) => [...prev, newDish]);
+  };
+
+  const removeDish = (dishId) => {
+    setPlate((prev) => prev.filter((d) => d.id !== dishId));
+  };
+
+  const handleStepClick = (stepId) => {
+    if (stepId <= currentStep) {
+      console.log(`Navigating to step ${stepId}`);
+    }
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+        completeStep(currentStep);
+        setStep(currentStep + 1);
+      router.push("/timeline");
+  };
+
+  return (
+    <div className="min-h-screen dark:bg-black">
+            <ProgressMap currentStep={currentStep} onStepClick={handleStepClick}/>
+    <div
+      className="pt-32 pb-20 px-8 min-h-screen"
+      style={{ backgroundColor: "var(--color-bg)" }}
+    >
+      <motion.div
+        initial={{ opacity: 0, y: 40 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+        className="max-w-7xl mx-auto"
+      >
+        <h1
+          style={{
+            fontFamily: "var(--font-serif)",
+            fontSize: "clamp(2.5rem, 5vw, 3.5rem)",
+            color: "var(--color-dark)",
+            marginBottom: "1rem",
+            fontStyle: "italic",
+            textAlign: "center",
+          }}
+        >
+          Taste
+        </h1>
+
+        <p
+          style={{
+            fontFamily: "var(--font-body)",
+            fontSize: "1.125rem",
+            color: "var(--color-dark)",
+            opacity: 0.7,
+            textAlign: "center",
+            marginBottom: "3rem",
+          }}
+        >
+          Build your menu
+        </p>
+
+        {/* Cuisine Selection */}
+        {!selectedCuisine && (
+          <div className="grid grid-cols-5 gap-4 mb-12">
+            {cuisines.map((cuisine, idx) => (
+              <motion.button
+                key={cuisine.id}
+                onClick={() => setSelectedCuisine(cuisine.id)}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: idx * 0.08 }}
+                whileHover={{ y: -8, scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                className="p-8 rounded-3xl"
+                style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  backgroundColor: "var(--glass-fill)",
+                  border: "1px solid var(--glass-border)",
+                }}
+              >
+                <div
+                  className="w-16 h-16 rounded-full mb-4"
+                  style={{ backgroundColor: cuisine.color }}
+                />
+                {cuisine.name}
+              </motion.button>
+            ))}
+          </div>
+        )}
+
+        {/* Dishes */}
+        <AnimatePresence>
+          {selectedCuisine && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="mb-12"
+            >
+              <div className="flex justify-between mb-6">
+                <h3>
+                  {cuisines.find((c) => c.id === selectedCuisine)?.name} Dishes
+                </h3>
+
+                <button onClick={() => setSelectedCuisine(null)}>
+                  <X size={16} /> Back
+                </button>
+              </div>
+
+              <div className="grid grid-cols-3 gap-4">
+                {dishesData[selectedCuisine]?.map((dish) => (
+                  <button
+                    key={dish.name}
+                    onClick={() =>
+                      handleDishDrop(dish, selectedCuisine)
+                    }
+                    className="p-6 rounded-2xl"
+                    style={{
+                      backgroundColor: "var(--glass-fill)",
+                    }}
+                  >
+                    <h4>{dish.name}</h4>
+                    <span>{dish.type}</span>
+                  </button>
+                ))}
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Plate */}
+        <div className="fixed bottom-8 left-1/2 -translate-x-1/2 p-6 rounded-full">
+          <div className="flex gap-2">
+            {plate.map((dish) => (
+              <div key={dish.id}>
+                {dish.name}
+                <button onClick={() => removeDish(dish.id)}>
+                  <X size={14} />
+                </button>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Continue */}
+        <motion.button
+          onClick={handleSubmit}
+          className="w-full px-8 py-5 rounded-full flex justify-center gap-3"
+          style={{
+            backgroundColor: "var(--color-dark)",
+            color: "var(--color-bg)",
+          }}
+        >
+          Continue <ArrowRight size={20} />
+        </motion.button>
+      </motion.div>
+    </div>
+    </div>
+  );
+}
