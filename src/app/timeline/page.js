@@ -17,27 +17,33 @@ const eventColors = [
 ];
 
 export default function TimelineBuilder({ onNext }) {
-    const router = useRouter(); 
-        const [currentStep, setCurrentStep] = useState(6);
-        const completeStep = useEventStore((state) => state.completeStep);
-        const setStep = useEventStore((state) => state.setStep);
+  const router = useRouter();
 
+  // Get store functions
+  const timelineStore = useEventStore((state) => state.timeline);
+  const addTimelineEvent = useEventStore((state) => state.addTimelineEvent);
+  const removeTimelineEvent = useEventStore((state) => state.removeTimelineEvent);
+  const reorderTimeline = useEventStore((state) => state.reorderTimeline);
+  const currentStep = useEventStore((state) => state.currentStep);
+  const completeStep = useEventStore((state) => state.completeStep);
+  const setStep = useEventStore((state) => state.setStep);
 
-    const handleStepClick = (stepId) => {
+  const handleStepClick = (stepId) => {
     if (stepId <= currentStep) {
-      // Handle navigation between steps if needed
       console.log(`Navigating to step ${stepId}`);
     }
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-        completeStep(currentStep);
-        setStep(currentStep + 1);
-      router.push("/extras");
+    completeStep(currentStep);
+    setStep(currentStep + 1);
+    router.push("/extras");
   };
+
   const [eventTitle, setEventTitle] = useState("");
-  const [timeline, setTimeline] = useState([
+  // Pre-fill from store
+  const [timeline, setTimeline] = useState(timelineStore.length > 0 ? timelineStore : [
     { id: "1", title: "Guest Arrival", time: "6:00 PM", color: eventColors[0] },
     { id: "2", title: "Welcome Speech", time: "6:30 PM", color: eventColors[1] },
   ]);
@@ -55,6 +61,7 @@ export default function TimelineBuilder({ onNext }) {
     };
 
     setTimeline((prev) => [...prev, newEvent]);
+    addTimelineEvent(newEvent);
     setEventTitle("");
   };
 
@@ -73,6 +80,7 @@ export default function TimelineBuilder({ onNext }) {
     newTimeline.splice(index, 0, draggedItem);
 
     setTimeline(newTimeline);
+    reorderTimeline(newTimeline);
     setDraggedIndex(index);
   };
 

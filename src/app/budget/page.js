@@ -69,36 +69,45 @@ import { useRouter } from "next/navigation";
 import { useEventStore } from "@/store/useEventStore";
 
 export default function BudgetOptimizer() {
-    const router = useRouter(); 
-    const [currentStep, setCurrentStep] = useState(2);
-// const [completedSteps, setCompletedSteps] = useState([]);
-const completeStep = useEventStore((state) => state.completeStep);
-    const setStep = useEventStore((state) => state.setStep);
+  const router = useRouter();
+
+  // Get store functions
+  const budget = useEventStore((state) => state.budget);
+  const setBudget = useEventStore((state) => state.setBudget);
+  const setBudgetAllocation = useEventStore((state) => state.setBudgetAllocation);
+  const currentStep = useEventStore((state) => state.currentStep);
+  const completeStep = useEventStore((state) => state.completeStep);
+  const setStep = useEventStore((state) => state.setStep);
+
   const handleStepClick = (stepId) => {
     if (stepId <= currentStep) {
-      // Handle navigation between steps if needed
       console.log(`Navigating to step ${stepId}`);
     }
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
-//         setCompletedSteps((prev) => [...new Set([...prev, currentStep])]);
-//   setCurrentStep((prev) => prev + 1);
+    // Save budget allocations to store
+    const allocations = {};
+    sliders.forEach((s) => {
+      allocations[s.id] = s.value;
+    });
+    setBudget({ allocations });
     completeStep(currentStep);
-        setStep(currentStep + 1);
-      router.push("/weather");
+    setStep(currentStep + 1);
+    router.push("/weather");
   };
+
   const totalBudget = 100;
   const [showSuggestion, setShowSuggestion] = useState(false);
 
+  // Pre-fill from store
   const [sliders, setSliders] = useState([
-    { id: "food", label: "Food & Beverage", value: 30, color: "#FF6B6B" },
-    { id: "decor", label: "Decor & Design", value: 25, color: "#4ECDC4" },
-    { id: "tech", label: "Tech & AV", value: 20, color: "#95E1D3" },
-    { id: "performance", label: "Entertainment", value: 15, color: "#F38181" },
-    { id: "extras", label: "Miscellaneous", value: 10, color: "#AA96DA" },
+    { id: "food", label: "Food & Beverage", value: budget.allocations?.food || 30, color: "#FF6B6B" },
+    { id: "decor", label: "Decor & Design", value: budget.allocations?.decor || 25, color: "#4ECDC4" },
+    { id: "tech", label: "Tech & AV", value: budget.allocations?.tech || 20, color: "#95E1D3" },
+    { id: "performance", label: "Entertainment", value: budget.allocations?.performance || 15, color: "#F38181" },
+    { id: "extras", label: "Miscellaneous", value: budget.allocations?.extras || 10, color: "#AA96DA" },
   ]);
 
   const currentTotal = sliders.reduce((sum, s) => sum + s.value, 0);
@@ -108,6 +117,8 @@ const completeStep = useEventStore((state) => state.completeStep);
     setSliders((prev) =>
       prev.map((s) => (s.id === id ? { ...s, value: newValue } : s))
     );
+    // Save to store in real-time
+    setBudgetAllocation(id, newValue);
 
     if (!showSuggestion && Math.random() > 0.7) {
       setTimeout(() => setShowSuggestion(true), 500);

@@ -145,7 +145,7 @@ const steps = [
   7: "/extras",
   8: "/decor",
   9: "/poster",
-  10: "/invites",
+  10: "/email_invites",
   11: "/summary",
 };
 

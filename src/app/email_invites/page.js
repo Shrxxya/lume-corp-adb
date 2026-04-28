@@ -8,22 +8,27 @@ import { useEventStore } from "@/store/useEventStore";
 import ProgressMap from "@/components/ProgressMap";
 
 export default function InvitesEmail({ onNext }) {
-    const router = useRouter();
+  const router = useRouter();
+
+  // Get store functions
+  const invites = useEventStore((state) => state.invites);
+  const setInvitesFile = useEventStore((state) => state.setInvitesFile);
+  const setEmailDraft = useEventStore((state) => state.setEmailDraft);
+  const setInvitesSent = useEventStore((state) => state.setInvitesSent);
+  const currentStep = useEventStore((state) => state.currentStep);
   const completeStep = useEventStore((state) => state.completeStep);
   const setStep = useEventStore((state) => state.setStep);
-  const [currentStep] = useState(10);
 
-  const [file, setFile] = useState(null);
+  // Pre-fill from store
+  const [file, setFile] = useState(invites.file);
   const [isDragging, setIsDragging] = useState(false);
-  const [emailDraft, setEmailDraft] = useState('');
+  const [emailDraft, setLocalEmailDraft] = useState(invites.emailDraft);
   const [isSending, setIsSending] = useState(false);
-  const [sent, setSent] = useState(false);
+  const [sent, setSent] = useState(invites.isSent);
 
   const handleDrop = (e) => {
     e.preventDefault();
     setIsDragging(false);
-
-    
 
     const droppedFile = e.dataTransfer.files[0];
     if (
@@ -32,9 +37,10 @@ export default function InvitesEmail({ onNext }) {
         droppedFile.name.endsWith('.xls'))
     ) {
       setFile(droppedFile);
+      setInvitesFile(droppedFile);
 
       setTimeout(() => {
-        setEmailDraft(`Dear [Guest Name],
+        const draft = `Dear [Guest Name],
 
 You're cordially invited to our corporate event on [Event Date].
 
@@ -43,9 +49,16 @@ Join us for an evening of networking, innovation, and celebration at [Venue]. Th
 We look forward to your presence.
 
 Best regards,
-[Your Company]`);
+[Your Company]`;
+        setLocalEmailDraft(draft);
+        setEmailDraft(draft);
       }, 1000);
     }
+  };
+
+  const handleEmailDraftChange = (draft) => {
+    setLocalEmailDraft(draft);
+    setEmailDraft(draft);
   };
 
   const handleSend = () => {
@@ -53,8 +66,10 @@ Best regards,
     setTimeout(() => {
       setIsSending(false);
       setSent(true);
+      setInvitesSent(true);
     }, 2000);
   };
+
   const handleSubmit = (e) => {
     e.preventDefault();
     completeStep(currentStep);

@@ -35,11 +35,38 @@ export default function EntertainmentSelection() {
   const router = useRouter();
   const listRef = useRef(null);
 
-  const [selectedCategory, setSelectedCategory] = useState(null);
-  const [expandedCard, setExpandedCard] = useState(null);
-  const [currentStep] = useState(7);
+  // Get store functions
+  const entertainment = useEventStore((state) => state.entertainment);
+  const setEntertainment = useEventStore((state) => state.setEntertainment);
+  const currentStep = useEventStore((state) => state.currentStep);
   const completeStep = useEventStore((state) => state.completeStep);
   const setStep = useEventStore((state) => state.setStep);
+
+  // Pre-fill from store
+  const [selectedCategory, setSelectedCategory] = useState(entertainment.selectedCategory);
+  const [expandedCard, setExpandedCard] = useState(null);
+  const [selectedArtist, setSelectedArtist] = useState(entertainment.selectedArtist);
+  const [selectedHost, setSelectedHost] = useState(entertainment.selectedHost);
+  const [selectedLightShow, setSelectedLightShow] = useState(entertainment.selectedLightShow);
+
+  // Save to store when selection changes
+  const handleCategorySelect = (categoryId) => {
+    setSelectedCategory(categoryId);
+    setEntertainment({ selectedCategory: categoryId });
+  };
+
+  const handleSelection = (type, item) => {
+    if (type === 'artist') {
+      setSelectedArtist(item);
+      setEntertainment({ selectedArtist: item });
+    } else if (type === 'host') {
+      setSelectedHost(item);
+      setEntertainment({ selectedHost: item });
+    } else if (type === 'lightShow') {
+      setSelectedLightShow(item);
+      setEntertainment({ selectedLightShow: item });
+    }
+  };
 
   const getCelebritiesForCategory = (category) => {
     if (category === "Performance") return performanceArtists;
@@ -97,7 +124,7 @@ export default function EntertainmentSelection() {
                 transition={{ delay: idx * 0.1 }}
                 whileHover={{ y: -8 }}
                 onClick={() => {
-                  setSelectedCategory(category.id);
+                  handleCategorySelect(category.id);
 
                   setTimeout(() => {
                     listRef.current?.scrollIntoView({

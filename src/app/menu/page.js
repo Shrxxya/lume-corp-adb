@@ -59,12 +59,20 @@ const dishesData = {
 };
 
 export default function MenuBuilder({ onNext }) {
-    const router = useRouter(); 
-  const [selectedCuisine, setSelectedCuisine] = useState(null);
-  const [plate, setPlate] = useState([]);
-  const [currentStep, setCurrentStep] = useState(5);
+  const router = useRouter();
+
+  // Get store functions
+  const menu = useEventStore((state) => state.menu);
+  const setMenuCuisine = useEventStore((state) => state.setMenuCuisine);
+  const addDishToPlate = useEventStore((state) => state.addDishToPlate);
+  const removeDishFromPlate = useEventStore((state) => state.removeDishFromPlate);
+  const currentStep = useEventStore((state) => state.currentStep);
   const completeStep = useEventStore((state) => state.completeStep);
   const setStep = useEventStore((state) => state.setStep);
+
+  // Pre-fill from store
+  const [selectedCuisine, setSelectedCuisine] = useState(menu.selectedCuisine);
+  const [plate, setPlate] = useState(menu.plate || []);
 
   const handleDishDrop = (dish, cuisineId) => {
     const newDish = {
@@ -73,10 +81,12 @@ export default function MenuBuilder({ onNext }) {
       cuisine: cuisines.find((c) => c.id === cuisineId)?.name || "",
     };
     setPlate((prev) => [...prev, newDish]);
+    addDishToPlate(newDish);
   };
 
   const removeDish = (dishId) => {
     setPlate((prev) => prev.filter((d) => d.id !== dishId));
+    removeDishFromPlate(dishId);
   };
 
   const handleStepClick = (stepId) => {
@@ -87,9 +97,9 @@ export default function MenuBuilder({ onNext }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-        completeStep(currentStep);
-        setStep(currentStep + 1);
-      router.push("/timeline");
+    completeStep(currentStep);
+    setStep(currentStep + 1);
+    router.push("/timeline");
   };
 
   return (
@@ -203,19 +213,79 @@ export default function MenuBuilder({ onNext }) {
           )}
         </AnimatePresence>
 
-        {/* Plate */}
-        <div className="fixed bottom-8 left-1/2 -translate-x-1/2 p-6 rounded-full">
-          <div className="flex gap-2">
-            {plate.map((dish) => (
-              <div key={dish.id}>
-                {dish.name}
-                <button onClick={() => removeDish(dish.id)}>
-                  <X size={14} />
-                </button>
-              </div>
-            ))}
+        {/* Floating Plate Container */}
+        <motion.div
+          layout
+          className="fixed bottom-8 left-1/2 -translate-x-1/2 p-4 rounded-full min-w-[320px] max-w-2xl z-40"
+          style={{
+            backgroundColor: "var(--glass-fill)",
+            backdropFilter: "blur(var(--blur))",
+            border: "1.5px solid var(--color-primary)",
+            boxShadow: "0 8px 32px rgba(98,117,76,0.25)",
+          }}
+        >
+          <div className="flex items-center justify-between gap-4">
+            
+            {/* Title */}
+            <span
+              style={{
+                fontFamily: "var(--font-body)",
+                fontSize: "0.95rem",
+                fontWeight: 600,
+                color: "var(--color-dark)",
+                whiteSpace: "nowrap",
+              }}
+            >
+              Your Plate{" "}
+              <span style={{ opacity: 0.6 }}>({plate.length})</span>
+            </span>
+
+            {/* Items */}
+            <div className="flex gap-2 flex-wrap justify-end max-w-[70%]">
+              {plate.slice(0, 5).map((dish) => (
+                <motion.div
+                  key={dish.id}
+                  layout
+                  initial={{ scale: 0.8, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  exit={{ scale: 0.8, opacity: 0 }}
+                  transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                  className="px-3 py-1.5 rounded-full flex items-center gap-2"
+                  style={{
+                    backgroundColor: "var(--color-primary)",
+                    color: "var(--color-bg)",
+                    fontFamily: "var(--font-body)",
+                    fontSize: "0.85rem",
+                    whiteSpace: "nowrap",
+                  }}
+                >
+                  {dish.name}
+
+                  <button
+                    onClick={() => removeDish(dish.id)}
+                    className="hover:opacity-70 transition"
+                  >
+                    <X size={14} />
+                  </button>
+                </motion.div>
+              ))}
+
+              {plate.length > 5 && (
+                <span
+                  style={{
+                    fontFamily: "var(--font-body)",
+                    fontSize: "0.85rem",
+                    color: "var(--color-dark)",
+                    opacity: 0.6,
+                    alignSelf: "center",
+                  }}
+                >
+                  +{plate.length - 5} more
+                </span>
+              )}
+            </div>
           </div>
-        </div>
+        </motion.div>
 
         {/* Continue */}
         <motion.button

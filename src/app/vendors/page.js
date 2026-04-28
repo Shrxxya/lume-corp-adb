@@ -17,33 +17,42 @@ const vendors = [
 ];
 
 export default function VendorMarketplace() {
-    const router = useRouter(); 
-        const [currentStep, setCurrentStep] = useState(4);
-        const completeStep = useEventStore((state) => state.completeStep);
-        const setStep = useEventStore((state) => state.setStep);
-  const [shortlist, setShortlist] = useState([]);
+  const router = useRouter();
+
+  // Get store functions
+  const vendors = useEventStore((state) => state.vendors);
+  const shortlistVendor = useEventStore((state) => state.shortlistVendor);
+  const removeVendor = useEventStore((state) => state.removeVendor);
+  const currentStep = useEventStore((state) => state.currentStep);
+  const completeStep = useEventStore((state) => state.completeStep);
+  const setStep = useEventStore((state) => state.setStep);
+
+  // Pre-fill shortlist from store
+  const [shortlist, setShortlist] = useState(vendors.map((v) => v.id));
   const [hoveredVendor, setHoveredVendor] = useState(null);
 
-  const toggleShortlist = (vendorId) => {
-    setShortlist((prev) =>
-      prev.includes(vendorId)
-        ? prev.filter((id) => id !== vendorId)
-        : [...prev, vendorId]
-    );
+  const toggleShortlist = (vendor) => {
+    const isShortlisted = shortlist.includes(vendor.id);
+    if (isShortlisted) {
+      setShortlist((prev) => prev.filter((id) => id !== vendor.id));
+      removeVendor(vendor.id);
+    } else {
+      setShortlist((prev) => [...prev, vendor.id]);
+      shortlistVendor(vendor);
+    }
   };
 
   const handleStepClick = (stepId) => {
     if (stepId <= currentStep) {
-      // Handle navigation between steps if needed
       console.log(`Navigating to step ${stepId}`);
     }
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-        completeStep(currentStep);
-        setStep(currentStep + 1);
-      router.push("/menu");
+    completeStep(currentStep);
+    setStep(currentStep + 1);
+    router.push("/menu");
   };
 
   return (

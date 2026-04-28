@@ -9,16 +9,25 @@ import ProgressMap from "@/components/ProgressMap";
 
 export default function PosterGenerator({ onNext }) {
   const router = useRouter();
+
+  // Get store functions
+  const poster = useEventStore((state) => state.poster);
+  const setPosterStatus = useEventStore((state) => state.setPosterStatus);
+  const setPosterData = useEventStore((state) => state.setPosterData);
+  const currentStep = useEventStore((state) => state.currentStep);
   const completeStep = useEventStore((state) => state.completeStep);
   const setStep = useEventStore((state) => state.setStep);
-  const [currentStep] = useState(9);
-  const [status, setStatus] = useState("idle"); // 'idle' | 'generating' | 'complete'
-  const [posterData, setPosterData] = useState(null);
+
+  // Pre-fill from store
+  const [status, setStatus] = useState(poster.status || "idle");
+  const [posterData, setLocalPosterData] = useState(poster.generatedData);
 
   const handleGenerate = () => {
     setStatus("generating");
+    setPosterStatus("generating");
     setTimeout(() => {
       setStatus("complete");
+      setLocalPosterData("generated");
       setPosterData("generated");
     }, 2500);
   };

@@ -9,14 +9,16 @@ import { useEventStore } from "@/store/useEventStore";
 import { ArrowRight } from "lucide-react";
 
 export default function WeatherPage() {
-    const router = useRouter(); 
-    const [currentStep, setCurrentStep] = useState(3);
-    const completeStep = useEventStore((state) => state.completeStep);
-    const setStep = useEventStore((state) => state.setStep);
-    // const [completedSteps, setCompletedSteps] = useState([]);
+  const router = useRouter();
 
+  // Get store functions
+  const weather = useEventStore((state) => state.weather);
+  const setWeather = useEventStore((state) => state.setWeather);
+  const currentStep = useEventStore((state) => state.currentStep);
+  const completeStep = useEventStore((state) => state.completeStep);
+  const setStep = useEventStore((state) => state.setStep);
 
-    const handleStepClick = (stepId) => {
+  const handleStepClick = (stepId) => {
     if (stepId <= currentStep) {
       console.log(`Navigating to step ${stepId}`);
     }
@@ -24,15 +26,23 @@ export default function WeatherPage() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-        completeStep(currentStep);
-        setStep(currentStep + 1);
-      router.push("/vendors");
+    // Save weather settings to store
+    setWeather({
+      temperatureUnit,
+      sliderValue,
+      backgroundColor,
+      sunPosition,
+    });
+    completeStep(currentStep);
+    setStep(currentStep + 1);
+    router.push("/vendors");
   };
 
-  const [temperatureUnit, setTemperatureUnit] = useState("C"); // Celsius or Fahrenheit
-  const [sliderValue, setSliderValue] = useState(12); // Default hour (12:00)
-  const [backgroundColor, setBackgroundColor] = useState("#fdfdf8"); // Default background
-  const [sunPosition, setSunPosition] = useState(50); // Default sun position (center)
+  // Pre-fill from store
+  const [temperatureUnit, setTemperatureUnit] = useState(weather.temperatureUnit || "C");
+  const [sliderValue, setSliderValue] = useState(weather.sliderValue || 12);
+  const [backgroundColor, setBackgroundColor] = useState(weather.backgroundColor || "#fdfdf8");
+  const [sunPosition, setSunPosition] = useState(weather.sunPosition || 50);
 
   const hourlyForecast = [
     { time: "00:00", temp: 22, precipitation: 10, icon: "🌙" },
@@ -69,10 +79,14 @@ export default function WeatherPage() {
       setBackgroundColor("#2D2A5A"); // Night
       setSunPosition(sliderValue < 6 ? sliderValue * (100 / 6) : 100);
     }
+    // Save to store in real-time
+    setWeather({ sliderValue, backgroundColor, sunPosition });
   }, [sliderValue]);
 
   const toggleTemperatureUnit = () => {
-    setTemperatureUnit((prev) => (prev === "C" ? "F" : "C"));
+    const newUnit = temperatureUnit === "C" ? "F" : "C";
+    setTemperatureUnit(newUnit);
+    setWeather({ temperatureUnit: newUnit });
   };
 
   return (

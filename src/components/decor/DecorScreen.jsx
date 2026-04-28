@@ -14,14 +14,27 @@ import { useEventStore } from "@/store/useEventStore";
 
 export function DecorScreen() {
     const router = useRouter(); 
-    const [currentStep] = useState(8);
-      const completeStep = useEventStore((state) => state.completeStep);
-      const setStep = useEventStore((state) => state.setStep);
-
+    
+    // Get store functions
+    const decor = useEventStore((state) => state.decor);
+    const setDecor = useEventStore((state) => state.setDecor);
+    const currentStep = useEventStore((state) => state.currentStep);
+    const completeStep = useEventStore((state) => state.completeStep);
+    const setStep = useEventStore((state) => state.setStep);
 
   const addItem = useCanvasStore((s) => s.addItem);
   const updateItem = useCanvasStore((s) => s.updateItem);
+  const canvasItems = useCanvasStore((s) => s.items);
   const canvasRef = useRef(null);
+
+  // Save decor data to store
+  const handleSaveDecor = () => {
+    setDecor({
+      items: canvasItems,
+      selectedTheme: decor.selectedTheme || "Custom",
+      colorPalette: decor.colorPalette || [],
+    });
+  };
 
   function handleDragEnd(event) {
     const { active, over, delta } = event;
@@ -68,6 +81,8 @@ export function DecorScreen() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        // Save decor data to store before navigating
+        handleSaveDecor();
         const image = await captureCanvas();
         console.log(image); // base64 image
         completeStep(currentStep);

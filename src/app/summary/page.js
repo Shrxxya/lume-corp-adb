@@ -1,9 +1,9 @@
 "use client";
 
 import { motion, useScroll } from "framer-motion";
-import { useRef, useState } from "react";
+import { useRef, useState, useMemo, useEffect } from "react";
 import {
-  Calendar, MapPin, Users, DollarSign, QrCode, CheckCircle2,
+  Calendar, MapPin, Users, IndianRupee, QrCode, CheckCircle2,
   Download, Share2, Utensils, Clapperboard, Palette, Mail, PartyPopper
 } from "lucide-react";
 import ProgressMap from "@/components/ProgressMap";
@@ -12,7 +12,8 @@ import { useEventStore } from "@/store/useEventStore";
 
 export default function FinalSummary({ appData, onReset }) {
   const router = useRouter();
-  const [currentStep, setCurrentStep] = useState(11);
+  const QRRef = useRef(null);
+  const [currentStep, setCurrentStep] = useState(12);
   const completeStep = useEventStore((state) => state.completeStep);
   const setStep = useEventStore((state) => state.setStep);
 
@@ -26,44 +27,27 @@ export default function FinalSummary({ appData, onReset }) {
   const { scrollYProgress } = useScroll({ container: containerRef });
   const [showQR, setShowQR] = useState(false);
 
-  // Get data from event store
-  const eventData = useEventStore((state) => state);
-  
-  // Summary data from all 10 screens
-  const summaryData = {
-    eventName: eventData.eventName || "North Star",
-    date: "June 15, 2026",
-    location: "Grand Hyatt, Mumbai",
-    guestCount: 500,
-    budget: 85,
-    budgetBreakdown: [
-      { category: "Food & Beverage", amount: 30, color: "#62754C" },
-      { category: "Decor & Design", amount: 25, color: "#8BA672" },
-      { category: "Tech & AV", amount: 20, color: "#A8BC92" },
-      { category: "Entertainment", amount: 15, color: "#C8D5B9" },
-      { category: "Miscellaneous", amount: 10, color: "#2A3050" }
-    ],
-    vendors: [
-      { name: "Elegant Blooms", category: "Floristry" },
-      { name: "Peak Productions", category: "AV & Tech" },
-      { name: "Gourmet Events", category: "Catering" }
-    ],
-    menu: [
-      { name: "Margherita Pizza", cuisine: "Italian" },
-      { name: "Paneer Tikka", cuisine: "Indian" },
-      { name: "Sushi Burrito", cuisine: "Fusion" },
-      { name: "Grilled Fish", cuisine: "Coastal" }
-    ],
-    timeline: [
-      { title: "Guest Arrival", time: "6:00 PM" },
-      { title: "Welcome Speech", time: "6:30 PM" },
-      { title: "Dinner", time: "7:00 PM" },
-      { title: "Entertainment", time: "8:30 PM" }
-    ],
-    entertainment: "Arijit Singh",
-    decor: "Modern Elegance",
-    poster: "Generated"
-  };
+  const hasHydrated = useEventStore((state) => state.hasHydrated);
+  const getSummaryData = useEventStore((state) => state.getSummaryData);
+
+  const scrollToQR = () => setShowQR(true);
+  const summaryData = useMemo(() => {
+  return hasHydrated ? getSummaryData()
+  : {
+      eventName: "",
+      date: "",
+      location: "",
+      guestCount: 0,
+      budget: 0,
+      budgetBreakdown: [],
+      vendors: [],
+      menu: [],
+      timeline: [],
+      entertainment: "",
+      decor: "",
+      poster: "",
+    };
+    }, [hasHydrated, getSummaryData]);
 
   const summaryStats = [
     {
@@ -85,7 +69,7 @@ export default function FinalSummary({ appData, onReset }) {
       color: "var(--color-accent)"
     },
     {
-      icon: DollarSign,
+      icon: IndianRupee,
       label: "Budget",
       value: `₹${summaryData.budget}L`,
       color: "var(--color-gold)"
@@ -97,7 +81,7 @@ export default function FinalSummary({ appData, onReset }) {
     { id: 2, name: "Guests", icon: Users, completed: true },
     { id: 3, name: "Timings", icon: Calendar, completed: true },
     { id: 4, name: "Weather", icon: MapPin, completed: true },
-    { id: 5, name: "Budget", icon: DollarSign, completed: true },
+    { id: 5, name: "Budget", icon: IndianRupee, completed: true },
     { id: 6, name: "Vendors", icon: Users, completed: true },
     { id: 7, name: "Menu", icon: Utensils, completed: true },
     { id: 8, name: "Timeline", icon: Calendar, completed: true },
@@ -106,6 +90,23 @@ export default function FinalSummary({ appData, onReset }) {
     { id: 11, name: "Poster", icon: PartyPopper, completed: true },
     { id: 12, name: "Invites", icon: Mail, completed: true }
   ];
+
+  const budgetColors = {
+    food: "#62754C",
+    decor: "#8BA672",
+    tech: "#A8BC92",
+    Entertainment: "#C8D5B9",
+    extras: "#2A3050"
+  };
+
+  useEffect(() => {
+    if (showQR && QRRef.current) {
+      QRRef.current.scrollIntoView({
+        behavior: "smooth",
+        block: "center",
+      });
+    }
+  }, [showQR]);
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: "var(--color-bg)" }}>
@@ -144,7 +145,7 @@ export default function FinalSummary({ appData, onReset }) {
                 lineHeight: 1.05
               }}
             >
-              {summaryData.eventName}
+              {hasHydrated ? summaryData.eventName : ""}
             </h1>
 
             <p
@@ -254,7 +255,9 @@ export default function FinalSummary({ appData, onReset }) {
                       initial={{ width: 0 }}
                       whileInView={{ width: `${item.amount}%` }}
                       transition={{ duration: 0.8, delay: idx * 0.1 }}
-                      style={{ backgroundColor: item.color }}
+                      style={{
+                        backgroundColor: budgetColors[item.category] || "#999"
+                      }}
                     />
                   </div>
                 </div>
@@ -293,7 +296,7 @@ export default function FinalSummary({ appData, onReset }) {
                       color: "var(--color-dark)"
                     }}
                   >
-                    {vendor.name}
+                    {vendor.name || "Vendor"}
                   </p>
                   <p 
                     style={{ 
@@ -302,7 +305,7 @@ export default function FinalSummary({ appData, onReset }) {
                       color: "var(--color-accent)"
                     }}
                   >
-                    {vendor.category}
+                    {vendor.category || "Service"}
                   </p>
                 </div>
               ))}
@@ -323,7 +326,7 @@ export default function FinalSummary({ appData, onReset }) {
               Menu Selection
             </h3>
             <div className="flex flex-wrap gap-2">
-              {summaryData.menu.map((dish, idx) => (
+              {summaryData.menu.length > 0 ? (summaryData.menu?.map((dish, idx) => (
                 <span 
                   key={idx} 
                   className="px-4 py-2 rounded-full text-sm"
@@ -347,7 +350,7 @@ export default function FinalSummary({ appData, onReset }) {
                     {dish.cuisine}
                   </span>
                 </span>
-              ))}
+              ))) : (<p> No menu selected</p>)}
             </div>
           </ScrollRevealCard>
 
@@ -386,7 +389,7 @@ export default function FinalSummary({ appData, onReset }) {
                       flex: 1
                     }}
                   >
-                    {event.title}
+                    {event.title || "Event"}
                   </span>
                   <span 
                     style={{ 
@@ -395,7 +398,7 @@ export default function FinalSummary({ appData, onReset }) {
                       color: "var(--color-accent)"
                     }}
                   >
-                    {event.time}
+                    {event.time || "--"}
                   </span>
                 </div>
               ))}
@@ -614,7 +617,7 @@ export default function FinalSummary({ appData, onReset }) {
             <motion.button
               whileHover={{ scale: 1.02, boxShadow: "var(--glow-green)" }}
               whileTap={{ scale: 0.98 }}
-              onClick={() => setShowQR(!showQR)}
+              onClick={scrollToQR}
               className="py-4 rounded-2xl flex items-center justify-center gap-2"
               style={{ 
                 fontFamily: "var(--font-body)",
@@ -632,10 +635,11 @@ export default function FinalSummary({ appData, onReset }) {
           {/* QR Code */}
           {showQR && (
             <motion.div
+              ref={QRRef}
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.4 }}
-              className="p-10 text-center mt-8 rounded-3xl"
+              className="p-10 text-center mt-8 rounded-3xl flex flex-col items-center"
               style={{ 
                 backgroundColor: "var(--glass-fill)",
                 backdropFilter: "blur(16px)",
@@ -658,7 +662,7 @@ export default function FinalSummary({ appData, onReset }) {
             </motion.div>
           )}
 
-          {/* Reset */}
+          {/* Reset
           <motion.button
             whileHover={{ scale: 1.01 }}
             whileTap={{ scale: 0.99 }}
@@ -675,7 +679,7 @@ export default function FinalSummary({ appData, onReset }) {
             }}
           >
             Plan Another Event
-          </motion.button>
+          </motion.button> */}
         </motion.div>
       </div>
     </div>

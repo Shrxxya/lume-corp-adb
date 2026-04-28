@@ -365,23 +365,27 @@ const eventTypeColors = {
 export default function BlueprintForm() {
   const router = useRouter();
 
+  // Get store functions
+  const eventDetails = useEventStore((state) => state.eventDetails);
+  const setEventDetails = useEventStore((state) => state.setEventDetails);
+  const currentStep = useEventStore((state) => state.currentStep);
+  const completeStep = useEventStore((state) => state.completeStep);
+  const setStep = useEventStore((state) => state.setStep);
+
+  // Pre-fill form data from store on mount
   const [formData, setFormData] = useState({
-    eventName: "",
-    date: "",
-    time: "",
-    location: "",
-    guestCount: "",
-    eventType: "",
-    budget: "",
+    eventName: eventDetails.eventName || "",
+    date: eventDetails.date || "",
+    time: eventDetails.time || "",
+    location: eventDetails.location || "",
+    guestCount: eventDetails.guestCount || "",
+    eventType: eventDetails.eventType || "",
+    budget: eventDetails.budget || "",
+    city: eventDetails.city || "",
+    venueType: eventDetails.venueType || "",
   });
 
   const [bgColor, setBgColor] = useState("#FDFDF8");
-
-//   const [currentStep, setCurrentStep] = useState(1);
-// const [completedSteps, setCompletedSteps] = useState([]);
-  const currentStep = useEventStore((state) => state.currentStep);
-    const completeStep = useEventStore((state) => state.completeStep);
-    const setStep = useEventStore((state) => state.setStep);
 
   useEffect(() => {
     // Dynamically update background color based on event type or name
@@ -410,8 +414,10 @@ export default function BlueprintForm() {
     const isValid = Object.values(formData).every((v) => v.trim() !== "");
 
     if (isValid) {
-        completeStep(currentStep);
-        setStep(currentStep + 1);
+      // Save all form data to store before navigating
+      setEventDetails(formData);
+      completeStep(currentStep);
+      setStep(currentStep + 1);
       // Navigate to the Budget page
       router.push("/budget");
     }
@@ -419,6 +425,8 @@ export default function BlueprintForm() {
 
   const handleChange = (field, value) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
+    // Also update store in real-time for pre-fill capability
+    setEventDetails({ [field]: value });
   };
 
   const isComplete =
@@ -428,7 +436,9 @@ export default function BlueprintForm() {
     formData.location &&
     formData.guestCount &&
     formData.eventType &&
-    formData.budget;
+    formData.budget &&
+    formData.city &&
+    formData.venueType;
 
   return (
     <motion.div
@@ -572,6 +582,53 @@ export default function BlueprintForm() {
             onChange={(v) => handleChange("location", v)}
             placeholder="Enter venue or city"
           />
+
+          <FloatingInput
+            label="City"
+            value={formData.city}
+            onChange={(v) => handleChange("city", v)}
+            placeholder="Enter city"
+          />
+
+          <div className="space-y-3">
+            <label
+              style={{
+                fontFamily: "var(--font-body)",
+                fontSize: "0.875rem",
+                color: "var(--color-dark)",
+                opacity: 0.7,
+                letterSpacing: "0.05em",
+                textTransform: "uppercase",
+              }}
+            >
+              Venue Type
+            </label>
+
+            <div className="grid grid-cols-2 gap-3">
+              {["Open Air", "Indoor"].map((type) => (
+                <motion.button
+                  key={type}
+                  type="button"
+                  onClick={() => handleChange("venueType", type)}
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  className="px-4 py-3 rounded-2xl transition-all duration-300"
+                  style={{
+                    backgroundColor:
+                      formData.venueType === type
+                        ? "#62754c"
+                        : "var(--glass-fill)",
+                    color:
+                      formData.venueType === type
+                        ? "white"
+                        : "var(--color-dark)",
+                  }}
+                >
+                  {type}
+                </motion.button>
+              ))}
+            </div>
+          </div>
 
           <FloatingInput
             label="Expected Guests"
