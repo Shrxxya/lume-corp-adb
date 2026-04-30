@@ -15,7 +15,7 @@ export default function BlueprintFormPage() {
 
   return (
     <>
-      <ProgressMap currentStep={currentStep} onStepClick={handleStepClick} />
+      {/* <ProgressMap currentStep={currentStep} onStepClick={handleStepClick} /> */}
       <BlueprintForm />
     </>
   );

@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { ArrowRight, Plus, Play, GripVertical, X } from "lucide-react";
 import ProgressMap from "@/components/ProgressMap";
 import { useEventStore } from "@/store/useEventStore";
@@ -22,13 +22,20 @@ const eventColors = [
 export default function TimelineBuilder({ onNext }) {
   const router = useRouter();
   const pathname = usePathname();
+  const lastEventTypeRef = useRef(null);
 const eventDetails = useEventStore((s) => s.eventDetails);
 
+const timeline = useEventStore((s) => s.timeline);
+const setTimeline = useEventStore((s) => s.setTimeline); 
+const reorderTimeline = useEventStore((s) => s.reorderTimeline);
+const addTimelineEvent = useEventStore((s) => s.addTimelineEvent);
+const removeTimelineEvent = useEventStore((s) => s.removeTimelineEvent);
+
   // Get store functions
-  const timelineStore = useEventStore((state) => state.timeline);
-  const addTimelineEvent = useEventStore((state) => state.addTimelineEvent);
-  const removeTimelineEvent = useEventStore((state) => state.removeTimelineEvent);
-  const reorderTimeline = useEventStore((state) => state.reorderTimeline);
+  //const timelineStore = useEventStore((state) => state.timeline);
+  // const addTimelineEvent = useEventStore((state) => state.addTimelineEvent);
+  // const removeTimelineEvent = useEventStore((state) => state.removeTimelineEvent);
+  // const reorderTimeline = useEventStore((state) => state.reorderTimeline);
   const currentStep = useEventStore((state) => state.currentStep);
   const completeStep = useEventStore((state) => state.completeStep);
   const setStep = useEventStore((state) => state.setStep);
@@ -52,9 +59,10 @@ setActiveStep("extras");
   };
 
   const deleteEvent = (id) => {
-    setTimeline((prev) => prev.filter((e) => e.id !== id));
-    removeTimelineEvent(id);
-  };
+  const updated = timeline.filter((e) => e.id !== id);
+  //setTimeline(updated);
+  removeTimelineEvent(id);
+};
 
   const [eventTitle, setEventTitle] = useState("");
   // Pre-fill from store
@@ -156,51 +164,38 @@ setActiveStep("extras");
       eventTime.setMinutes(eventTime.getMinutes() + offset);
 
       return {
-        id: `${Date.now()}-${index}`,
+        id: crypto.randomUUID(),
         title,
         time: formatTime(eventTime),
         color: eventColors[index % eventColors.length],
       };
     });
   };
-  const [timeline, setTimeline] = useState([]);
+  //const [timeline, setTimeline] = useState([]);
+  //const timelineStore = useEventStore((state) => state.timeline);
+//const setTimelineStore = useEventStore((state) => state.reorderTimeline);
+
+  //const [timeline, setTimeline] = useState(timelineStore);
   const [isPlaying, setIsPlaying] = useState(false);
   const [draggedIndex, setDraggedIndex] = useState(null);
 
   const addEvent = () => {
-    if (!eventTitle.trim()) return;
+  if (!eventTitle.trim()) return;
 
-    const baseTime = timeline[timeline.length - 1]?.time;
+  const baseTime = timeline[timeline.length - 1]?.time;
+  const nextTime = new Date(parseTime(baseTime || eventTime));
+  nextTime.setMinutes(nextTime.getMinutes() + 30);
 
-    const parseTime = (timeStr) => {
-      if (!timeStr) return new Date();
-
-      const [time, modifier] = timeStr.split(" ");
-      let [hours, minutes] = time.split(":").map(Number);
-
-      if (modifier === "PM" && hours !== 12) hours += 12;
-      if (modifier === "AM" && hours === 12) hours = 0;
-
-      const date = new Date();
-      date.setHours(hours);
-      date.setMinutes(minutes);
-      return date;
-    };
-
-    const nextTime = new Date(parseTime(baseTime || eventTime));
-    nextTime.setMinutes(nextTime.getMinutes() + 30);
-
-    const newEvent = {
-      id: Date.now().toString(),
-      title: eventTitle,
-      time: formatTime(nextTime), // ✅ IMPORTANT FIX
-      color: eventColors[timeline.length % eventColors.length],
-    };
-
-    setTimeline((prev) => [...prev, newEvent]);
-    addTimelineEvent(newEvent);
-    setEventTitle("");
+  const newEvent = {
+    id: crypto.randomUUID(),
+    title: eventTitle,
+    time: formatTime(nextTime),
+    color: eventColors[timeline.length % eventColors.length],
   };
+
+  addTimelineEvent(newEvent); // ONLY THIS
+  setEventTitle("");
+};
 
   const handleDragStart = (index) => {
     setDraggedIndex(index);
@@ -216,7 +211,7 @@ setActiveStep("extras");
     newTimeline.splice(draggedIndex, 1);
     newTimeline.splice(index, 0, draggedItem);
 
-    setTimeline(newTimeline);
+    // setTimeline(newTimeline);
     reorderTimeline(newTimeline);
     setDraggedIndex(index);
   };
@@ -252,17 +247,53 @@ setActiveStep("extras");
     return () => window.removeEventListener("click", handleClick);
   }, []);
 
+//   useEffect(() => {
+//   if (!eventType || !eventTime) return;
+
+//   // only generate if empty (VERY IMPORTANT)
+//   if (timelineStore.length === 0) {
+//     const generated = generateDefaultTimeline(eventType, eventTime);
+
+//     setTimeline(generated);
+//     setTimelineStore(generated); // persist into zustand
+//   }
+// }, [eventType, eventTime]);
+
+//   useEffect(() => {
+//   if (!eventType || !eventTime) return;
+
+//   // CASE 1: first load OR eventType changed
+//   const eventTypeChanged = lastEventTypeRef.current !== eventType;
+
+//   if (timeline.length === 0 || eventTypeChanged) {
+//     const generated = generateDefaultTimeline(eventType, eventTime);
+//     setTimeline(generated);
+
+//     lastEventTypeRef.current = eventType;
+//   }
+// }, [eventType, eventTime]);
+
   useEffect(() => {
   if (!eventType || !eventTime) return;
 
-  const generated = generateDefaultTimeline(eventType, eventTime);
+  if (lastEventTypeRef.current !== eventType) {
+    const generated = generateDefaultTimeline(eventType, eventTime);
 
-  setTimeline(generated);
+    setTimeline(generated);
+    lastEventTypeRef.current = eventType;
+  }
 }, [eventType, eventTime]);
+
+useEffect(() => {
+  const ids = timeline.map(e => e.id);
+  const unique = new Set(ids).size;
+
+  console.log("timeline size:", timeline.length, "unique:", unique);
+}, [timeline]);
 
   return (
     <div className="min-h-screen dark:bg-black">
-            <ProgressMap currentStep={currentStep} onStepClick={handleStepClick}/>
+            {/* <ProgressMap currentStep={currentStep} onStepClick={handleStepClick}/> */}
     <div
       className="pt-32 pb-20 px-8 min-h-screen"
       style={{ backgroundColor: "var(--color-bg)" }}
@@ -414,7 +445,7 @@ setActiveStep("extras");
                           onClick={() => {
                             const newTimeline = [...timeline];
                             newTimeline[index].time = time;
-                            setTimeline(newTimeline);
+                            //setTimeline(newTimeline);
                             reorderTimeline(newTimeline);
                             setOpenIndex(null);
                           }}
@@ -444,7 +475,7 @@ setActiveStep("extras");
       onChange={(e) => {
         const newTimeline = [...timeline];
         newTimeline[index].title = e.target.value;
-        setTimeline(newTimeline);
+        //setTimeline(newTimeline);
         reorderTimeline(newTimeline);
       }}
       className="w-full bg-transparent outline-none"

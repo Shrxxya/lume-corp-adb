@@ -132,21 +132,21 @@ export const useEventStore = create(
 
       // ==================== SCREEN 8: Timeline ====================
       timeline: [],
+
+      setTimeline: (timeline) => set({ timeline }),
+
       addTimelineEvent: (event) =>
         set((state) => ({
-          timeline: [...state.timeline, { id: Date.now(), ...event }],
+          timeline: [...state.timeline, event],
         })),
-      removeTimelineEvent: (eventId) =>
+
+      removeTimelineEvent: (id) =>
         set((state) => ({
-          timeline: state.timeline.filter((e) => e.id !== eventId),
+          timeline: state.timeline.filter((e) => e.id !== id),
         })),
-      updateTimelineEvent: (eventId, updates) =>
-        set((state) => ({
-          timeline: state.timeline.map((e) =>
-            e.id === eventId ? { ...e, ...updates } : e
-          ),
-        })),
-      reorderTimeline: (newOrder) => set({ timeline: newOrder }),
+
+      reorderTimeline: (newOrder) =>
+        set({ timeline: [...newOrder] }),
       clearTimeline: () => set({ timeline: [] }),
 
       // ==================== SCREEN 9: Extras (Entertainment) ====================

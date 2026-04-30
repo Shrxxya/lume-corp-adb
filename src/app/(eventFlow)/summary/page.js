@@ -110,7 +110,7 @@ export default function FinalSummary({ appData, onReset }) {
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: "var(--color-bg)" }}>
-      <ProgressMap currentStep={currentStep} onStepClick={handleStepClick} />
+      {/* <ProgressMap currentStep={currentStep} onStepClick={handleStepClick} /> */}
       
       <div
         ref={containerRef}

@@ -57,7 +57,7 @@ setActiveStep("invites");
 
   return (
     <div className="min-h-screen dark:bg-black">
-          <ProgressMap currentStep={currentStep} />
+          {/* <ProgressMap currentStep={currentStep} /> */}
     <div
       className="pt-32 pb-20 px-8 min-h-screen"
       style={{ backgroundColor: "var(--color-bg)" }}

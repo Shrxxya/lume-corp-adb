@@ -114,7 +114,7 @@
 
 import { motion } from "framer-motion";
 import { useEventStore } from "@/store/useEventStore";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 
 import {
   FileText, Palette, Cloud, DollarSign,
@@ -123,18 +123,19 @@ import {
 import { useRouter, usePathname } from "next/navigation";
 
   const stepRoutes = {
-  form: "/blueprintform",
-  budget: "/budget",
-  weather: "/weather",
-  vendors: "/vendors",
-  menu: "/menu",
-  timeline: "/timeline",
-  extras: "/extras",
-  decor: "/decor",
-  poster: "/poster",
-  invites: "/email_invites",
-  summary: "/summary",
-};
+    form: "/blueprintform",
+    budget: "/budget",
+    weather: "/weather",
+    vendors: "/vendors",
+    menu: "/menu",
+    timeline: "/timeline",
+    extras: "/extras",
+    decor: "/decor",
+    poster: "/poster",
+    invites: "/email_invites",
+    summary: "/summary",
+  };
+
 
 // Reverse mapping: route -> step name
 const routeToStep = Object.fromEntries(
@@ -142,6 +143,8 @@ const routeToStep = Object.fromEntries(
 );
 
 export default function ProgressMap() {
+  const stepRefs = useRef({});
+  const containerRef = useRef(null);
   //const currentStep = useEventStore((state) => state.currentStep);
   const completedSteps = useEventStore((state) => state.completedSteps);
   const activeStep = useEventStore((s) => s.activeStep);
@@ -160,24 +163,36 @@ export default function ProgressMap() {
   }, [pathname]);
 
   const steps = [
-  { id: 1, name: "form", icon: FileText },
-  { id: 2, name: "budget", icon: DollarSign },
-  { id: 3, name: "weather", icon: Cloud },
-  { id: 4, name: "vendors", icon: Store },
-  { id: 5, name: "menu", icon: UtensilsCrossed },
-  { id: 6, name: "timeline", icon: Calendar },
-  { id: 7, name: "extras", icon: Star },
-  ...(eventDetails?.venueType === "Open Air"
-  ? [{ id: 8, name: "decor", icon: Sofa }]
-  : []),
-  { id: 9, name: "poster", icon: Palette },
-  { id: 10, name: "invites", icon: Mail },
-  { id: 11, name: "summary", icon: CheckCircle2 }
-];
+    { id: 1, name: "form", icon: FileText },
+    { id: 2, name: "budget", icon: DollarSign },
+    { id: 3, name: "weather", icon: Cloud },
+    { id: 4, name: "vendors", icon: Store },
+    { id: 5, name: "menu", icon: UtensilsCrossed },
+    { id: 6, name: "timeline", icon: Calendar },
+    { id: 7, name: "extras", icon: Star },
+    ...(eventDetails?.venueType === "Open Air"
+    ? [{ id: 8, name: "decor", icon: Sofa }]
+    : []),
+    { id: 9, name: "poster", icon: Palette },
+    { id: 10, name: "invites", icon: Mail },
+    { id: 11, name: "summary", icon: CheckCircle2 }
+  ];
+  useEffect(() => {
+    const el = stepRefs.current[activeStep];
+    if (!el) return;
+
+    el.scrollIntoView({
+      behavior: "smooth",
+      inline: "center",
+      block: "nearest",
+    });
+  }, [activeStep]);
 
   return (
     <div className="fixed top-0 left-1/2 w-[95%] -translate-x-1/2 z-50">
-      <div className="glassmorphic-container mx-auto px-4 py-3 flex items-center overflow-x-auto space-x-6 hide-scrollbar">
+      <div
+      ref={containerRef}
+      className="glassmorphic-container mx-auto px-4 py-3 flex items-center overflow-x-auto space-x-6 hide-scrollbar">
 
         {steps.map((step, index) => {
           // const isActive = step.id === currentStep;
@@ -218,6 +233,7 @@ export default function ProgressMap() {
 
               {/* Node */}
               <motion.div
+                  ref={(el) => (stepRefs.current[step.name] = el)}
                   onClick={() => {
                     if (isClickable) {
                       // setStep(step.id);
@@ -242,7 +258,7 @@ export default function ProgressMap() {
                             "0 0 6px #62754C",
                           ],
                         }
-                      : {}
+                      : { boxShadow: "none" }
                   }
                   transition={
                     isActive

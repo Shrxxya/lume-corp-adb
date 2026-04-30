@@ -193,7 +193,7 @@ export default function BudgetOptimizer() {
   return (
     <div className="min-h-screen dark:bg-black">
        {/* Progress Map */}
-      <ProgressMap currentStep={currentStep} onStepClick={handleStepClick} />
+      {/* <ProgressMap currentStep={currentStep} onStepClick={handleStepClick} /> */}
     <div
       className="pt-32 pb-20 px-8 min-h-screen"
       style={{ backgroundColor: "var(--color-bg)" }}

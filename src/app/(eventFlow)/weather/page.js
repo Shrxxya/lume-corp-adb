@@ -100,7 +100,7 @@ setActiveStep("vendors");
 
   return (
     <div className="min-h-screen dark:bg-black">
-        <ProgressMap currentStep={currentStep} onStepClick={handleStepClick}/>
+        {/* <ProgressMap currentStep={currentStep} onStepClick={handleStepClick}/> */}
         <div className="flex pt-32 pb-20 min-h-screen">
       {/* LEFT SIDEBAR */}
       <motion.div
