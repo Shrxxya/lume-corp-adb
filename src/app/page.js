@@ -80,7 +80,7 @@ export default function Home() {
 
       {!loading && showBlueprintForm && (
         <>
-          <ProgressMap currentStep={currentStep} onStepClick={handleStepClick} />
+          {/* <ProgressMap currentStep={currentStep} onStepClick={handleStepClick} /> */}
           <BlueprintForm />
         </>
       )}

@@ -154,6 +154,14 @@ export default function ProgressMap() {
   const pathname = usePathname();
   const eventDetails = useEventStore((s) => s.eventDetails);
 
+  const eventDate = new Date(eventDetails?.date);
+  const today = new Date();
+  const daysUntilEvent = Math.ceil(
+    (eventDate - today) / (1000 * 60 * 60 * 24)
+  );
+
+  const isWithinForecast = daysUntilEvent >= 0 && daysUntilEvent <= 16;
+
   // Sync activeStep with current route on mount
   useEffect(() => {
     const currentStepName = routeToStep[pathname];
@@ -165,7 +173,10 @@ export default function ProgressMap() {
   const steps = [
     { id: 1, name: "form", icon: FileText },
     { id: 2, name: "budget", icon: DollarSign },
-    { id: 3, name: "weather", icon: Cloud },
+    ...(isWithinForecast
+    ? [{ id: 3, name: "weather", icon: Cloud }]
+    : []),
+    // { id: 3, name: "weather", icon: Cloud },
     { id: 4, name: "vendors", icon: Store },
     { id: 5, name: "menu", icon: UtensilsCrossed },
     { id: 6, name: "timeline", icon: Calendar },
