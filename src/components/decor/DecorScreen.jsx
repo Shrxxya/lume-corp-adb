@@ -8,12 +8,18 @@ import { useRef } from "react";
 import * as htmlToImage from "html-to-image";
 import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
-import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useEventStore } from "@/store/useEventStore";
 
+import { getNextRoute } from "@/lib/eventFlow";
+import { useRouter, usePathname } from "next/navigation";
+
 export function DecorScreen() {
-    const router = useRouter(); 
+
+    const router = useRouter();
+const pathname = usePathname();
+const eventDetails = useEventStore((s) => s.eventDetails);
+
     
     // Get store functions
     const decor = useEventStore((state) => state.decor);
@@ -21,6 +27,7 @@ export function DecorScreen() {
     const currentStep = useEventStore((state) => state.currentStep);
     const completeStep = useEventStore((state) => state.completeStep);
     const setStep = useEventStore((state) => state.setStep);
+    const setActiveStep = useEventStore((state) => state.setActiveStep);
 
   const addItem = useCanvasStore((s) => s.addItem);
   const updateItem = useCanvasStore((s) => s.updateItem);
@@ -39,10 +46,10 @@ export function DecorScreen() {
   function handleDragEnd(event) {
     const { active, over, delta } = event;
 
-    // ✅ 1. FIRST: guard against null
+    // 1. FIRST: guard against null
     if (!over) return;
 
-    // 🟢 CASE 1: Palette → Canvas
+    // CASE 1: Palette → Canvas
     if (active.data.current && over.id === "canvas") {
         const item = active.data.current;
 
@@ -72,7 +79,7 @@ export function DecorScreen() {
         return;
     }
 
-    // 🔵 CASE 2: Move existing item
+    // CASE 2: Move existing item
     updateItem(active.id, (prev) => ({
         x: prev.x + delta.x,
         y: prev.y + delta.y,
@@ -86,8 +93,12 @@ export function DecorScreen() {
         const image = await captureCanvas();
         console.log(image); // base64 image
         completeStep(currentStep);
-        setStep(currentStep + 1);
-        router.push("/poster");
+        //setStep(currentStep + 1);
+        setStep("poster"); // or nextStepName
+setActiveStep("poster");
+        const nextRoute = getNextRoute(eventDetails, pathname);
+        router.push(nextRoute);
+        //router.push("/poster");
     };
 
     async function captureCanvas() {
@@ -95,7 +106,7 @@ export function DecorScreen() {
 
         const dataUrl = await htmlToImage.toPng(canvasRef.current, {
             quality: 1,
-            pixelRatio: 2, // 🔥 higher quality
+            pixelRatio: 2, 
             backgroundColor: "#000000", // avoid transparency issues
         });
 
@@ -120,7 +131,7 @@ export function DecorScreen() {
     </div>
     <motion.button
           onClick={handleSubmit}
-          className="w-full py-5 rounded-full flex justify-center gap-2 disabled:opacity-40"
+          className="w-full m-10 py-5 rounded-full flex justify-center gap-2 disabled:opacity-40"
           style={{
             backgroundColor: "var(--color-dark)",
             color: "var(--color-bg)",

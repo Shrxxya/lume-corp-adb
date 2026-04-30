@@ -350,8 +350,13 @@
 import { motion } from "framer-motion";
 import { useState, useEffect } from "react";
 import { ArrowRight } from "lucide-react";
-import { useRouter } from "next/navigation";
 import { useEventStore } from "@/store/useEventStore";
+import { DayPicker } from "react-day-picker";
+import "react-day-picker/dist/style.css";
+
+import { getNextRoute } from "@/lib/eventFlow";
+import { useRouter, usePathname } from "next/navigation";
+
 
 const eventTypeColors = {
   "Awards & Recognition": "#F5E6C8",
@@ -364,6 +369,7 @@ const eventTypeColors = {
 
 export default function BlueprintForm() {
   const router = useRouter();
+  const pathname = usePathname();
 
   // Get store functions
   const eventDetails = useEventStore((state) => state.eventDetails);
@@ -371,6 +377,7 @@ export default function BlueprintForm() {
   const currentStep = useEventStore((state) => state.currentStep);
   const completeStep = useEventStore((state) => state.completeStep);
   const setStep = useEventStore((state) => state.setStep);
+  const setActiveStep = useEventStore((state) => state.setActiveStep);
 
   // Pre-fill form data from store on mount
   const [formData, setFormData] = useState({
@@ -417,9 +424,13 @@ export default function BlueprintForm() {
       // Save all form data to store before navigating
       setEventDetails(formData);
       completeStep(currentStep);
-      setStep(currentStep + 1);
+      //setStep(currentStep + 1);
+      setStep("budget"); // or nextStepName
+      setActiveStep("budget");
       // Navigate to the Budget page
-      router.push("/budget");
+      const nextRoute = getNextRoute(eventDetails, pathname);
+      router.push(nextRoute);
+      //router.push("/budget");
     }
   };
 
@@ -502,41 +513,22 @@ export default function BlueprintForm() {
             </h3>
 
             {/* DATE SCROLLER */}
-            <div className="flex flex-wrap gap-3 overflow-x-auto hide-scrollbar">
-              {Array.from({ length: 30 }).map((_, i) => {
-                const date = new Date();
-                date.setDate(date.getDate() + i);
-
-                const isSelected = formData.date === date.toDateString();
-
-                return (
-                  <motion.button
-                    key={i}
-                    type="button"
-                    onClick={() => handleChange("date", date.toDateString())}
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    className="p-4 rounded-xl text-center flex-shrink-0"
-                    style={{
-                      width: "calc(50% - 0.75rem)", // Two buttons per row
-                      backgroundColor: isSelected ? "#62754c" : "rgba(0,0,0,0.03)",
-                      color: isSelected ? "white" : "var(--color-dark)",
-                    }}
-                  >
-                    <div className="text-xs opacity-60">
-                      {date.toLocaleDateString("en-US", {
-                        weekday: "short",
-                      })}
-                    </div>
-                    <div className="text-lg font-semibold">{date.getDate()}</div>
-                  </motion.button>
-                );
-              })}
+            <div className="p-4 rounded-2xl bg-white/50 w-[50%]">
+              <DayPicker
+                className="rdp"
+                mode="single"
+                selected={formData.date ? new Date(formData.date) : undefined}
+                onSelect={(date) => {
+                  if (!date) return;
+                  handleChange("date", date.toISOString());
+                }}
+                disabled={{ before: new Date() }}
+              />
             </div>
 
             {/* TIME SLOTS */}
             {formData.date && (
-              <div className="grid grid-cols-4 gap-3">
+              <div className="grid grid-cols-4 gap-3 mb-12">
                 {[
                   "09:00 AM",
                   "10:00 AM",
@@ -580,7 +572,7 @@ export default function BlueprintForm() {
             label="Location"
             value={formData.location}
             onChange={(v) => handleChange("location", v)}
-            placeholder="Enter venue or city"
+            placeholder="Enter venue"
           />
 
           <FloatingInput
@@ -590,7 +582,7 @@ export default function BlueprintForm() {
             placeholder="Enter city"
           />
 
-          <div className="space-y-3">
+          <div className="space-y-3 flex flex-col">
             <label
               style={{
                 fontFamily: "var(--font-body)",
@@ -604,7 +596,7 @@ export default function BlueprintForm() {
               Venue Type
             </label>
 
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-2 gap-3 mb-4">
               {["Open Air", "Indoor"].map((type) => (
                 <motion.button
                   key={type}
@@ -617,7 +609,7 @@ export default function BlueprintForm() {
                     backgroundColor:
                       formData.venueType === type
                         ? "#62754c"
-                        : "var(--glass-fill)",
+                        : "rgba(98,117,76,0.1)",
                     color:
                       formData.venueType === type
                         ? "white"
@@ -648,7 +640,7 @@ export default function BlueprintForm() {
             onWheel={(e) => e.target.blur()} // Prevent scroll change
           />
 
-          <div className="space-y-3">
+          <div className="space-y-3 flex flex-col">
             <label
               style={{
                 fontFamily: "var(--font-body)",
@@ -675,7 +667,7 @@ export default function BlueprintForm() {
                     className="px-4 py-3 rounded-2xl transition-all duration-300"
                     style={{
                       backgroundColor:
-                        formData.eventType === type ? "#62754c" : "var(--glass-fill)",
+                        formData.eventType === type ? "#62754c" : "rgba(98,117,76,0.1)",
                       color: formData.eventType === type ? "white" : "var(--color-dark)",
                     }}
                   >

@@ -267,7 +267,6 @@ export default function MainPage({ setNavbarVisible }) {
   };
 
   const onStartPlanning = () => {
-    console.log("HEre1");
     resetSteps();
     router.push("/blueprintform"); // Route to the BlueprintForm page
   };

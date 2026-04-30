@@ -114,57 +114,90 @@
 
 import { motion } from "framer-motion";
 import { useEventStore } from "@/store/useEventStore";
+import { useEffect } from "react";
 
 import {
   FileText, Palette, Cloud, DollarSign,
   Store, UtensilsCrossed, Calendar, Mail, Star, Sofa, CheckCircle2
 } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 
-const steps = [
-  { id: 1, name: "Form", icon: FileText },
-  { id: 2, name: "Budget", icon: DollarSign },
-  { id: 3, name: "Weather", icon: Cloud },
-  { id: 4, name: "Vendors", icon: Store },
-  { id: 5, name: "Menu", icon: UtensilsCrossed },
-  { id: 6, name: "Timeline", icon: Calendar },
-  { id: 7, name: "Extras", icon: Star },
-  { id: 8, name: "Decor", icon: Sofa },
-  { id: 9, name: "Poster", icon: Palette },
-  { id: 10, name: "Invites", icon: Mail },
-  { id: 11, name: "Summary", icon: CheckCircle2 }
-];
-
-    const stepRoutes = {
-  1: "/blueprintform",
-  2: "/budget",
-  3: "/weather",
-  4: "/vendors",
-  5: "/menu",
-  6: "/timeline",
-  7: "/extras",
-  8: "/decor",
-  9: "/poster",
-  10: "/email_invites",
-  11: "/summary",
+  const stepRoutes = {
+  form: "/blueprintform",
+  budget: "/budget",
+  weather: "/weather",
+  vendors: "/vendors",
+  menu: "/menu",
+  timeline: "/timeline",
+  extras: "/extras",
+  decor: "/decor",
+  poster: "/poster",
+  invites: "/email_invites",
+  summary: "/summary",
 };
 
+// Reverse mapping: route -> step name
+const routeToStep = Object.fromEntries(
+  Object.entries(stepRoutes).map(([k, v]) => [v, k])
+);
+
 export default function ProgressMap() {
-  const currentStep = useEventStore((state) => state.currentStep);
+  //const currentStep = useEventStore((state) => state.currentStep);
   const completedSteps = useEventStore((state) => state.completedSteps);
+  const activeStep = useEventStore((s) => s.activeStep);
   const setStep = useEventStore((state) => state.setStep);
+  const setActiveStep = useEventStore((state) => state.setActiveStep);
   const router = useRouter();
+  const pathname = usePathname();
+  const eventDetails = useEventStore((s) => s.eventDetails);
+
+  // Sync activeStep with current route on mount
+  useEffect(() => {
+    const currentStepName = routeToStep[pathname];
+    if (currentStepName && currentStepName !== activeStep) {
+      setActiveStep(currentStepName);
+    }
+  }, [pathname]);
+
+  const steps = [
+  { id: 1, name: "form", icon: FileText },
+  { id: 2, name: "budget", icon: DollarSign },
+  { id: 3, name: "weather", icon: Cloud },
+  { id: 4, name: "vendors", icon: Store },
+  { id: 5, name: "menu", icon: UtensilsCrossed },
+  { id: 6, name: "timeline", icon: Calendar },
+  { id: 7, name: "extras", icon: Star },
+  ...(eventDetails?.venueType === "Open Air"
+  ? [{ id: 8, name: "decor", icon: Sofa }]
+  : []),
+  { id: 9, name: "poster", icon: Palette },
+  { id: 10, name: "invites", icon: Mail },
+  { id: 11, name: "summary", icon: CheckCircle2 }
+];
 
   return (
     <div className="fixed top-0 left-1/2 w-[95%] -translate-x-1/2 z-50">
       <div className="glassmorphic-container mx-auto px-4 py-3 flex items-center overflow-x-auto space-x-6 hide-scrollbar">
 
         {steps.map((step, index) => {
-          const isActive = step.id === currentStep;
-          const isCompleted = completedSteps.includes(step.id);
+          // const isActive = step.id === currentStep;
+          // const isActive = step.name === eventDetails?.activeStep;
+          // const isCompleted = completedSteps.includes(step.id);
+          
+          const isActive = step.name === activeStep;
+          const isCompleted = completedSteps.includes(step.name);
           const isClickable =
-            completedSteps.includes(step.id) || step.id === currentStep;
-        const prevCompleted = completedSteps.includes(steps[index - 1]?.id);
+            completedSteps.includes(step.name) || step.name === activeStep;
+          //const prevCompleted = completedSteps.includes(steps[index - 1]?.name);
+          const prevStep = steps[index - 1];
+          const prevIsGreen =
+            prevStep &&
+            (completedSteps.includes(prevStep.name) || prevStep.name === activeStep);
+
+          const currentIsGreen =
+            completedSteps.includes(step.name) || step.name === activeStep;
+
+          const showConnector = prevIsGreen && currentIsGreen;
 
           return (
             <div key={step.id} className="relative flex gap-5 items-center">
@@ -180,15 +213,16 @@ export default function ProgressMap() {
                 />
               )} */}
               {index > 0 && (
-                <div className={`h-1 w-12 ${prevCompleted ? "bg-[#62754C]" : "bg-transparent"}`} />
+                <div className={`h-1 w-12 ${showConnector ? "bg-[#62754C]" : "bg-transparent"}`} />
                 )}
 
               {/* Node */}
               <motion.div
                   onClick={() => {
-                    if (completedSteps.includes(step.id) || step.id === currentStep) {
-                      setStep(step.id);
-                      router.push(stepRoutes[step.id]);
+                    if (isClickable) {
+                      // setStep(step.id);
+                      setActiveStep(step.name);
+                      router.push(stepRoutes[step.name]);
                     }
                   }}
                   className={`w-12 h-12 flex items-center justify-center rounded-full cursor-pointer transition-all ${

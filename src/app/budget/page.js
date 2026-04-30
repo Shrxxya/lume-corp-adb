@@ -65,11 +65,16 @@ import { motion } from "framer-motion";
 import { useState } from "react";
 import { ArrowRight, Sparkles } from "lucide-react";
 import ProgressMap from "@/components/ProgressMap";
-import { useRouter } from "next/navigation";
 import { useEventStore } from "@/store/useEventStore";
+
+import { getNextRoute } from "@/lib/eventFlow";
+import { useRouter, usePathname } from "next/navigation";
+
 
 export default function BudgetOptimizer() {
   const router = useRouter();
+  const pathname = usePathname();
+  const eventDetails = useEventStore((s) => s.eventDetails);
 
   // Get store functions
   const budget = useEventStore((state) => state.budget);
@@ -78,6 +83,7 @@ export default function BudgetOptimizer() {
   const currentStep = useEventStore((state) => state.currentStep);
   const completeStep = useEventStore((state) => state.completeStep);
   const setStep = useEventStore((state) => state.setStep);
+  const setActiveStep = useEventStore((state) => state.setActiveStep);
 
   const handleStepClick = (stepId) => {
     if (stepId <= currentStep) {
@@ -85,21 +91,70 @@ export default function BudgetOptimizer() {
     }
   };
 
+  // const handleSubmit = (e) => {
+  //   e.preventDefault();
+
+  //   if (currentTotal > 100) {
+  //     alert("Your allocation exceeds 100%. Please reduce it.");
+  //     return;
+  //   }
+
+  //   if (currentTotal < 100) {
+  //     const confirmContinue = window.confirm(
+  //       `You've only allocated ${currentTotal}%. Continue anyway?`
+  //     );
+
+  //     if (!confirmContinue) return;
+  //   }
+
+  //   // Save budget allocations
+  //   const allocations = {};
+  //   sliders.forEach((s) => {
+  //     allocations[s.id] = s.value;
+  //   });
+
+  //   setBudget({ allocations });
+  //   completeStep(currentStep);
+  //   setStep(currentStep + 1);
+  //   router.push("/weather");
+  // };
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Save budget allocations to store
+
+    if (currentTotal > 100) {
+      setShowBudgetModal(true);
+      return;
+    }
+
+    if (currentTotal < 100 && !pendingSubmit) {
+      setShowBudgetModal(true);
+      return;
+    }
+
+    proceedSubmit();
+  };
+
+  const proceedSubmit = () => {
     const allocations = {};
     sliders.forEach((s) => {
       allocations[s.id] = s.value;
     });
+
     setBudget({ allocations });
     completeStep(currentStep);
-    setStep(currentStep + 1);
-    router.push("/weather");
+    setStep("weather"); // or nextStepName
+    setActiveStep("weather");
+    const nextRoute = getNextRoute(eventDetails, pathname);
+  router.push(nextRoute);
+    //router.push("/weather");
   };
 
   const totalBudget = 100;
   const [showSuggestion, setShowSuggestion] = useState(false);
+
+  const [showBudgetModal, setShowBudgetModal] = useState(false);
+  const [pendingSubmit, setPendingSubmit] = useState(false);
 
   // Pre-fill from store
   const [sliders, setSliders] = useState([
@@ -208,6 +263,12 @@ export default function BudgetOptimizer() {
               transition={{ duration: 0.3 }}
             />
           </div>
+
+          {currentTotal < 100 && (
+            <p className="mt-3 text-center text-sm text-yellow-600">
+              You still have {100 - currentTotal}% unallocated
+            </p>
+          )}
 
           {isOverBudget && (
             <p className="mt-3 text-center text-sm text-red-600">
@@ -319,6 +380,64 @@ export default function BudgetOptimizer() {
         }
       `}</style>
     </div>
+    {showBudgetModal && (
+  <div className="fixed inset-0 z-50 flex items-center justify-center">
+    
+    {/* overlay */}
+    <div 
+      className="absolute inset-0 bg-gray/40 backdrop-blur-sm"
+      onClick={() => setShowBudgetModal(false)}
+    />
+
+    {/* modal */}
+    <motion.div
+      initial={{ scale: 0.9, opacity: 0 }}
+      animate={{ scale: 1, opacity: 1 }}
+      className="relative p-6 rounded-3xl max-w-md w-full"
+      style={{
+        backgroundColor: "var(--glass-fill)",
+        border: "1px solid #62754c",
+      }}
+    >
+      <h2 className="text-lg font-semibold mb-2">
+        Budget Not Fully Balanced
+      </h2>
+
+      <p className="text-sm opacity-70 mb-4">
+        {currentTotal > 100
+          ? "Your budget exceeds 100%. Please adjust allocations."
+          : `You've only allocated ${currentTotal}%. Continue anyway?`}
+      </p>
+
+      <div className="flex gap-3 justify-end">
+        
+        <button
+          onClick={() => setShowBudgetModal(false)}
+          className="px-4 py-2 rounded-full border"
+        >
+          Go Back
+        </button>
+
+        {currentTotal <= 100 && (
+          <button
+            onClick={() => {
+              setShowBudgetModal(false);
+              proceedSubmit();
+            }}
+            className="px-4 py-2 rounded-full"
+            style={{
+              backgroundColor: "var(--color-dark)",
+              color: "var(--color-bg)",
+            }}
+          >
+            Continue Anyway
+          </button>
+        )}
+
+      </div>
+    </motion.div>
+  </div>
+)}
     </div>
   );
 }

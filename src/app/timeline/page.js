@@ -1,11 +1,14 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { useState } from "react";
-import { ArrowRight, Plus, Play, GripVertical } from "lucide-react";
+import { useState, useEffect } from "react";
+import { ArrowRight, Plus, Play, GripVertical, X } from "lucide-react";
 import ProgressMap from "@/components/ProgressMap";
-import { useRouter } from "next/navigation";
 import { useEventStore } from "@/store/useEventStore";
+
+import { getNextRoute } from "@/lib/eventFlow";
+import { useRouter, usePathname } from "next/navigation";
+
 
 const eventColors = [
   "#FF6B6B",
@@ -18,6 +21,8 @@ const eventColors = [
 
 export default function TimelineBuilder({ onNext }) {
   const router = useRouter();
+  const pathname = usePathname();
+const eventDetails = useEventStore((s) => s.eventDetails);
 
   // Get store functions
   const timelineStore = useEventStore((state) => state.timeline);
@@ -27,6 +32,7 @@ export default function TimelineBuilder({ onNext }) {
   const currentStep = useEventStore((state) => state.currentStep);
   const completeStep = useEventStore((state) => state.completeStep);
   const setStep = useEventStore((state) => state.setStep);
+  const setActiveStep = useEventStore((state) => state.setActiveStep);
 
   const handleStepClick = (stepId) => {
     if (stepId <= currentStep) {
@@ -37,26 +43,157 @@ export default function TimelineBuilder({ onNext }) {
   const handleSubmit = (e) => {
     e.preventDefault();
     completeStep(currentStep);
-    setStep(currentStep + 1);
-    router.push("/extras");
+    //setStep(currentStep + 1);
+    setStep("extras"); // or nextStepName
+setActiveStep("extras");
+    const nextRoute = getNextRoute(eventDetails, pathname);
+  router.push(nextRoute);
+    //router.push("/extras");
+  };
+
+  const deleteEvent = (id) => {
+    setTimeline((prev) => prev.filter((e) => e.id !== id));
+    removeTimelineEvent(id);
   };
 
   const [eventTitle, setEventTitle] = useState("");
   // Pre-fill from store
-  const [timeline, setTimeline] = useState(timelineStore.length > 0 ? timelineStore : [
-    { id: "1", title: "Guest Arrival", time: "6:00 PM", color: eventColors[0] },
-    { id: "2", title: "Welcome Speech", time: "6:30 PM", color: eventColors[1] },
-  ]);
+
+  const defaultTimelinesByType = {
+    "Awards & Recognition": [
+      "Guest Arrival",
+      "Welcome Speech",
+      "Awards Ceremony",
+      "Winner Speeches",
+      "Entertainment Performance",
+      "Dinner & Networking",
+    ],
+    "Tech Launch": [
+      "Guest Arrival & Registration",
+      "Opening Keynote",
+      "Product Reveal",
+      "Live Demo",
+      "Media Interaction",
+      "Networking & Cocktails",
+    ],
+    Workshop: [
+      "Registration",
+      "Introduction",
+      "Session 1",
+      "Break",
+      "Session 2",
+      "Q&A",
+      "Wrap-up",
+    ],
+    Conference: [
+      "Registration",
+      "Opening Keynote",
+      "Panel Discussion",
+      "Break",
+      "Breakout Sessions",
+      "Closing Remarks",
+      "Networking",
+    ],
+    Gala: [
+      "Guest Arrival",
+      "Cocktails",
+      "Welcome Address",
+      "Dinner",
+      "Entertainment",
+      "Closing Toast",
+    ],
+    Convention: [
+      "Registration",
+      "Opening Address",
+      "Exhibition",
+      "Panel Talks",
+      "Break",
+      "Networking",
+    ],
+  };
+  const eventType = useEventStore((state) => state.eventDetails?.eventType);
+
+  const eventTime = useEventStore((state) => state.eventDetails?.time);
+  const parseTime = (timeStr) => {
+    if (!timeStr) return new Date();
+
+    const [time, modifier] = timeStr.split(" ");
+    let [hours, minutes] = time.split(":").map(Number);
+
+    if (modifier === "PM" && hours !== 12) hours += 12;
+    if (modifier === "AM" && hours === 12) hours = 0;
+
+    const date = new Date();
+    date.setHours(hours);
+    date.setMinutes(minutes);
+    date.setSeconds(0);
+
+    return date;
+  };
+  const formatTime = (date) => {
+    return date.toLocaleTimeString("en-US", {
+      hour: "numeric",
+      minute: "2-digit",
+      hour12: true,
+    });
+  };
+  const generateDefaultTimeline = (type, startTimeStr) => {
+    const base = defaultTimelinesByType[type] || [
+      "Guest Arrival",
+      "Welcome Speech",
+    ];
+
+    const startDate = parseTime(startTimeStr);
+
+    const durations = [0, 30, 30, 45, 60, 60];
+    return base.map((title, index) => {
+      const eventTime = new Date(startDate);
+
+      const offset = durations
+        .slice(0, index + 1)
+        .reduce((a, b) => a + b, 0);
+
+      eventTime.setMinutes(eventTime.getMinutes() + offset);
+
+      return {
+        id: `${Date.now()}-${index}`,
+        title,
+        time: formatTime(eventTime),
+        color: eventColors[index % eventColors.length],
+      };
+    });
+  };
+  const [timeline, setTimeline] = useState([]);
   const [isPlaying, setIsPlaying] = useState(false);
   const [draggedIndex, setDraggedIndex] = useState(null);
 
   const addEvent = () => {
     if (!eventTitle.trim()) return;
 
+    const baseTime = timeline[timeline.length - 1]?.time;
+
+    const parseTime = (timeStr) => {
+      if (!timeStr) return new Date();
+
+      const [time, modifier] = timeStr.split(" ");
+      let [hours, minutes] = time.split(":").map(Number);
+
+      if (modifier === "PM" && hours !== 12) hours += 12;
+      if (modifier === "AM" && hours === 12) hours = 0;
+
+      const date = new Date();
+      date.setHours(hours);
+      date.setMinutes(minutes);
+      return date;
+    };
+
+    const nextTime = new Date(parseTime(baseTime || eventTime));
+    nextTime.setMinutes(nextTime.getMinutes() + 30);
+
     const newEvent = {
       id: Date.now().toString(),
       title: eventTitle,
-      time: `${7 + timeline.length}:00 PM`,
+      time: formatTime(nextTime), // ✅ IMPORTANT FIX
       color: eventColors[timeline.length % eventColors.length],
     };
 
@@ -92,6 +229,36 @@ export default function TimelineBuilder({ onNext }) {
     setIsPlaying(true);
     setTimeout(() => setIsPlaying(false), 3000);
   };
+
+  const generateTimes = () => {
+    const times = [];
+    for (let h = 6; h <= 23; h++) {
+      for (let m of [0, 30]) {
+        const hour = h % 12 === 0 ? 12 : h % 12;
+        const ampm = h < 12 ? "AM" : "PM";
+        const minute = m === 0 ? "00" : "30";
+        times.push(`${hour}:${minute} ${ampm}`);
+      }
+    }
+    return times;
+  };
+
+  const timeOptions = generateTimes();
+  const [openIndex, setOpenIndex] = useState(null);
+
+  useEffect(() => {
+    const handleClick = () => setOpenIndex(null);
+    window.addEventListener("click", handleClick);
+    return () => window.removeEventListener("click", handleClick);
+  }, []);
+
+  useEffect(() => {
+  if (!eventType || !eventTime) return;
+
+  const generated = generateDefaultTimeline(eventType, eventTime);
+
+  setTimeline(generated);
+}, [eventType, eventTime]);
 
   return (
     <div className="min-h-screen dark:bg-black">
@@ -129,7 +296,7 @@ export default function TimelineBuilder({ onNext }) {
             marginBottom: "3rem",
           }}
         >
-          Craft your event timeline
+          Craft your {eventType?.toLowerCase() || "event"} timeline
         </p>
 
         {/* Add Event */}
@@ -193,14 +360,71 @@ export default function TimelineBuilder({ onNext }) {
                 className="relative flex items-center gap-4 cursor-move group"
               >
                 {/* Time */}
-                <div
-                  className="w-24 h-24 rounded-2xl flex items-center justify-center"
-                  style={{
-                    backgroundColor: event.color,
-                    color: "white",
-                  }}
-                >
-                  {event.time}
+                {/* <input
+  type="text"
+  value={event.time}
+  onChange={(e) => {
+    const value = e.target.value;
+
+    const newTimeline = [...timeline];
+    newTimeline[index].time = value;
+    setTimeline(newTimeline);
+    reorderTimeline(newTimeline);
+  }}
+  placeholder="6:30 PM"
+  className="w-24 h-24 text-center rounded-2xl outline-none"
+  style={{
+    backgroundColor: event.color,
+    color: "white",
+    fontWeight: 600,
+  }}
+/> */}
+
+              <div className="relative">
+                  {/* Time Display */}
+                  <div
+                    onClick={(e) => {
+                      e.stopPropagation(); 
+                      setOpenIndex(openIndex === index ? null : index);
+                    }}
+                    className="w-24 h-24 rounded-2xl flex items-center justify-center cursor-pointer"
+                    style={{
+                      backgroundColor: event.color,
+                      color: "white",
+                      fontWeight: 600,
+                    }}
+                  >
+                    {event.time}
+                  </div>
+
+                  {/* Dropdown */}
+                  {openIndex === index && (
+                    <div
+                      onClick={(e) => e.stopPropagation()}
+                      className="absolute top-28 left-0 w-32 max-h-60 overflow-y-auto z-50"
+                      style={{
+                        backgroundColor: "var(--glass-fill)",
+                        backdropFilter: "blur(12px)",
+                        border: "1px solid var(--glass-border)",
+                      }}
+                    >
+                      {timeOptions.map((time) => (
+                        <div
+                          key={time}
+                          onClick={() => {
+                            const newTimeline = [...timeline];
+                            newTimeline[index].time = time;
+                            setTimeline(newTimeline);
+                            reorderTimeline(newTimeline);
+                            setOpenIndex(null);
+                          }}
+                          className="px-3 py-2 cursor-pointer hover:bg-black/5 text-sm"
+                        >
+                          {time}
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
 
                 {/* Card */}
@@ -212,33 +436,37 @@ export default function TimelineBuilder({ onNext }) {
                   }}
                 >
                   <div className="flex items-center gap-3">
-                    <GripVertical size={20} className="opacity-40" />
+  <GripVertical size={20} className="opacity-40" />
 
-                    <div className="flex-1">
-                      <h4>{event.title}</h4>
-                    </div>
+  <div className="flex-1">
+    <input
+      value={event.title}
+      onChange={(e) => {
+        const newTimeline = [...timeline];
+        newTimeline[index].title = e.target.value;
+        setTimeline(newTimeline);
+        reorderTimeline(newTimeline);
+      }}
+      className="w-full bg-transparent outline-none"
+      style={{ fontWeight: 500 }}
+    />
+  </div>
 
-                    <span>{index + 1}</span>
-                  </div>
+  {/* Delete Button */}
+  <button
+    onClick={() => deleteEvent(event.id)}
+    className="opacity-0 group-hover:opacity-100 transition"
+  >
+    <X size={16} />
+  </button>
+
+  <span>{index + 1}</span>
+</div>
                 </motion.div>
               </motion.div>
             ))}
           </div>
         </div>
-
-        {/* Preview */}
-        <motion.button
-          onClick={playPreview}
-          disabled={isPlaying}
-          className="w-full mb-4 px-8 py-4 rounded-full flex justify-center gap-3"
-          style={{
-            backgroundColor: "var(--glass-fill)",
-            border: "1px solid var(--glass-border)",
-          }}
-        >
-          <Play size={20} />
-          {isPlaying ? "Playing..." : "Preview Timeline"}
-        </motion.button>
 
         {/* Continue */}
         <motion.button

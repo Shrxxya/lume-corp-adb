@@ -3,13 +3,17 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import ProgressMap from "@/components/ProgressMap";
-import { useRouter } from "next/navigation";
 import { LineChart, Line, XAxis, Tooltip, ResponsiveContainer } from "recharts";
 import { useEventStore } from "@/store/useEventStore";
 import { ArrowRight } from "lucide-react";
 
+import { getNextRoute } from "@/lib/eventFlow";
+import { useRouter, usePathname } from "next/navigation";
+
 export default function WeatherPage() {
   const router = useRouter();
+  const pathname = usePathname();
+const eventDetails = useEventStore((s) => s.eventDetails);
 
   // Get store functions
   const weather = useEventStore((state) => state.weather);
@@ -17,6 +21,7 @@ export default function WeatherPage() {
   const currentStep = useEventStore((state) => state.currentStep);
   const completeStep = useEventStore((state) => state.completeStep);
   const setStep = useEventStore((state) => state.setStep);
+  const setActiveStep = useEventStore((state) => state.setActiveStep);
 
   const handleStepClick = (stepId) => {
     if (stepId <= currentStep) {
@@ -34,8 +39,12 @@ export default function WeatherPage() {
       sunPosition,
     });
     completeStep(currentStep);
-    setStep(currentStep + 1);
-    router.push("/vendors");
+    //setStep(currentStep + 1);
+    setStep("vendors"); // or nextStepName
+setActiveStep("vendors");
+    const nextRoute = getNextRoute(eventDetails, pathname);
+  router.push(nextRoute);
+    //router.push("/vendors");
   };
 
   // Pre-fill from store

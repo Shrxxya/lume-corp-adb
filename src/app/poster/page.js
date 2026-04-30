@@ -3,13 +3,16 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
 import { ArrowRight, Sparkles, X } from "lucide-react";
-import { useRouter } from "next/navigation";
 import { useEventStore } from "@/store/useEventStore";
 import ProgressMap from "@/components/ProgressMap";
 
+import { getNextRoute } from "@/lib/eventFlow";
+import { useRouter, usePathname } from "next/navigation";
+
 export default function PosterGenerator({ onNext }) {
   const router = useRouter();
-
+  const pathname = usePathname();
+const eventDetails = useEventStore((s) => s.eventDetails);
   // Get store functions
   const poster = useEventStore((state) => state.poster);
   const setPosterStatus = useEventStore((state) => state.setPosterStatus);
@@ -17,6 +20,7 @@ export default function PosterGenerator({ onNext }) {
   const currentStep = useEventStore((state) => state.currentStep);
   const completeStep = useEventStore((state) => state.completeStep);
   const setStep = useEventStore((state) => state.setStep);
+  const setActiveStep = useEventStore((state) => state.setActiveStep);
 
   // Pre-fill from store
   const [status, setStatus] = useState(poster.status || "idle");
@@ -43,8 +47,12 @@ export default function PosterGenerator({ onNext }) {
   const handleSubmit = (e) => {
     e.preventDefault();
     completeStep(currentStep);
-    setStep(currentStep + 1);
-    router.push("/email_invites");
+    //setStep(currentStep + 1);
+    setStep("invites"); // or nextStepName
+setActiveStep("invites");
+    const nextRoute = getNextRoute(eventDetails, pathname);
+  router.push(nextRoute);
+    //router.push("/email_invites");
   };
 
   return (

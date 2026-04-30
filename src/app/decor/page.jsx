@@ -2,11 +2,13 @@
 
 // import { DecorScreen } from "@/components/decor/DecorScreen";
 import ProgressMap from "@/components/ProgressMap";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useEventStore } from "@/store/useEventStore";
 import dynamic from "next/dynamic";
 import { motion } from "framer-motion";
+
+import { getNextRoute } from "@/lib/eventFlow";
+import { useRouter, usePathname } from "next/navigation";
 
 
 const DecorScreen = dynamic(
@@ -16,16 +18,39 @@ const DecorScreen = dynamic(
 
 export default function Page() {
     const router = useRouter(); 
+    const pathname = usePathname();
     const [currentStep] = useState(7);
       const completeStep = useEventStore((state) => state.completeStep);
       const setStep = useEventStore((state) => state.setStep);
+      const setActiveStep = useEventStore((state) => state.setActiveStep);
+
+      const eventDetails = useEventStore((s) => s.eventDetails);
+const [allowed, setAllowed] = useState(false);
 
       const handleSubmit = (e) => {
     e.preventDefault();
     completeStep(currentStep);
-    setStep(currentStep + 1);
-    router.push("/poster");
+    //setStep(currentStep + 1);
+    setStep("poster"); // or nextStepName
+setActiveStep("poster");
+    const nextRoute = getNextRoute(eventDetails, pathname);
+  router.push(nextRoute);
+    //router.push("/poster");
   };
+
+  //const eventDetails = useEventStore((s) => s.eventDetails);
+
+//   useEffect(() => {
+//   if (!eventDetails) return;
+
+//   if (eventDetails.venueType === "Open Air") {
+//     setAllowed(true);
+//   } else {
+//     router.replace("/poster");
+//   }
+// }, [eventDetails]);
+
+// if (!allowed) return null;
 
   return(
     <div className="min-h-screen dark:bg-black">

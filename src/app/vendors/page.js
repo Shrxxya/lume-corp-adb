@@ -3,11 +3,13 @@
 import { motion } from "framer-motion";
 import { useState } from "react";
 import { ArrowRight, Plus, Check, Star } from "lucide-react";
-import { useRouter } from "next/navigation";
 import { useEventStore } from "@/store/useEventStore";
 import ProgressMap from "@/components/ProgressMap";
 
-const vendors = [
+import { getNextRoute } from "@/lib/eventFlow";
+import { useRouter, usePathname } from "next/navigation";
+
+const vendorsList = [
   { id: "1", name: "Elegant Blooms", category: "Floristry", rating: 4.9, projects: 150 },
   { id: "2", name: "Peak Productions", category: "AV & Tech", rating: 4.8, projects: 200 },
   { id: "3", name: "Gourmet Events", category: "Catering", rating: 4.9, projects: 300 },
@@ -18,6 +20,8 @@ const vendors = [
 
 export default function VendorMarketplace() {
   const router = useRouter();
+  const pathname = usePathname();
+const eventDetails = useEventStore((s) => s.eventDetails);
 
   // Get store functions
   const vendors = useEventStore((state) => state.vendors);
@@ -26,18 +30,20 @@ export default function VendorMarketplace() {
   const currentStep = useEventStore((state) => state.currentStep);
   const completeStep = useEventStore((state) => state.completeStep);
   const setStep = useEventStore((state) => state.setStep);
+  const setActiveStep = useEventStore((state) => state.setActiveStep);
 
   // Pre-fill shortlist from store
-  const [shortlist, setShortlist] = useState(vendors.map((v) => v.id));
+  //const [shortlist, setShortlist] = useState(vendors.map((v) => v.id));
+  const shortlistedIds = vendors.map((v) => v.id);
+  console.log("Shortlisted Vendor IDs:", shortlistedIds);
   const [hoveredVendor, setHoveredVendor] = useState(null);
 
   const toggleShortlist = (vendor) => {
-    const isShortlisted = shortlist.includes(vendor.id);
+    const isShortlisted = shortlistedIds.includes(vendor.id);
+
     if (isShortlisted) {
-      setShortlist((prev) => prev.filter((id) => id !== vendor.id));
       removeVendor(vendor.id);
     } else {
-      setShortlist((prev) => [...prev, vendor.id]);
       shortlistVendor(vendor);
     }
   };
@@ -51,8 +57,12 @@ export default function VendorMarketplace() {
   const handleSubmit = (e) => {
     e.preventDefault();
     completeStep(currentStep);
-    setStep(currentStep + 1);
-    router.push("/menu");
+    //setStep(currentStep + 1);
+    setStep("menu"); // or nextStepName
+setActiveStep("menu");
+    const nextRoute = getNextRoute(eventDetails, pathname);
+  router.push(nextRoute);
+    //router.push("/menu");
   };
 
   return (
@@ -104,14 +114,15 @@ export default function VendorMarketplace() {
             fontWeight: 500,
           }}
         >
-          {shortlist.length} vendor{shortlist.length !== 1 ? "s" : ""} shortlisted
+          {shortlistedIds.length} vendor{shortlistedIds.length !== 1 ? "s" : ""} shortlisted
         </p>
 
         {/* Vendor Carousel */}
         <div className="overflow-x-auto pb-8 mb-8 hide-scrollbar">
           <div className="flex gap-6 px-4" style={{ width: "max-content" }}>
-            {vendors.map((vendor, idx) => {
-              const isShortlisted = shortlist.includes(vendor.id);
+            {vendorsList.map((vendor, idx) => {
+              const isShortlisted = shortlistedIds.includes(vendor.id);
+              
               const isHovered = hoveredVendor === vendor.id;
 
               return (
@@ -133,7 +144,7 @@ export default function VendorMarketplace() {
                     }`,
                   }}
                   whileHover={{ y: -8 }}
-                  onClick={() => toggleShortlist(vendor.id)}
+                  onClick={() => toggleShortlist(vendor)}
                 >
                   {/* Background */}
                   <div

@@ -25,6 +25,10 @@ export const useEventStore = create(
       hasHydrated: false,
       setHasHydrated: (state) => set({ hasHydrated: state }),
 
+      activeStep: "form",
+      setActiveStep: (step) =>
+      set({ activeStep: step.toLowerCase() }),
+
       // ==================== SCREEN 2: Guests ====================
       guests: [],
       addGuest: (guest) =>
@@ -168,6 +172,18 @@ export const useEventStore = create(
           decor: { ...state.decor, ...decor },
         })),
 
+
+      paletteItems: [
+        { id: "led", label: "LED Screen" },
+        { id: "stage", label: "Stage" },
+        { id: "projector", label: "Projector" },
+      ],
+
+      addPaletteItem: (item) =>
+        set((state) => ({
+          paletteItems: [...state.paletteItems, item],
+        })),
+
       // ==================== SCREEN 11: Poster ====================
       poster: {
         status: "idle", // 'idle' | 'generating' | 'complete'
@@ -202,7 +218,7 @@ export const useEventStore = create(
         })),
 
       // ==================== Progress Tracking ====================
-      currentStep: 1,
+      currentStep: "form",
       completedSteps: [],
 
       setStep: (step) => set({ currentStep: step }),
@@ -214,7 +230,7 @@ export const useEventStore = create(
 
       resetSteps: () =>
         set({
-          currentStep: 1,
+          currentStep: "form",
           completedSteps: [],
         }),
 
@@ -262,7 +278,7 @@ export const useEventStore = create(
           decor: { selectedTheme: null, colorPalette: [], items: [] },
           poster: { status: "idle", generatedData: null },
           invites: { file: null, emailDraft: "", isSent: false },
-          currentStep: 1,
+          currentStep: "form",
           completedSteps: [],
         }),
 

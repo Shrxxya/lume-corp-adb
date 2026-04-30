@@ -3,9 +3,11 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
 import { ArrowRight, X } from "lucide-react";
-import { useRouter } from "next/navigation";
 import { useEventStore } from "@/store/useEventStore";
 import ProgressMap from "@/components/ProgressMap";
+
+import { getNextRoute } from "@/lib/eventFlow";
+import { useRouter, usePathname } from "next/navigation";
 
 const cuisines = [
   { id: "italian", name: "Italian", color: "#FF6B6B" },
@@ -60,6 +62,8 @@ const dishesData = {
 
 export default function MenuBuilder({ onNext }) {
   const router = useRouter();
+  const pathname = usePathname();
+const eventDetails = useEventStore((s) => s.eventDetails);
 
   // Get store functions
   const menu = useEventStore((state) => state.menu);
@@ -69,6 +73,7 @@ export default function MenuBuilder({ onNext }) {
   const currentStep = useEventStore((state) => state.currentStep);
   const completeStep = useEventStore((state) => state.completeStep);
   const setStep = useEventStore((state) => state.setStep);
+  const setActiveStep = useEventStore((state) => state.setActiveStep);
 
   // Pre-fill from store
   const [selectedCuisine, setSelectedCuisine] = useState(menu.selectedCuisine);
@@ -98,15 +103,19 @@ export default function MenuBuilder({ onNext }) {
   const handleSubmit = (e) => {
     e.preventDefault();
     completeStep(currentStep);
-    setStep(currentStep + 1);
-    router.push("/timeline");
+    //setStep(currentStep + 1);
+    setStep("timeline"); // or nextStepName
+setActiveStep("timeline");
+    const nextRoute = getNextRoute(eventDetails, pathname);
+  router.push(nextRoute);
+    //router.push("/timeline");
   };
 
   return (
     <div className="min-h-screen dark:bg-black">
             <ProgressMap currentStep={currentStep} onStepClick={handleStepClick}/>
     <div
-      className="pt-32 pb-20 px-8 min-h-screen"
+      className="pt-32 pb-60 px-8 min-h-screen"
       style={{ backgroundColor: "var(--color-bg)" }}
     >
       <motion.div
@@ -183,11 +192,11 @@ export default function MenuBuilder({ onNext }) {
               className="mb-12"
             >
               <div className="flex justify-between mb-6">
-                <h3>
+                <h3 className="font-bold font-dm text-xl">
                   {cuisines.find((c) => c.id === selectedCuisine)?.name} Dishes
                 </h3>
 
-                <button onClick={() => setSelectedCuisine(null)}>
+                <button className="flex items-center gap-1" onClick={() => setSelectedCuisine(null)}>
                   <X size={16} /> Back
                 </button>
               </div>
@@ -213,13 +222,14 @@ export default function MenuBuilder({ onNext }) {
           )}
         </AnimatePresence>
 
+        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 flex flex-col w-full items-center gap-13">
         {/* Floating Plate Container */}
         <motion.div
           layout
-          className="fixed bottom-8 left-1/2 -translate-x-1/2 p-4 rounded-full min-w-[320px] max-w-2xl z-40"
+          className="fixed bottom-18 left-1/2 -translate-x-1/2 p-7 rounded-full min-w-[320px] max-w-2xl z-40"
           style={{
             backgroundColor: "var(--glass-fill)",
-            backdropFilter: "blur(var(--blur))",
+            backdropFilter: "blur(3px)",
             border: "1.5px solid var(--color-primary)",
             boxShadow: "0 8px 32px rgba(98,117,76,0.25)",
           }}
@@ -290,7 +300,7 @@ export default function MenuBuilder({ onNext }) {
         {/* Continue */}
         <motion.button
           onClick={handleSubmit}
-          className="w-full px-8 py-5 rounded-full flex justify-center gap-3"
+          className="w-[80%] px-8 py-5 rounded-full flex justify-center gap-3"
           style={{
             backgroundColor: "var(--color-dark)",
             color: "var(--color-bg)",
@@ -298,6 +308,7 @@ export default function MenuBuilder({ onNext }) {
         >
           Continue <ArrowRight size={20} />
         </motion.button>
+        </div>
       </motion.div>
     </div>
     </div>

@@ -3,12 +3,17 @@
 import { motion } from "framer-motion";
 import { useState } from "react";
 import { ArrowRight, Upload, Send, FileSpreadsheet } from "lucide-react";
-import { useRouter } from "next/navigation";
 import { useEventStore } from "@/store/useEventStore";
 import ProgressMap from "@/components/ProgressMap";
 
+import { getNextRoute } from "@/lib/eventFlow";
+import { useRouter, usePathname } from "next/navigation";
+
+
 export default function InvitesEmail({ onNext }) {
   const router = useRouter();
+  const pathname = usePathname();
+const eventDetails = useEventStore((s) => s.eventDetails);
 
   // Get store functions
   const invites = useEventStore((state) => state.invites);
@@ -18,6 +23,7 @@ export default function InvitesEmail({ onNext }) {
   const currentStep = useEventStore((state) => state.currentStep);
   const completeStep = useEventStore((state) => state.completeStep);
   const setStep = useEventStore((state) => state.setStep);
+  const setActiveStep = useEventStore((state) => state.setActiveStep);
 
   // Pre-fill from store
   const [file, setFile] = useState(invites.file);
@@ -73,8 +79,12 @@ Best regards,
   const handleSubmit = (e) => {
     e.preventDefault();
     completeStep(currentStep);
-    setStep(currentStep + 1);
-    router.push("/summary");
+    //setStep(currentStep + 1);
+    setStep("summary"); // or nextStepName
+setActiveStep("summary");
+    const nextRoute = getNextRoute(eventDetails, pathname);
+  router.push(nextRoute);
+    //router.push("/summary");
   };
 
   return (

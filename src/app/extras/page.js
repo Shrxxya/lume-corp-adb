@@ -3,9 +3,11 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { useState, useRef } from "react";
 import { ArrowRight, Music, Mic, Lightbulb, X } from "lucide-react";
-import { useRouter } from "next/navigation";
 import { useEventStore } from "@/store/useEventStore";
 import ProgressMap from "@/components/ProgressMap";
+
+import { getNextRoute } from "@/lib/eventFlow";
+import { useRouter, usePathname } from "next/navigation";
 
 const performanceArtists = [
   { name: "Arijit Singh", specialty: "Bollywood Playback", city: "Mumbai", cost: "₹25-35L", agency: "SA Entertainment" },
@@ -33,6 +35,8 @@ const lightShows = [
 
 export default function EntertainmentSelection() {
   const router = useRouter();
+  const pathname = usePathname();
+const eventDetails = useEventStore((s) => s.eventDetails);
   const listRef = useRef(null);
 
   // Get store functions
@@ -41,13 +45,19 @@ export default function EntertainmentSelection() {
   const currentStep = useEventStore((state) => state.currentStep);
   const completeStep = useEventStore((state) => state.completeStep);
   const setStep = useEventStore((state) => state.setStep);
+  const setActiveStep = useEventStore((state) => state.setActiveStep);
 
   // Pre-fill from store
   const [selectedCategory, setSelectedCategory] = useState(entertainment.selectedCategory);
   const [expandedCard, setExpandedCard] = useState(null);
-  const [selectedArtist, setSelectedArtist] = useState(entertainment.selectedArtist);
-  const [selectedHost, setSelectedHost] = useState(entertainment.selectedHost);
-  const [selectedLightShow, setSelectedLightShow] = useState(entertainment.selectedLightShow);
+  const [selections, setSelections] = useState({
+    Performance: null,
+    Host: null,
+    LightShow: null,
+  });
+  // const [selectedArtist, setSelectedArtist] = useState(entertainment.selectedArtist);
+  // const [selectedHost, setSelectedHost] = useState(entertainment.selectedHost);
+  // const [selectedLightShow, setSelectedLightShow] = useState(entertainment.selectedLightShow);
 
   // Save to store when selection changes
   const handleCategorySelect = (categoryId) => {
@@ -55,17 +65,29 @@ export default function EntertainmentSelection() {
     setEntertainment({ selectedCategory: categoryId });
   };
 
-  const handleSelection = (type, item) => {
-    if (type === 'artist') {
-      setSelectedArtist(item);
-      setEntertainment({ selectedArtist: item });
-    } else if (type === 'host') {
-      setSelectedHost(item);
-      setEntertainment({ selectedHost: item });
-    } else if (type === 'lightShow') {
-      setSelectedLightShow(item);
-      setEntertainment({ selectedLightShow: item });
-    }
+  // const handleSelection = (type, item) => {
+  //   if (type === 'artist') {
+  //     setSelectedArtist(item);
+  //     setEntertainment({ selectedArtist: item });
+  //   } else if (type === 'host') {
+  //     setSelectedHost(item);
+  //     setEntertainment({ selectedHost: item });
+  //   } else if (type === 'lightShow') {
+  //     setSelectedLightShow(item);
+  //     setEntertainment({ selectedLightShow: item });
+  //   }
+  // };
+
+  const handleSelection = (category, item) => {
+    setSelections((prev) => ({
+      ...prev,
+      [category]: item,
+    }));
+
+    setEntertainment({
+      ...entertainment,
+      [category.toLowerCase()]: item,
+    });
   };
 
   const getCelebritiesForCategory = (category) => {
@@ -84,8 +106,12 @@ export default function EntertainmentSelection() {
   const handleSubmit = (e) => {
     e.preventDefault();
     completeStep(currentStep);
-    setStep(currentStep + 1);
-    router.push("/decor");
+    //setStep(currentStep + 1);
+    setStep("decor"); // or nextStepName
+setActiveStep("decor");
+    const nextRoute = getNextRoute(eventDetails, pathname);
+  router.push(nextRoute);
+    //router.push("/decor");
   };
 
   return (
@@ -174,19 +200,49 @@ export default function EntertainmentSelection() {
               {getCelebritiesForCategory(selectedCategory).map(
                 (celeb, idx) => (
                   <CelebrityCard
-                    key={celeb.name}
                     celebrity={celeb}
+                    key={`${selectedCategory}-${celeb.name}-${idx}`}
                     index={idx}
+                    isSelected={selections[selectedCategory]?.name === celeb.name}
+                    onClick={() => handleSelection(selectedCategory, celeb)}
                     isExpanded={expandedCard === celeb.name}
                     onToggle={() =>
-                      setExpandedCard(
-                        expandedCard === celeb.name ? null : celeb.name
-                      )
+                      setExpandedCard(expandedCard === celeb.name ? null : celeb.name)
                     }
                   />
                 )
               )}
             </motion.div>
+          )}
+
+          {Object.values(selections).some(Boolean) && (
+            <div className="mt-12 p-6 rounded-3xl bg-white shadow-sm mb-10">
+              <h3 className="font-semibold mb-4">Your Lineup</h3>
+
+              <div className="flex flex-wrap gap-3">
+                {Object.entries(selections).map(([category, item]) =>
+                  item ? (
+                    <div
+                      key={category}
+                      className="px-4 py-2 rounded-full bg-[#14182a] text-white flex items-center gap-2"
+                    >
+                      <span>{item.name}</span>
+
+                      <button
+                        onClick={() =>
+                          setSelections((prev) => ({
+                            ...prev,
+                            [category]: null,
+                          }))
+                        }
+                      >
+                        <X size={14} />
+                      </button>
+                    </div>
+                  ) : null
+                )}
+              </div>
+            </div>
           )}
 
           {/* Continue */}
@@ -206,16 +262,21 @@ export default function EntertainmentSelection() {
   );
 }
 
-function CelebrityCard({ celebrity, index, isExpanded, onToggle }) {
+  function CelebrityCard({
+      celebrity,
+      index,
+      isExpanded,
+      onToggle,
+      isSelected,
+      onClick,
+    }) {
   return (
     <motion.div
-      initial={{ opacity: 0, x: -20 }}
-      animate={{ opacity: 1, x: 0 }}
-      transition={{ delay: index * 0.08 }}
-      whileHover={{ scale: 1.02 }}
-      onClick={onToggle}
-      className="p-5 rounded-xl shadow-sm cursor-pointer bg-white"
-    >
+  onClick={onClick}
+  className={`p-5 rounded-xl shadow-sm cursor-pointer transition ${
+    isSelected ? "ring-2 ring-[#62754c] bg-[#62754c]-70" : "bg-white"
+  }`}
+>
       <div className="flex justify-between">
         <div>
           <h4 className="font-semibold text-lg">{celebrity.name}</h4>
