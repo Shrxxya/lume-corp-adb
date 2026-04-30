@@ -1,7 +1,8 @@
 import { create } from "zustand";
 
-export const useCanvasStore = create((set) => ({
+export const useCanvasStore = create((set, get) => ({
   items: [],
+  hasInitializedLayout: false,
 
   addItem: (item) =>
     set((state) => ({
@@ -19,4 +20,30 @@ export const useCanvasStore = create((set) => ({
           : item
       ),
     })),
+
+  // 🔥 NEW: replace entire canvas
+  setItems: (items) =>
+    set(() => ({
+      items,
+    })),
+
+  // 🔥 NEW: clear canvas
+  clearCanvas: () =>
+    set(() => ({
+      items: [],
+      hasInitializedLayout: false,
+    })),
+
+  // 🔥 NEW: load preset layout safely
+  loadLayout: (layoutItems) => {
+    const { hasInitializedLayout } = get();
+
+    // prevent overwriting user work
+    if (hasInitializedLayout) return;
+
+    set(() => ({
+      items: layoutItems,
+      hasInitializedLayout: true,
+    }));
+  },
 }));

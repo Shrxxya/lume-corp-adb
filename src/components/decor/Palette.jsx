@@ -4,6 +4,7 @@ import { useState } from "react";
 import { DraggableItem } from "./DraggableItem";
 import { Monitor, Presentation, Projector, Plus } from "lucide-react";
 import { cn } from "@/components/utils.js";
+import { useEventStore } from "@/store/useEventStore";
 
 const DEFAULT_ITEMS = [
   { id: "led", label: "LED Screen", icon: <Monitor size={18} /> },
@@ -11,8 +12,11 @@ const DEFAULT_ITEMS = [
   { id: "projector", label: "Projector", icon: <Projector size={18} /> },
 ];
 
+
 export function Palette() {
-  const [items, setItems] = useState(DEFAULT_ITEMS);
+  //const [items, setItems] = useState(DEFAULT_ITEMS);
+  const items = useEventStore((state) => state.paletteItems);
+  const addPaletteItem = useEventStore((state) => state.addPaletteItem);
   const [input, setInput] = useState("");
 
   function addCustomItem() {
@@ -24,7 +28,8 @@ export function Palette() {
       icon: <Plus size={18} />, // generic icon
     };
 
-    setItems((prev) => [...prev, newItem]);
+    //setItems((prev) => [...prev, newItem]);
+    addPaletteItem(newItem);
     setInput("");
   }
 
@@ -37,6 +42,12 @@ export function Palette() {
           value={input}
           id="draggableItemInput"
           onChange={(e) => setInput(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              e.preventDefault();
+              addCustomItem();
+            }
+          }}
           placeholder="Add custom item..."
           className={cn(
             "flex-1 px-3 py-2 rounded-lg ",

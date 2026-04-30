@@ -194,6 +194,33 @@ body {
   transition: background 0.8s ease;
 }
 
+/* Wrap everything under .rdp to override library styles */
+.rdp {
+  --rdp-accent-color: #62754c !important;
+  --rdp-background-color: rgba(98,117,76,0.1) !important;
+}
+
+/* Selected day */
+.rdp .rdp-day_selected,
+.rdp .rdp-day_selected:focus,
+.rdp .rdp-day_selected:hover {
+  background-color: #62754c !important;
+  color: white !important;
+  border-radius: 12px;
+}
+
+/* Today (optional highlight) */
+.rdp .rdp-day_today {
+  font-weight: bold;
+  border: 1px solid #62754c;
+}
+
+/* Hover effect */
+.rdp .rdp-day:hover {
+  background-color: rgba(98,117,76,0.15);
+  border-radius: 12px;
+}
+
 /* .navbar {
   position: fixed;
   top: 0;
