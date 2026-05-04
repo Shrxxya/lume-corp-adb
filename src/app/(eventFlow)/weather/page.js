@@ -746,7 +746,7 @@ export default function WeatherPage() {
       <div className="w-full mx-auto">
         <button
           onClick={handleContinue}
-          className="w-full py-4 rounded-full bg-[#62754c] text-white flex items-center justify-center gap-2"
+          className="w-full py-4 rounded-full bg-[var(--color-dark)] text-white flex items-center justify-center gap-2"
         >
           Continue <ArrowRight size={18} />
         </button>

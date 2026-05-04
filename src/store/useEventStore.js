@@ -21,6 +21,9 @@ export const useEventStore = create(
           eventDetails: { ...state.eventDetails, ...details },
         })),
 
+      theme: null,
+      setTheme: (theme) => set({ theme }),
+
 
       hasHydrated: false,
       setHasHydrated: (state) => set({ hasHydrated: state }),
@@ -96,7 +99,10 @@ export const useEventStore = create(
       vendors: [],
       shortlistVendor: (vendor) =>
         set((state) => ({
-          vendors: [...state.vendors, { id: Date.now(), ...vendor }],
+          vendors: [
+            ...state.vendors,
+            { ...vendor, uid: crypto.randomUUID() }, // keep original id
+          ],
         })),
       removeVendor: (vendorId) =>
         set((state) => ({
@@ -156,10 +162,13 @@ export const useEventStore = create(
         selectedHost: null,
         selectedLightShow: null,
       },
-      setEntertainment: (entertainment) =>
-        set((state) => ({
-          entertainment: { ...state.entertainment, ...entertainment },
-        })),
+      setEntertainment: (updates) =>
+      set((state) => ({
+        entertainment: {
+          ...state.entertainment,
+          ...updates,
+        },
+      })),
 
       // ==================== SCREEN 10: Decor ====================
       decor: {
@@ -291,6 +300,7 @@ export const useEventStore = create(
           location: state.eventDetails.location || "TBD",
           guestCount: state.eventDetails.guestCount || state.guests.length || 0,
           budget: state.eventDetails.budget || state.budget.totalBudget || 0,
+          theme: state.theme || "TBD",
           budgetBreakdown: Object.entries(state.budget.allocations).map(
             ([category, amount]) => ({
               category:
@@ -301,11 +311,11 @@ export const useEventStore = create(
           vendors: state.vendors,
           menu: state.menu.plate,
           timeline: state.timeline,
-          entertainment:
-            state.entertainment.selectedArtist?.name ||
-            state.entertainment.selectedHost?.name ||
-            state.entertainment.selectedLightShow?.name ||
-            "TBD",
+          entertainment: {
+            artist: state.entertainment.selectedArtist,
+            host: state.entertainment.selectedHost,
+            lightShow: state.entertainment.selectedLightShow,
+          },
           decor: state.decor.selectedTheme || "TBD",
           poster: state.poster.status === "complete" ? "Generated" : "Not generated",
           guests: state.guests,

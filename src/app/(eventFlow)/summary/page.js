@@ -101,6 +101,11 @@ export default function FinalSummary({ appData, onReset }) {
     extras: "#2A3050"
   };
 
+  const hasEntertainment =
+    summaryData.entertainment.artist ||
+    summaryData.entertainment.host ||
+    summaryData.entertainment.lightShow;
+
   const quotation = useMemo(() => {
     return calculateQuotation(summaryData);
   }, [summaryData]);
@@ -383,9 +388,9 @@ export default function FinalSummary({ appData, onReset }) {
               Selected Vendors
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-              {summaryData.vendors.map((vendor, idx) => (
+              {summaryData.vendors.length > 0 ? (summaryData.vendors.map((vendor, idx) => (
                 <div
-                  key={idx}
+                  key={vendor.uid}
                   className="p-4 rounded-2xl"
                   style={{ 
                     backgroundColor: "rgba(98, 117, 76, 0.1)",
@@ -412,7 +417,10 @@ export default function FinalSummary({ appData, onReset }) {
                     {vendor.category || "Service"}
                   </p>
                 </div>
-              ))}
+              ))
+              ) : (
+                <p>No vendors selected</p>
+              )}
             </div>
           </ScrollRevealCard>
 
@@ -511,6 +519,7 @@ export default function FinalSummary({ appData, onReset }) {
 
           {/* Entertainment & Decor */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+            {hasEntertainment && (
             <ScrollRevealCard index={8}>
               <h3 
                 style={{ 
@@ -523,33 +532,59 @@ export default function FinalSummary({ appData, onReset }) {
               >
                 Entertainment
               </h3>
-              <div 
-                className="p-4 rounded-2xl"
-                style={{ 
-                  backgroundColor: "rgba(201, 168, 76, 0.15)",
-                  border: "1px solid rgba(201, 168, 76, 0.3)"
-                }}
-              >
-                <p 
-                  style={{ 
-                    fontFamily: "var(--font-body)",
-                    fontSize: "1.1rem",
-                    fontWeight: 600,
-                    color: "var(--color-dark)"
-                  }}
-                >
-                  {summaryData.entertainment}
-                </p>
-                <p 
-                  style={{ 
-                    fontFamily: "var(--font-body)",
-                    fontSize: "0.8rem",
-                    color: "var(--color-gold)"
-                  }}
-                >
-                  Performance Artist
-                </p>
+              <div className="flex flex-col gap-3">
+                {summaryData.entertainment.artist && (
+                  <div className="p-4 rounded-2xl bg-white shadow-sm">
+                    <p className="font-semibold">
+                      {summaryData.entertainment.artist.name}
+                    </p>
+                    <p className="text-sm text-gray-500">Performance Artist</p>
+                  </div>
+                )}
+
+                {summaryData.entertainment.host && (
+                  <div className="p-4 rounded-2xl bg-white shadow-sm">
+                    <p className="font-semibold">
+                      {summaryData.entertainment.host.name}
+                    </p>
+                    <p className="text-sm text-gray-500">Host</p>
+                  </div>
+                )}
+
+                {summaryData.entertainment.lightShow && (
+                  <div className="p-4 rounded-2xl bg-white shadow-sm">
+                    <p className="font-semibold">
+                      {summaryData.entertainment.lightShow.name}
+                    </p>
+                    <p className="text-sm text-gray-500">Light Show</p>
+                  </div>
+                )}
               </div>
+            </ScrollRevealCard>
+            )}
+
+            <ScrollRevealCard index={10.5}>
+              <h3 style={{
+                fontFamily: "var(--font-body)",
+                fontSize: "1.2rem",
+                fontWeight: 700,
+                color: "var(--color-primary)",
+                marginBottom: "var(--space-4)"
+              }}>
+                Decor Theme
+              </h3>
+
+              {summaryData.theme && (
+                <div className="rounded-2xl overflow-hidden">
+                  <img
+                    src={summaryData.theme.image}
+                    className="w-full h-64 object-cover"
+                  />
+                  <p className="mt-3 font-medium">
+                    {summaryData.theme.label}
+                  </p>
+                </div>
+              )}
             </ScrollRevealCard>
 
             <ScrollRevealCard index={9}>
@@ -562,7 +597,7 @@ export default function FinalSummary({ appData, onReset }) {
                   marginBottom: "var(--space-4)"
                 }}
               >
-                Decor Theme
+                Event Layout
               </h3>
               <div 
                 className="p-4 rounded-2xl"

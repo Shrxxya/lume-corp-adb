@@ -349,10 +349,16 @@
 
 import { motion } from "framer-motion";
 import { useState, useEffect } from "react";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Check } from "lucide-react";
 import { useEventStore } from "@/store/useEventStore";
 import { DayPicker } from "react-day-picker";
 import "react-day-picker/dist/style.css";
+// import img1 from "/themes/CharcoalGraynCopper.png";
+// import img2 from "/themes/ForestGreennBeige.png";
+// import img3 from "/themes/GoldnBlack.png";
+// import img4 from "/themes/NavyBluenSilver.png";
+// import img5 from "/themes/RednWhite.png";
+// import img6 from "/themes/YellownWhite.png";
 
 import { getNextRoute } from "@/lib/eventFlow";
 import { useRouter, usePathname } from "next/navigation";
@@ -367,9 +373,21 @@ const eventTypeColors = {
   Convention: "#FDFDF8",
 };
 
+  const themes = [
+    { id: "royal-amber", label: "Royal Amber", image: "/themes/CharcoalGraynCopper.png" },
+    { id: "emerald-glow", label: "Emerald Glow", image: "/themes/ForestGreennBeige.png" },
+    { id: "gold-elegance", label: "Gold Elegance", image: "/themes/GoldnBlack.png" },
+    { id: "midnight-luxe", label: "Midnight Luxe", image: "/themes/NavyBluenSilver.png" },
+    { id: "festive-crimson", label: "Festive Crimson", image: "/themes/RednWhite.png" },
+    { id: "sunrise-clarity", label: "Sunrise Clarity", image: "/themes/YellownWhite.png" },
+  ];
+
 export default function BlueprintForm() {
   const router = useRouter();
   const pathname = usePathname();
+
+  const selectedTheme = useEventStore((s) => s.theme);
+  const setTheme = useEventStore((s) => s.setTheme);
 
   // Get store functions
   const eventDetails = useEventStore((state) => state.eventDetails);
@@ -675,6 +693,64 @@ export default function BlueprintForm() {
                   </motion.button>
                 ))}
             </div>
+          </div>
+
+          <label
+              style={{
+                fontFamily: "var(--font-body)",
+                fontSize: "0.875rem",
+                color: "var(--color-dark)",
+                opacity: 0.7,
+                letterSpacing: "0.05em",
+                textTransform: "uppercase",
+              }}
+            >
+              Event Theme
+            </label>
+
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
+            {themes.map((theme) => {
+              const isSelected = selectedTheme?.id === theme.id;
+
+              return (
+                <motion.div
+                  key={theme.id}
+                  whileHover={{ scale: 1.03 }}
+                  onClick={() => setTheme(theme)}
+                  className="relative cursor-pointer rounded-3xl overflow-hidden"
+                  style={{
+                    border: isSelected
+                      ? "3px solid var(--color-primary)"
+                      : "3px solid var(--glass-border)",
+                  }}
+                >
+                  {/* IMAGE */}
+                  <img
+                    src={theme.image}
+                    alt={theme.label}
+                    className="w-full h-56 object-cover"
+                  />
+
+                  {/* OVERLAY */}
+                  <div className="absolute inset-0" />
+
+                  {/* LABEL */}
+                  <div className="absolute bottom-3 left-4 text-white font-medium">
+                    {theme.label}
+                  </div>
+
+                  {/* CHECK */}
+                  {isSelected && (
+                    <div
+                      className="absolute top-3 right-3 w-8 h-8 rounded-full flex items-center justify-center"
+                      style={{ backgroundColor: "#62754c" }}
+                    >
+                      <Check size={16} color="white" />
+                    </div>
+                  )}
+                </motion.div>
+              );
+            })}
           </div>
 
           <motion.button

@@ -1,7 +1,7 @@
 "use client";
 
 import { motion, AnimatePresence } from "framer-motion";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { ArrowRight, Music, Mic, Lightbulb, X } from "lucide-react";
 import { useEventStore } from "@/store/useEventStore";
 import ProgressMap from "@/components/ProgressMap";
@@ -51,9 +51,9 @@ const eventDetails = useEventStore((s) => s.eventDetails);
   const [selectedCategory, setSelectedCategory] = useState(entertainment.selectedCategory);
   const [expandedCard, setExpandedCard] = useState(null);
   const [selections, setSelections] = useState({
-    Performance: null,
-    Host: null,
-    LightShow: null,
+    Performance: entertainment.selectedArtist || null,
+    Host: entertainment.selectedHost || null,
+    LightShow: entertainment.selectedLightShow || null,
   });
   // const [selectedArtist, setSelectedArtist] = useState(entertainment.selectedArtist);
   // const [selectedHost, setSelectedHost] = useState(entertainment.selectedHost);
@@ -79,14 +79,19 @@ const eventDetails = useEventStore((s) => s.eventDetails);
   // };
 
   const handleSelection = (category, item) => {
+    const keyMap = {
+      Performance: "selectedArtist",
+      Host: "selectedHost",
+      LightShow: "selectedLightShow",
+    };
+
     setSelections((prev) => ({
       ...prev,
       [category]: item,
     }));
 
     setEntertainment({
-      ...entertainment,
-      [category.toLowerCase()]: item,
+      [keyMap[category]]: item,
     });
   };
 
@@ -108,11 +113,25 @@ const eventDetails = useEventStore((s) => s.eventDetails);
     completeStep(currentStep);
     //setStep(currentStep + 1);
     setStep("decor"); // or nextStepName
-setActiveStep("decor");
+    setActiveStep("decor");
     const nextRoute = getNextRoute(eventDetails, pathname);
-  router.push(nextRoute);
-    //router.push("/decor");
+    router.push(nextRoute);
+      //router.push("/decor");
+    };
+
+  const keyMap = {
+    Performance: "selectedArtist",
+    Host: "selectedHost",
+    LightShow: "selectedLightShow",
   };
+
+  useEffect(() => {
+    setSelections({
+      Performance: entertainment.selectedArtist || null,
+      Host: entertainment.selectedHost || null,
+      LightShow: entertainment.selectedLightShow || null,
+    });
+  }, [entertainment]);
 
   return (
     <div className="min-h-screen dark:bg-black">
@@ -222,8 +241,13 @@ setActiveStep("decor");
               <div className="flex flex-wrap gap-3">
                 {Object.entries(selections).map(([category, item]) =>
                   item ? (
-                    <div
+                    <motion.div
                       key={category}
+                      layout
+                      initial={{ scale: 0.8, opacity: 0, y: 10 }}
+                      animate={{ scale: 1, opacity: 1, y: 0 }}
+                      exit={{ scale: 0.8, opacity: 0 }}
+                      transition={{ type: "spring", stiffness: 300, damping: 20 }}
                       className="px-4 py-2 rounded-full bg-[#14182a] text-white flex items-center gap-2"
                     >
                       <span>{item.name}</span>
@@ -238,7 +262,7 @@ setActiveStep("decor");
                       >
                         <X size={14} />
                       </button>
-                    </div>
+                    </motion.div>
                   ) : null
                 )}
               </div>
@@ -248,7 +272,7 @@ setActiveStep("decor");
           {/* Continue */}
         <motion.button
           onClick={handleSubmit}
-          className="w-full px-8 py-5 rounded-full flex justify-center gap-3"
+          className="w-full mt-8 px-8 py-5 rounded-full flex justify-center gap-3"
           style={{
             backgroundColor: "var(--color-dark)",
             color: "var(--color-bg)",
