@@ -9,6 +9,8 @@ import {
 import ProgressMap from "@/components/ProgressMap";
 import { useRouter } from "next/navigation";
 import { useEventStore } from "@/store/useEventStore";
+import { calculateQuotation } from "@/lib/pricing";
+import QRCode from "qrcode";
 
 export default function FinalSummary({ appData, onReset }) {
   const router = useRouter();
@@ -99,6 +101,73 @@ export default function FinalSummary({ appData, onReset }) {
     extras: "#2A3050"
   };
 
+  const quotation = useMemo(() => {
+    return calculateQuotation(summaryData);
+  }, [summaryData]);
+
+  const [pdfUrl, setPdfUrl] = useState(null);
+  const [qrCode, setQrCode] = useState(null);
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [isSending, setIsSending] = useState(false);
+  const [showSuccess, setShowSuccess] = useState(false);
+
+  const generatePdfIfNeeded = async () => {
+    if (isGenerating || isSending) return;
+    if (pdfUrl) return pdfUrl;
+
+    try {
+      setIsGenerating(true);
+
+      const res = await fetch("/api/generate-pdf", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ data: summaryData, quotation }),
+      });
+
+      const { url } = await res.json();
+
+      const fullUrl = `${window.location.origin}${url}`;
+
+      const qr = await QRCode.toDataURL(fullUrl);
+
+      setPdfUrl(fullUrl);
+      setQrCode(qr);
+
+      return fullUrl;
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setIsGenerating(false);
+    }
+  };
+
+  const handleSubmitRequest = async () => {
+    if (isGenerating || isSending) return;
+    try {
+      setIsSending(true);
+
+      const url = await generatePdfIfNeeded();
+
+      await fetch("/api/send-email", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          pdfUrl: url,
+          summaryData,
+          quotation,
+        }),
+      });
+
+      setShowSuccess(true);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setIsSending(false);
+    }
+  };
+
   useEffect(() => {
     if (showQR && QRRef.current) {
       QRRef.current.scrollIntoView({
@@ -111,6 +180,41 @@ export default function FinalSummary({ appData, onReset }) {
   return (
     <div className="min-h-screen" style={{ backgroundColor: "var(--color-bg)" }}>
       {/* <ProgressMap currentStep={currentStep} onStepClick={handleStepClick} /> */}
+      {isGenerating && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black/40 z-50">
+          <div className="px-6 py-4 rounded-xl bg-white text-black">
+            Generating your proposal...
+          </div>
+        </div>
+      )}
+
+      {isSending && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black/40 z-50">
+          <div className="px-6 py-4 rounded-xl bg-white text-black">
+            Sending request...
+          </div>
+        </div>
+      )}
+
+      {showSuccess && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black/40 z-50">
+          <div className="bg-white p-8 rounded-2xl text-center max-w-sm">
+            <h2 className="text-xl font-semibold mb-2">
+              Request Submitted!
+            </h2>
+            <p className="text-sm opacity-70 mb-4">
+              We will be contacting you within 24 hours.
+            </p>
+
+            <button
+              onClick={() => setShowSuccess(false)}
+              className="px-4 py-2 rounded-lg bg-[#62754c] text-white"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      )}
       
       <div
         ref={containerRef}
@@ -540,7 +644,7 @@ export default function FinalSummary({ appData, onReset }) {
           </ScrollRevealCard>
 
           {/* Progress Checklist */}
-          <ScrollRevealCard index={11}>
+          {/* <ScrollRevealCard index={11}>
             <h3 
               style={{ 
                 fontFamily: "var(--font-body)",
@@ -592,20 +696,67 @@ export default function FinalSummary({ appData, onReset }) {
                 </div>
               ))}
             </div>
+          </ScrollRevealCard> */}
+
+          {/* Quotation Section */}
+          <ScrollRevealCard index={12}>
+            <h3
+              style={{
+                fontFamily: "var(--font-body)",
+                fontSize: "1.2rem",
+                fontWeight: 700,
+                color: "var(--color-primary)",
+                marginBottom: "var(--space-4)",
+              }}
+            >
+              Estimated Planning Fee
+            </h3>
+
+            <div className="space-y-3">
+              <div className="flex justify-between">
+                <span>Base Fee ({(quotation.basePercent * 100).toFixed(0)}%)</span>
+                <span>₹{quotation.serviceFee}L</span>
+              </div>
+
+              <div className="flex justify-between">
+                <span>GST (18%)</span>
+                <span>₹{quotation.gst}L</span>
+              </div>
+
+              <div className="border-t pt-3 flex justify-between font-bold">
+                <span>Total</span>
+                <span>₹{quotation.total}L</span>
+              </div>
+            </div>
+
+            <p className="mt-4 text-sm opacity-70">
+              Final pricing may vary based on vendor negotiations and custom requirements.
+            </p>
           </ScrollRevealCard>
 
           {/* Actions */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-12">
             <motion.button
+              onClick={async () => {
+                if (isGenerating || isSending) return;
+                const url = await generatePdfIfNeeded();
+
+                if (!url) return;
+
+                const a = document.createElement("a");
+                a.href = url;
+                a.download = "event-proposal.pdf";
+                a.click();
+              }}
               whileHover={{ scale: 1.02, boxShadow: "var(--shadow-2)" }}
               whileTap={{ scale: 0.98 }}
-              className="py-4 rounded-2xl flex items-center justify-center gap-2 border"
+              className="py-4 rounded-2xl flex items-center justify-center gap-2 border shadow-sm"
               style={{ 
                 fontFamily: "var(--font-body)",
                 fontWeight: 600,
                 fontSize: "1rem",
                 backgroundColor: "var(--glass-fill)",
-                borderColor: "var(--glass-border)",
+                // borderColor: "var(--glass-border)",
                 color: "var(--color-dark)",
                 backdropFilter: "blur(16px)"
               }}
@@ -615,9 +766,14 @@ export default function FinalSummary({ appData, onReset }) {
             </motion.button>
 
             <motion.button
+              onClick={async () => {
+                if (isGenerating || isSending) return;
+                await generatePdfIfNeeded();
+                setShowQR(true);
+              }}
               whileHover={{ scale: 1.02, boxShadow: "var(--glow-green)" }}
               whileTap={{ scale: 0.98 }}
-              onClick={scrollToQR}
+              //onClick={scrollToQR}
               className="py-4 rounded-2xl flex items-center justify-center gap-2"
               style={{ 
                 fontFamily: "var(--font-body)",
@@ -633,7 +789,7 @@ export default function FinalSummary({ appData, onReset }) {
           </div>
 
           {/* QR Code */}
-          {showQR && (
+          {/* {showQR && (
             <motion.div
               ref={QRRef}
               initial={{ opacity: 0, scale: 0.9 }}
@@ -659,6 +815,37 @@ export default function FinalSummary({ appData, onReset }) {
               >
                 Scan to view event details
               </p>
+            </motion.div>
+          )} */}
+          {showQR && pdfUrl && (
+            <motion.div ref={QRRef} 
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.4 }}
+              className="p-10 text-center mt-8 rounded-3xl flex flex-col items-center"
+              style={{ 
+                backgroundColor: "var(--glass-fill)",
+                backdropFilter: "blur(16px)",
+                border: "1px solid var(--glass-border)",
+                boxShadow: "var(--shadow-2)"
+              }}>
+              <img src={qrCode} className="w-40 h-40" />
+
+              <p className="mt-4 text-sm opacity-70">
+                Scan to view full proposal
+              </p>
+
+              <a href={pdfUrl} target="_blank" className="text-sm underline">
+                Open PDF
+              </a>
+
+              {/* SUBMIT BUTTON */}
+              <button
+                onClick={handleSubmitRequest}
+                className="mt-6 px-6 py-3 rounded-xl bg-[#62754c] text-white"
+              >
+                Submit Request
+              </button>
             </motion.div>
           )}
 

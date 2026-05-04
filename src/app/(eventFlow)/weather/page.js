@@ -590,8 +590,8 @@ export default function WeatherPage() {
       day: "numeric",
       month: "short",
     }),
-    max: weatherData.maxTemp[i],
-    min: weatherData.minTemp[i],
+    max: Number(weatherData.maxTemp[i].toFixed(2)),
+    min: Number(weatherData.minTemp[i].toFixed(2)),
     rain: Number(weatherData.precipitation[i].toFixed(2)),
   }));
 
