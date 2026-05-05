@@ -221,6 +221,17 @@ body {
   border-radius: 12px;
 }
 
+/* Make all buttons show pointer cursor */
+button {
+  cursor: pointer;
+}
+
+/* Optional: include clickable divs like your theme cards */
+[role="button"],
+.clickable {
+  cursor: pointer;
+}
+
 /* .navbar {
   position: fixed;
   top: 0;

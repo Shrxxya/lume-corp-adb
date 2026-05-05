@@ -317,7 +317,7 @@ export const useEventStore = create(
             lightShow: state.entertainment.selectedLightShow,
           },
           decor: state.decor.selectedTheme || "TBD",
-          poster: state.poster.status === "complete" ? "Generated" : "Not generated",
+          poster: state.poster.generatedData,
           guests: state.guests,
         };
       },

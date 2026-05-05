@@ -655,7 +655,7 @@ export default function FinalSummary({ appData, onReset }) {
                 <PartyPopper size={24} style={{ color: "var(--color-bg)" }} />
               </div>
               <div>
-                <p 
+                {/* <p 
                   style={{ 
                     fontFamily: "var(--font-body)",
                     fontSize: "1rem",
@@ -664,7 +664,13 @@ export default function FinalSummary({ appData, onReset }) {
                   }}
                 >
                   {summaryData.poster}
-                </p>
+                </p> */}
+                {summaryData.poster && (
+                  <img
+                    src={summaryData.poster}
+                    className="rounded-2xl mt-4"
+                  />
+                )}
                 <p 
                   style={{ 
                     fontFamily: "var(--font-body)",
