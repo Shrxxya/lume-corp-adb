@@ -36,10 +36,8 @@ const lightShows = [
 export default function EntertainmentSelection() {
   const router = useRouter();
   const pathname = usePathname();
-const eventDetails = useEventStore((s) => s.eventDetails);
-  const listRef = useRef(null);
+  const eventDetails = useEventStore((s) => s.eventDetails);
 
-  // Get store functions
   const entertainment = useEventStore((state) => state.entertainment);
   const setEntertainment = useEventStore((state) => state.setEntertainment);
   const currentStep = useEventStore((state) => state.currentStep);
@@ -47,7 +45,8 @@ const eventDetails = useEventStore((s) => s.eventDetails);
   const setStep = useEventStore((state) => state.setStep);
   const setActiveStep = useEventStore((state) => state.setActiveStep);
 
-  // Pre-fill from store
+  const listRef = useRef(null);
+
   const [selectedCategory, setSelectedCategory] = useState(entertainment.selectedCategory);
   const [expandedCard, setExpandedCard] = useState(null);
   const [selections, setSelections] = useState({
@@ -55,28 +54,24 @@ const eventDetails = useEventStore((s) => s.eventDetails);
     Host: entertainment.selectedHost || null,
     LightShow: entertainment.selectedLightShow || null,
   });
-  // const [selectedArtist, setSelectedArtist] = useState(entertainment.selectedArtist);
-  // const [selectedHost, setSelectedHost] = useState(entertainment.selectedHost);
-  // const [selectedLightShow, setSelectedLightShow] = useState(entertainment.selectedLightShow);
 
-  // Save to store when selection changes
+  const categories = [
+    { id: "Performance", icon: Music, title: "Performance", subtitle: "Dance / Song", color: "#FF6B6B" },
+    { id: "Host", icon: Mic, title: "Host / Emcee", subtitle: "Professional hosting", color: "#4ECDC4" },
+    { id: "LightShow", icon: Lightbulb, title: "Light Show", subtitle: "Visual spectacle", color: "#F38181" }
+  ];
+
+  const getCelebritiesForCategory = (category) => {
+    if (category === "Performance") return performanceArtists;
+    if (category === "Host") return hosts;
+    if (category === "LightShow") return lightShows;
+    return [];
+  };
+
   const handleCategorySelect = (categoryId) => {
     setSelectedCategory(categoryId);
     setEntertainment({ selectedCategory: categoryId });
   };
-
-  // const handleSelection = (type, item) => {
-  //   if (type === 'artist') {
-  //     setSelectedArtist(item);
-  //     setEntertainment({ selectedArtist: item });
-  //   } else if (type === 'host') {
-  //     setSelectedHost(item);
-  //     setEntertainment({ selectedHost: item });
-  //   } else if (type === 'lightShow') {
-  //     setSelectedLightShow(item);
-  //     setEntertainment({ selectedLightShow: item });
-  //   }
-  // };
 
   const handleSelection = (category, item) => {
     const keyMap = {
@@ -95,34 +90,14 @@ const eventDetails = useEventStore((s) => s.eventDetails);
     });
   };
 
-  const getCelebritiesForCategory = (category) => {
-    if (category === "Performance") return performanceArtists;
-    if (category === "Host") return hosts;
-    if (category === "LightShow") return lightShows;
-    return [];
-  };
-
-  const categories = [
-    { id: "Performance", icon: Music, title: "Performance", subtitle: "Dance / Song", color: "#FF6B6B" },
-    { id: "Host", icon: Mic, title: "Host / Emcee", subtitle: "Professional hosting", color: "#4ECDC4" },
-    { id: "LightShow", icon: Lightbulb, title: "Light Show", subtitle: "Visual spectacle", color: "#F38181" }
-  ];
-
   const handleSubmit = (e) => {
     e.preventDefault();
     completeStep(currentStep);
-    //setStep(currentStep + 1);
-    setStep("decor"); // or nextStepName
+    setStep("decor");
     setActiveStep("decor");
+
     const nextRoute = getNextRoute(eventDetails, pathname);
     router.push(nextRoute);
-      //router.push("/decor");
-    };
-
-  const keyMap = {
-    Performance: "selectedArtist",
-    Host: "selectedHost",
-    LightShow: "selectedLightShow",
   };
 
   useEffect(() => {
@@ -135,185 +110,202 @@ const eventDetails = useEventStore((s) => s.eventDetails);
 
   return (
     <div className="min-h-screen dark:bg-black">
-      {/* <ProgressMap currentStep={currentStep} /> */}
-
-      <div className="pt-32 pb-20 px-8">
+      <div className="pt-20 pb-20 px-8">
         <motion.div
           initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
           className="max-w-6xl mx-auto"
         >
+          {/* HEADINGS */}
           <h1
-          style={{
-            fontFamily: 'var(--font-serif)',
-            fontSize: 'clamp(2.5rem, 5vw, 3.5rem)',
-            color: 'var(--color-dark)',
-            marginBottom: '1rem',
-            fontStyle: 'italic',
-            textAlign: 'center',
-          }}
-        >
-          The Act
-        </h1>
-          <p className="text-center text-gray-500 mb-12"
-          style={{
-            fontFamily: 'var(--font-body)',
-            }}>
+            style={{
+              fontFamily: 'var(--font-serif)',
+              fontSize: 'clamp(2.5rem, 5vw, 3.5rem)',
+              color: 'var(--color-dark)',
+              marginBottom: '1rem',
+              fontStyle: 'italic',
+              textAlign: 'center',
+            }}
+          >
+            The Act
+          </h1>
+
+          <p
+            className="text-center text-gray-500 mb-12"
+            style={{ fontFamily: 'var(--font-body)', fontSize: '1.125rem' }}
+          >
             Choose your entertainment
           </p>
 
-          {/* CATEGORY CARDS (always visible) */}
-          <div className="grid grid-cols-3 gap-6 mb-12">
-            {categories.map((category, idx) => (
-              <motion.div
-                key={category.id}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: idx * 0.1 }}
-                whileHover={{ y: -8 }}
-                onClick={() => {
-                  handleCategorySelect(category.id);
+          {/* GRID */}
+          <div className="grid grid-cols-12 gap-10 mt-10">
 
-                  setTimeout(() => {
-                    listRef.current?.scrollIntoView({
-                      behavior: "smooth",
-                      block: "start"
-                    });
-                  }, 100);
-                }}
-                className="p-8 rounded-3xl cursor-pointer bg-white shadow-sm flex flex-col items-center text-center"
-              >
-                <div
-                  className="w-20 h-20 rounded-full flex items-center justify-center mb-6"
-                  style={{ backgroundColor: category.color }}
+            {/* LEFT SIDE */}
+            <div className="col-span-8">
+
+              {/* CATEGORY CARDS */}
+              <div className="grid grid-cols-3 gap-6 mb-12">
+                {categories.map((category, idx) => (
+                  <motion.div
+                    key={category.id}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: idx * 0.1 }}
+                    whileHover={{ y: -8 }}
+                    onClick={() => {
+                      handleCategorySelect(category.id);
+                      setTimeout(() => {
+                        listRef.current?.scrollIntoView({
+                          behavior: "smooth",
+                          block: "start"
+                        });
+                      }, 100);
+                    }}
+                    className="p-8 rounded-3xl cursor-pointer bg-transparent flex flex-col items-center text-center"
+                  >
+                    <div
+                      className="w-20 h-20 rounded-full flex items-center justify-center mb-6"
+                      style={{ backgroundColor: category.color }}
+                    >
+                      <category.icon size={36} color="white" />
+                    </div>
+
+                    <h3 className="text-xl font-bold">{category.title}</h3>
+                    <p className="text-gray-500">{category.subtitle}</p>
+                  </motion.div>
+                ))}
+              </div>
+
+              {/* RESULTS */}
+              {selectedCategory && (
+                <motion.div
+                  ref={listRef}
+                  initial={{ opacity: 0, y: 40 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="space-y-4"
                 >
-                  <category.icon size={36} color="white" />
-                </div>
+                  <div className="flex justify-between items-center">
+                    <h3 className="text-xl font-semibold">
+                      Top {selectedCategory} Options
+                    </h3>
 
-                <h3 className="text-xl font-bold">{category.title}</h3>
-                <p className="text-gray-500">{category.subtitle}</p>
-              </motion.div>
-            ))}
-          </div>
+                    <button onClick={() => setSelectedCategory(null)}>
+                      <X size={20} />
+                    </button>
+                  </div>
 
-          {/* RESULTS SECTION */}
-          {selectedCategory && (
-            <motion.div
-              ref={listRef}
-              initial={{ opacity: 0, y: 40 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="mt-12 space-y-4"
-            >
-              <div className="flex justify-between items-center">
-                <h3 className="text-xl font-semibold">
-                  Top {selectedCategory} Options
-                </h3>
+                  {getCelebritiesForCategory(selectedCategory).map((celeb, idx) => (
+                    <CelebrityCard
+                      key={`${celeb.name}-${idx}`}
+                      celebrity={celeb}
+                      isSelected={selections[selectedCategory]?.name === celeb.name}
+                      onClick={() => handleSelection(selectedCategory, celeb)}
+                      isExpanded={expandedCard === celeb.name}
+                      onToggle={() =>
+                        setExpandedCard(expandedCard === celeb.name ? null : celeb.name)
+                      }
+                    />
+                  ))}
+                </motion.div>
+              )}
+            </div>
 
-                <button
-                  onClick={() => {
-                    setSelectedCategory(null);
-                    setExpandedCard(null);
+            {/* RIGHT SIDE */}
+            <div className="col-span-4">
+              <div className="sticky top-24">
+
+                {/* LINEUP */}
+                {/* <div className="p-6 rounded-3xl bg-white shadow-sm mb-6"> */}
+                <div
+                  className="p-6 rounded-3xl mb-6"
+                  style={{
+                    backgroundColor: "var(--glass-fill)",
+                    backdropFilter: "blur(6px)",
+                    border: "1.5px solid var(--color-primary)",
+                    boxShadow: "0 8px 32px rgba(98,117,76,0.25)",
                   }}
                 >
-                  <X size={20} />
-                </button>
-              </div>
+                  <h3 className="font-semibold mb-4">
+                    Your Lineup{" "}
+                    <span style={{ opacity: 0.6 }}>
+                      ({Object.values(selections).filter(Boolean).length})
+                    </span>
+                  </h3>
 
-              {getCelebritiesForCategory(selectedCategory).map(
-                (celeb, idx) => (
-                  <CelebrityCard
-                    celebrity={celeb}
-                    key={`${selectedCategory}-${celeb.name}-${idx}`}
-                    index={idx}
-                    isSelected={selections[selectedCategory]?.name === celeb.name}
-                    onClick={() => handleSelection(selectedCategory, celeb)}
-                    isExpanded={expandedCard === celeb.name}
-                    onToggle={() =>
-                      setExpandedCard(expandedCard === celeb.name ? null : celeb.name)
-                    }
-                  />
-                )
-              )}
-            </motion.div>
-          )}
+                  <div className="flex flex-wrap gap-3 items-start content-start min-h-[48px]">
+                    {Object.entries(selections).map(([category, item]) =>
+                      item ? (
+                        <motion.div
+                          key={category}
+                          layout
+                          className="px-4 py-2 rounded-full flex items-center gap-2 will-change-transform"
+                          style={{
+                            backgroundColor: "var(--color-primary)",
+                            color: "var(--color-bg)",
+                            fontSize: "0.85rem",
+                            boxShadow: "0 4px 14px rgba(98,117,76,0.25)",
+                          }}
+                        >
+                          <span>{item.name}</span>
+                          <button
+                            onClick={() => {
+                              const keyMap = {
+                                Performance: "selectedArtist",
+                                Host: "selectedHost",
+                                LightShow: "selectedLightShow",
+                              };
 
-          {Object.values(selections).some(Boolean) && (
-            <div className="mt-12 p-6 rounded-3xl bg-white shadow-sm mb-10">
-              <h3 className="font-semibold mb-4">Your Lineup</h3>
+                              setSelections((prev) => ({
+                                ...prev,
+                                [category]: null,
+                              }));
 
-              <div className="flex flex-wrap gap-3">
-                {Object.entries(selections).map(([category, item]) =>
-                  item ? (
-                    <motion.div
-                      key={category}
-                      layout
-                      initial={{ scale: 0.8, opacity: 0, y: 10 }}
-                      animate={{ scale: 1, opacity: 1, y: 0 }}
-                      exit={{ scale: 0.8, opacity: 0 }}
-                      transition={{ type: "spring", stiffness: 300, damping: 20 }}
-                      className="px-4 py-2 rounded-full bg-[#14182a] text-white flex items-center gap-2"
-                    >
-                      <span>{item.name}</span>
+                              setEntertainment({
+                                [keyMap[category]]: null,
+                              });
+                            }}
+                          >
+                            <X size={14} />
+                          </button>
+                        </motion.div>
+                      ) : null
+                    )}
+                  </div>
+                </div>
 
-                      <button
-                        onClick={() => {
-                          const keyMap = {
-                            Performance: "selectedArtist",
-                            Host: "selectedHost",
-                            LightShow: "selectedLightShow",
-                          };
+                {/* CONTINUE */}
+                <motion.button
+                  onClick={handleSubmit}
+                  className="w-full px-8 py-5 rounded-full flex justify-center items-center gap-3"
+                  style={{
+                    backgroundColor: "var(--color-dark)",
+                    color: "var(--color-bg)",
+                  }}
+                >
+                  Continue <ArrowRight size={20} />
+                </motion.button>
 
-                          setSelections((prev) => ({
-                            ...prev,
-                            [category]: null,
-                          }));
-
-                          setEntertainment({
-                            [keyMap[category]]: null,
-                          });
-                        }}
-                      >
-                        <X size={14} />
-                      </button>
-                    </motion.div>
-                  ) : null
-                )}
               </div>
             </div>
-          )}
 
-          {/* Continue */}
-        <motion.button
-          onClick={handleSubmit}
-          className="w-full mt-8 px-8 py-5 rounded-full flex justify-center items-center gap-3"
-          style={{
-            backgroundColor: "var(--color-dark)",
-            color: "var(--color-bg)",
-          }}
-        >
-          Continue <ArrowRight size={20} />
-        </motion.button>
+          </div>
         </motion.div>
       </div>
     </div>
   );
 }
 
-  function CelebrityCard({
-      celebrity,
-      index,
-      isExpanded,
-      onToggle,
-      isSelected,
-      onClick,
-    }) {
+/* CARD */
+function CelebrityCard({ celebrity, isSelected, onClick }) {
   return (
     <motion.div
-  onClick={onClick}
-  className={`p-5 rounded-xl shadow-sm cursor-pointer transition ${
-    isSelected ? "ring-2 ring-[#62754c] bg-[#62754c]-70" : "bg-white"
-  }`}
->
+      onClick={onClick}
+      className={`p-5 rounded-xl shadow-sm cursor-pointer ${
+        isSelected ? "ring-2 ring-[#62754c]" : "bg-white"
+      }`}
+      whileHover={{ scale: 1.02 }}
+    >
       <div className="flex justify-between">
         <div>
           <h4 className="font-semibold text-lg">{celebrity.name}</h4>
@@ -323,26 +315,6 @@ const eventDetails = useEventStore((s) => s.eventDetails);
 
         <p className="font-bold text-green-600">{celebrity.cost}</p>
       </div>
-
-      <AnimatePresence>
-        {isExpanded && (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: "auto" }}
-            exit={{ opacity: 0, height: 0 }}
-            className="mt-3"
-          >
-            <p className="text-sm">Agency: {celebrity.agency}</p>
-
-            <button
-              onClick={(e) => e.stopPropagation()}
-              className="mt-2 px-4 py-1 bg-black text-white rounded"
-            >
-              Contact Agency
-            </button>
-          </motion.div>
-        )}
-      </AnimatePresence>
     </motion.div>
   );
 }
