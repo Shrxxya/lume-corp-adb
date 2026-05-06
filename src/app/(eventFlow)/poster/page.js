@@ -390,7 +390,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ArrowRight, Sparkles, X, Download } from "lucide-react";
 import { useEventStore } from "@/store/useEventStore";
 
@@ -420,6 +420,8 @@ export default function PosterGenerator() {
   const [image, setImage] = useState(poster.generatedData || null);
   const [customPrompt, setCustomPrompt] = useState("");
   const [loading, setLoading] = useState(false);
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   // utils
   const blobToBase64 = (blob) =>
@@ -501,10 +503,16 @@ export default function PosterGenerator() {
     router.push(nextRoute);
   };
 
+  useEffect(() => {
+    if(poster.status != "complete"){
+      generatePoster();
+    }   
+}, []);
+
   return (
     <div className="min-h-screen dark:bg-black">
       <div
-        className="pt-32 pb-20 px-8 min-h-screen"
+        className="pt-20 pb-20 px-8 min-h-screen"
         style={{ backgroundColor: "var(--color-bg)" }}
       >
         <motion.div
@@ -536,7 +544,7 @@ export default function PosterGenerator() {
               marginBottom: "3rem",
             }}
           >
-            Generate your event poster with AI
+            Unlock creativity using AI
           </p>
 
           {/* ---------------- IDLE ---------------- */}
@@ -581,45 +589,53 @@ export default function PosterGenerator() {
 
           {/* ---------------- COMPLETE ---------------- */}
           {status === "complete" && image && (
-            <div className="relative max-w-3xl mx-auto">
-              {/* Skip */}
-              <button
-                onClick={handleSkip}
-                className="absolute top-3 right-3 bg-white p-2 rounded-full shadow flex items-center gap-1"
-              >
-                <X size={18} /> Skip
-              </button>
+  <div className="flex flex-col items-center">
+    
+    {/* Poster + overlay buttons */}
+    <div className="relative w-full max-w-md">
+      {/* Skip */}
+      <button
+        onClick={handleSkip}
+        className="absolute top-3 right-3 bg-white p-2 rounded-full shadow flex items-center gap-1"
+      >
+        <X size={18} /> Skip
+      </button>
 
-              {/* Download */}
-              <a
-                href={image}
-                download="event-poster.png"
-                className="absolute top-3 left-3 bg-white p-2 rounded-full shadow"
-              >
-                <Download size={18} />
-              </a>
+      {/* Download */}
+      <a
+        href={image}
+        download="event-poster.png"
+        className="absolute top-3 left-3 bg-white p-2 rounded-full shadow"
+      >
+        <Download size={18} />
+      </a>
 
-              {/* Poster */}
-              <img src={image} className="rounded-2xl w-full" />
+      {/* Poster */}
+      <img
+        src={image}
+        onClick={() => setIsModalOpen(true)}
+        className="rounded-2xl w-full cursor-zoom-in transform transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] hover:scale-105"
+      />
+    </div>
 
-              {/* Controls */}
-              <div className="mt-6 flex items-center gap-4">
-                <textarea
-                  value={customPrompt}
-                  onChange={(e) => setCustomPrompt(e.target.value)}
-                  placeholder="Refine poster..."
-                  className="w-full p-4 rounded-xl border mb-4 hide-scrollbar"
-                />
+    {/* Controls (same width as poster) */}
+    <div className="mt-6 w-full max-w-xl flex items-stretch gap-3">
+  <textarea
+    value={customPrompt}
+    onChange={(e) => setCustomPrompt(e.target.value)}
+    placeholder="Refine poster..."
+    className="flex-1 p-4 rounded-xl border resize-none h-[56px] hide-scrollbar"
+  />
 
-                <button
-                  onClick={generatePoster}
-                  className="px-6 py-3 bg-[#62754c] text-white rounded-xl"
-                >
-                  Regenerate
-                </button>
-              </div>
-            </div>
-          )}
+  <button
+    onClick={generatePoster}
+    className="px-5 py-3 bg-[#62754c] text-white rounded-xl whitespace-nowrap"
+  >
+    Regenerate
+  </button>
+</div>
+  </div>
+)}
 
           {/* ---------------- FOOTER BUTTONS ---------------- */}
 
@@ -627,7 +643,7 @@ export default function PosterGenerator() {
           {status === "idle" && (
             <motion.button
               onClick={handleSkip}
-              className="w-full px-8 py-5 rounded-full flex justify-center gap-3"
+              className="w-full px-8 py-5 rounded-full flex justify-center items-center gap-3"
               style={{
                 backgroundColor: "var(--color-dark)",
                 color: "var(--color-bg)",
@@ -639,9 +655,10 @@ export default function PosterGenerator() {
 
           {/* Continue */}
           {status === "complete" && (
+          <div className="flex justify-center">
             <motion.button
               onClick={handleSubmit}
-              className="w-full mt-10 px-8 py-5 rounded-full flex justify-center gap-3"
+              className="w-full max-w-xl mt-10 px-8 py-5 rounded-full flex justify-center items-center gap-3"
               style={{
                 backgroundColor: "var(--color-dark)",
                 color: "var(--color-bg)",
@@ -649,6 +666,20 @@ export default function PosterGenerator() {
             >
               Continue <ArrowRight size={20} />
             </motion.button>
+          </div>
+        )}
+
+          {isModalOpen && (
+            <div
+              className="fixed inset-0 bg-black/80 flex items-center justify-center z-50"
+              onClick={() => setIsModalOpen(false)}
+            >
+              <img
+                src={image}
+                onClick={(e) => e.stopPropagation()}
+                className="max-h-[90vh] max-w-[90vw] rounded-xl shadow-2xl"
+              />
+            </div>
           )}
         </motion.div>
       </div>

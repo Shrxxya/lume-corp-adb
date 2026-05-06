@@ -368,7 +368,7 @@ setActiveStep("summary");
          {/* Continue */}
         <motion.button
           onClick={handleSubmit}
-          className="w-full px-8 py-5 rounded-full flex justify-center gap-3"
+          className="w-full px-8 py-5 rounded-full flex justify-center items-center gap-3"
           style={{
             backgroundColor: "var(--color-dark)",
             color: "var(--color-bg)",

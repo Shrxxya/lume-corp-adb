@@ -663,7 +663,7 @@ export default function WeatherPage() {
       <div className="flex flex-col w-full">
       {/* HEADER */}
        <div className="text-center mb-10">
-         <h1 className="text-4xl font-serif italic">Weather Insights</h1>
+         <h1 className="text-4xl font-serif italic font-medium">Weather Insights</h1>
          <p className="opacity-60 mt-2">
            {daysUntilEvent} days until your event
          </p>

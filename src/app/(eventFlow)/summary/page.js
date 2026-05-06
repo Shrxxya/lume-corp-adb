@@ -33,6 +33,15 @@ export default function FinalSummary({ appData, onReset }) {
   const getSummaryData = useEventStore((state) => state.getSummaryData);
 
   const scrollToQR = () => setShowQR(true);
+  const formatDate = (date) => {
+  if (!date) return "-";
+
+  return new Date(date).toLocaleDateString("en-IN", {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+  });
+};
   const summaryData = useMemo(() => {
   return hasHydrated ? getSummaryData()
   : {
@@ -55,7 +64,7 @@ export default function FinalSummary({ appData, onReset }) {
     {
       icon: Calendar,
       label: "Event Date",
-      value: summaryData.date,
+      value: formatDate(summaryData.date),
       color: "var(--color-primary)"
     },
     {
@@ -66,7 +75,7 @@ export default function FinalSummary({ appData, onReset }) {
     },
     {
       icon: Users,
-      label: "Guests",
+      label: "Guests Count",
       value: `${summaryData.guestCount}`,
       color: "var(--color-accent)"
     },
@@ -115,6 +124,8 @@ export default function FinalSummary({ appData, onReset }) {
   const [isGenerating, setIsGenerating] = useState(false);
   const [isSending, setIsSending] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
+
+  const [isPosterOpen, setIsPosterOpen] = useState(false);
 
   const generatePdfIfNeeded = async () => {
     if (isGenerating || isSending) return;
@@ -631,58 +642,32 @@ export default function FinalSummary({ appData, onReset }) {
 
           {/* Poster */}
           <ScrollRevealCard index={10}>
-            <h3 
-              style={{ 
-                fontFamily: "var(--font-body)",
-                fontSize: "1.2rem",
-                fontWeight: 700,
-                color: "var(--color-primary)",
-                marginBottom: "var(--space-4)"
-              }}
-            >
-              Event Poster
-            </h3>
-            <div 
-              className="p-4 rounded-2xl flex items-center gap-4"
-              style={{ 
-                backgroundColor: "rgba(42, 48, 80, 0.08)"
-              }}
-            >
-              <div 
-                className="w-12 h-12 rounded-xl flex items-center justify-center"
-                style={{ backgroundColor: "var(--color-dark)" }}
-              >
-                <PartyPopper size={24} style={{ color: "var(--color-bg)" }} />
-              </div>
-              <div>
-                {/* <p 
-                  style={{ 
-                    fontFamily: "var(--font-body)",
-                    fontSize: "1rem",
-                    fontWeight: 600,
-                    color: "var(--color-dark)"
-                  }}
-                >
-                  {summaryData.poster}
-                </p> */}
-                {summaryData.poster && (
-                  <img
-                    src={summaryData.poster}
-                    className="rounded-2xl mt-4"
-                  />
-                )}
-                <p 
-                  style={{ 
-                    fontFamily: "var(--font-body)",
-                    fontSize: "0.8rem",
-                    color: "var(--color-dark-mid)"
-                  }}
-                >
-                  AI-generated poster ready
-                </p>
-              </div>
-            </div>
-          </ScrollRevealCard>
+  <div className="flex justify-center">
+    <div className="w-fit flex flex-col items-center">
+      
+      <h3
+        style={{
+          fontFamily: "var(--font-body)",
+          fontSize: "1.2rem",
+          fontWeight: 700,
+          color: "var(--color-primary)",
+          marginBottom: "var(--space-4)"
+        }}
+      >
+        Event Poster
+      </h3>
+
+      {summaryData.poster && (
+        <img
+          src={summaryData.poster}
+          onClick={() => setIsPosterOpen(true)}
+          className="w-full max-w-xs sm:max-w-sm md:max-w-md rounded-2xl cursor-zoom-in transition-transform duration-500 ease-out hover:scale-105 shadow-lg"
+        />
+      )}
+
+    </div>
+  </div>
+</ScrollRevealCard>
 
           {/* Progress Checklist */}
           {/* <ScrollRevealCard index={11}>
@@ -910,6 +895,15 @@ export default function FinalSummary({ appData, onReset }) {
           </motion.button> */}
         </motion.div>
       </div>
+      {isPosterOpen && summaryData.poster && (
+        <div className="flex justify-center mt-4">
+  <img
+    src={summaryData.poster}
+    onClick={() => setIsPosterOpen(true)}
+    className="w-full max-w-xs sm:max-w-sm md:max-w-md rounded-2xl cursor-zoom-in transform transition-transform duration-500 ease-out hover:scale-105 shadow-lg"
+  />
+</div>
+      )}
     </div>
   );
 }

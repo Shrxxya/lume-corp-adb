@@ -195,7 +195,7 @@ export default function BudgetOptimizer() {
        {/* Progress Map */}
       {/* <ProgressMap currentStep={currentStep} onStepClick={handleStepClick} /> */}
     <div
-      className="pt-32 pb-20 px-8 min-h-screen"
+      className="pt-20 pb-20 px-8 min-h-screen"
       style={{ backgroundColor: "var(--color-bg)" }}
     >
       <motion.div
@@ -234,7 +234,7 @@ export default function BudgetOptimizer() {
         <div
           className="mb-12 rounded-3xl"
           style={{
-            backgroundColor: "var(--glass-fill)",
+            //backgroundColor: "var(--glass-fill)",
             backdropFilter: "blur(var(--blur))",
             border: "1px solid var(--glass-border)",
           }}
@@ -359,7 +359,7 @@ export default function BudgetOptimizer() {
         <motion.button
           onClick={handleSubmit}
           disabled={isOverBudget}
-          className="w-full py-5 rounded-full flex justify-center gap-2 disabled:opacity-40"
+          className="w-full py-5 rounded-full flex justify-center items-center gap-2 disabled:opacity-40"
           style={{
             backgroundColor: "var(--color-dark)",
             color: "var(--color-bg)",

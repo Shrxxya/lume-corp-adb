@@ -131,7 +131,7 @@ setActiveStep("poster");
     </div>
     <motion.button
           onClick={handleSubmit}
-          className="w-full m-10 py-5 rounded-full flex justify-center gap-2 disabled:opacity-40"
+          className="w-full m-10 py-5 rounded-full flex justify-center items-center gap-2 disabled:opacity-40"
           style={{
             backgroundColor: "var(--color-dark)",
             color: "var(--color-bg)",

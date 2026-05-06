@@ -377,7 +377,7 @@ export default function MainPage({ setNavbarVisible }) {
   id="showcase"
   className="relative min-h-screen py-32 px-8 overflow-hidden"
 >
-//   {/* Background Image */}
+   {/* Background Image */}
   <div
     className="absolute inset-0 bg-cover bg-center opacity-65"
     style={{

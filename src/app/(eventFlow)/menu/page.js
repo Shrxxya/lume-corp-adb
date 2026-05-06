@@ -115,7 +115,7 @@ setActiveStep("timeline");
     <div className="min-h-screen dark:bg-black">
             {/* <ProgressMap currentStep={currentStep} onStepClick={handleStepClick}/> */}
     <div
-      className="pt-32 pb-60 px-8 min-h-screen"
+      className="pt-20 pb-60 px-8 min-h-screen"
       style={{ backgroundColor: "var(--color-bg)" }}
     >
       <motion.div
@@ -300,7 +300,7 @@ setActiveStep("timeline");
         {/* Continue */}
         <motion.button
           onClick={handleSubmit}
-          className="w-[80%] px-8 py-5 rounded-full flex justify-center gap-3"
+          className="w-[80%] px-8 py-5 rounded-full flex justify-center items-center gap-3"
           style={{
             backgroundColor: "var(--color-dark)",
             color: "var(--color-bg)",

@@ -543,7 +543,7 @@ const [dtStep, setDtStep] = useState("date");
 
   return (
     <motion.div
-      className="pt-32 pb-20 px-8 min-h-screen flex items-center justify-center"
+      className="pt-20 pb-20 px-8 min-h-screen flex items-center justify-center"
       animate={{ backgroundColor: bgColor }}
       transition={{ duration: 0.8, ease: "easeInOut" }}
     >

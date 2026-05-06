@@ -56,7 +56,7 @@ setActiveStep("poster");
     <div className="min-h-screen dark:bg-black">
           {/* <ProgressMap currentStep={currentStep} /> */}
           <div
-      className="pt-20 pb-20 px-8 min-h-screen"
+      className="pt-16 px-8 min-h-screen"
       style={{ backgroundColor: "var(--color-bg)" }}
     >
 
@@ -91,7 +91,7 @@ setActiveStep("poster");
         >
           Visualize your final day set up
         </p>
-          <DecorScreen />;
+          <DecorScreen />
           </motion.div>
           {/* <motion.button
           onClick={handleSubmit}

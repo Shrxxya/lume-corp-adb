@@ -155,7 +155,10 @@ const eventDetails = useEventStore((s) => s.eventDetails);
         >
           The Act
         </h1>
-          <p className="text-center text-gray-500 mb-12">
+          <p className="text-center text-gray-500 mb-12"
+          style={{
+            fontFamily: 'var(--font-body)',
+            }}>
             Choose your entertainment
           </p>
 
@@ -282,7 +285,7 @@ const eventDetails = useEventStore((s) => s.eventDetails);
           {/* Continue */}
         <motion.button
           onClick={handleSubmit}
-          className="w-full mt-8 px-8 py-5 rounded-full flex justify-center gap-3"
+          className="w-full mt-8 px-8 py-5 rounded-full flex justify-center items-center gap-3"
           style={{
             backgroundColor: "var(--color-dark)",
             color: "var(--color-bg)",
