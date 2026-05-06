@@ -160,9 +160,9 @@ export default function BudgetOptimizer() {
   const [sliders, setSliders] = useState([
     { id: "food", label: "Food & Beverage", value: budget.allocations?.food || 30, color: "#FF6B6B" },
     { id: "decor", label: "Decor & Design", value: budget.allocations?.decor || 25, color: "#4ECDC4" },
-    { id: "tech", label: "Tech & AV", value: budget.allocations?.tech || 20, color: "#95E1D3" },
+    { id: "tech", label: "Tech & AV", value: budget.allocations?.tech || 20, color: "#AA96DA" },
     { id: "performance", label: "Entertainment", value: budget.allocations?.performance || 15, color: "#F38181" },
-    { id: "extras", label: "Miscellaneous", value: budget.allocations?.extras || 10, color: "#AA96DA" },
+    { id: "extras", label: "Miscellaneous", value: budget.allocations?.extras || 10, color: "#95E1D3" },
   ]);
 
   const currentTotal = sliders.reduce((sum, s) => sum + s.value, 0);
@@ -232,7 +232,7 @@ export default function BudgetOptimizer() {
 
         {/* Budget Total */}
         <div
-          className="mb-12 p-6 rounded-3xl"
+          className="mb-12 rounded-3xl"
           style={{
             backgroundColor: "var(--glass-fill)",
             backdropFilter: "blur(var(--blur))",

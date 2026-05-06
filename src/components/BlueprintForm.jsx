@@ -348,8 +348,8 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { useState, useEffect } from "react";
-import { ArrowRight, Check } from "lucide-react";
+import { useState, useEffect, useRef } from "react";
+import { ArrowRight, ArrowLeft, Check, Calendar, Clock } from "lucide-react";
 import { useEventStore } from "@/store/useEventStore";
 import { DayPicker } from "react-day-picker";
 import "react-day-picker/dist/style.css";
@@ -389,6 +389,10 @@ export default function BlueprintForm() {
   const selectedTheme = useEventStore((s) => s.theme);
   const setTheme = useEventStore((s) => s.setTheme);
 
+  const [showDateTime, setShowDateTime] = useState(false);
+const [dtStep, setDtStep] = useState("date"); 
+// "date" | "time"
+
   // Get store functions
   const eventDetails = useEventStore((state) => state.eventDetails);
   const setEventDetails = useEventStore((state) => state.setEventDetails);
@@ -396,6 +400,9 @@ export default function BlueprintForm() {
   const completeStep = useEventStore((state) => state.completeStep);
   const setStep = useEventStore((state) => state.setStep);
   const setActiveStep = useEventStore((state) => state.setActiveStep);
+  const setFormValid = useEventStore((state) => state.setFormValid);
+
+  const hasHydrated = useEventStore((s) => s.hasHydrated);
 
   // Pre-fill form data from store on mount
   const [formData, setFormData] = useState({
@@ -469,6 +476,71 @@ export default function BlueprintForm() {
     formData.city &&
     formData.venueType;
 
+  const firstInputRef = useRef(null);
+  const locationRef = useRef(null);
+  const popRef = useRef(null);
+
+  useEffect(() => {
+    firstInputRef.current?.focus();
+  }, []);
+
+  useEffect(() => {
+  function handleClick(e) {
+    if (!e.target.closest(".datetime-popover")) {
+      setShowDateTime(false);
+      setDtStep("date");
+    }
+  }
+
+  if (showDateTime) {
+    document.addEventListener("mousedown", handleClick);
+  }
+
+  return () => document.removeEventListener("mousedown", handleClick);
+}, [showDateTime]);
+
+  useEffect(() => {
+  if (showDateTime) {
+    popRef.current?.scrollIntoView({
+      behavior: "smooth",
+      block: "center",
+    });
+  }
+}, [showDateTime]);
+
+  useEffect(() => {
+  const isValid =
+    formData.eventName &&
+    formData.date &&
+    formData.time &&
+    formData.location &&
+    formData.guestCount &&
+    formData.eventType &&
+    formData.budget &&
+    formData.city &&
+    formData.venueType;
+
+  setFormValid(Boolean(isValid));
+}, [formData]);
+
+  useEffect(() => {
+  if (!hasHydrated) return;
+
+  setFormData({
+    eventName: eventDetails.eventName || "",
+    date: eventDetails.date || "",
+    time: eventDetails.time || "",
+    location: eventDetails.location || "",
+    guestCount: eventDetails.guestCount || "",
+    eventType: eventDetails.eventType || "",
+    budget: eventDetails.budget || "",
+    city: eventDetails.city || "",
+    venueType: eventDetails.venueType || "",
+  });
+}, [hasHydrated]);
+
+  if (!hasHydrated) return null; // or loading skeleton
+
   return (
     <motion.div
       className="pt-32 pb-20 px-8 min-h-screen flex items-center justify-center"
@@ -509,57 +581,84 @@ export default function BlueprintForm() {
 
         <form onSubmit={handleSubmit} className="space-y-8">
           <FloatingInput
+            inputRef={firstInputRef}
             label="Event Name"
             value={formData.eventName}
             onChange={(v) => handleChange("eventName", v)}
             placeholder="Enter event name"
           />
 
-          {/* DATE + TIME PICKER */}
-          <div className="space-y-6">
-            <h3
-              className="text-sm uppercase tracking-wider"
-              style={{
-                fontFamily: "var(--font-body)",
-                fontSize: "0.875rem",
-                color: "var(--color-dark)",
-                opacity: 0.7,
-                letterSpacing: "0.05em",
-              }}
-            >
-              Select Date & Time
-            </h3>
+          <div className="space-y-4 relative">
 
-            {/* DATE SCROLLER */}
-            <div className="p-4 rounded-2xl bg-white/50 w-[50%]">
+  {/* HEADER */}
+  <div className="flex items-center justify-between relative">
+    <h3
+      className="text-sm uppercase tracking-wider"
+      style={{
+        fontFamily: "var(--font-body)",
+        fontSize: "0.875rem",
+        color: "var(--color-dark)",
+        opacity: 0.7,
+        letterSpacing: "0.05em",
+      }}
+    >
+      Select Date & Time
+    </h3>
+
+    {/* ICON WRAPPER (IMPORTANT FOR POSITIONING) */}
+    <div className="relative">
+      <button
+        type="button"
+        onClick={() => {
+          setShowDateTime((p) => !p);
+          setDtStep("date");
+        }}
+        className="p-2 rounded-full hover:bg-black/5 transition"
+      >
+        <Calendar size={18} />
+      </button>
+
+      {/* FLOATING POPUP (NOW PROPERLY ANCHORED) */}
+      {showDateTime && (
+        <div
+          ref={popRef}
+          className="datetime-popover absolute right-0 top-full mt-2 z-50 w-[320px] bg-white shadow-xl rounded-2xl p-4 border border-black/5"
+        >
+
+          {/* DATE STEP */}
+          {dtStep === "date" && (
+            <>
               <DayPicker
-                className="rdp"
                 mode="single"
-                selected={formData.date ? new Date(formData.date) : undefined}
+                selected={
+                  formData.date ? new Date(formData.date) : undefined
+                }
                 onSelect={(date) => {
                   if (!date) return;
+
                   handleChange("date", date.toISOString());
+
+                  // go to time step
+                  setDtStep("time");
                 }}
                 disabled={{ before: new Date() }}
               />
-            </div>
 
-            {/* TIME SLOTS */}
-            {formData.date && (
-              <div className="grid grid-cols-4 gap-3 mb-12">
+              <div className="mt-3 text-xs opacity-60">
+                Select a date to continue
+              </div>
+            </>
+          )}
+
+          {/* TIME STEP */}
+          {dtStep === "time" && (
+            <>
+              <div className="grid grid-cols-3 gap-2">
                 {[
-                  "09:00 AM",
-                  "10:00 AM",
-                  "11:00 AM",
-                  "12:00 PM",
-                  "01:00 PM",
-                  "02:00 PM",
-                  "03:00 PM",
-                  "04:00 PM",
-                  "05:00 PM",
-                  "06:00 PM",
-                  "07:00 PM",
-                  "08:00 PM",
+                  "09:00 AM","10:00 AM","11:00 AM",
+                  "12:00 PM","01:00 PM","02:00 PM",
+                  "03:00 PM","04:00 PM","05:00 PM",
+                  "06:00 PM","07:00 PM","08:00 PM",
                 ].map((time) => {
                   const isSelected = formData.time === time;
 
@@ -567,15 +666,32 @@ export default function BlueprintForm() {
                     <motion.button
                       key={time}
                       type="button"
-                      onClick={() => handleChange("time", time)}
+                      onClick={() => {
+                        handleChange("time", time);
+
+                        // CLOSE POPUP
+                        setShowDateTime(false);
+                        setDtStep("date");
+
+                        // MOVE TO NEXT FIELD
+                        setTimeout(() => {
+                          locationRef.current?.focus();
+                          locationRef.current?.scrollIntoView({
+                            behavior: "smooth",
+                            block: "center",
+                          });
+                        }, 0);
+                      }}
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
-                      className="p-3 rounded-xl"
+                      className="p-2 rounded-lg text-sm cursor-pointer w-max"
                       style={{
                         backgroundColor: isSelected
                           ? "#62754c"
                           : "rgba(98,117,76,0.1)",
-                        color: isSelected ? "white" : "var(--color-dark)",
+                        color: isSelected
+                          ? "white"
+                          : "var(--color-dark)",
                       }}
                     >
                       {time}
@@ -583,14 +699,65 @@ export default function BlueprintForm() {
                   );
                 })}
               </div>
-            )}
-          </div>
+
+              <button
+                type="button"
+                onClick={() => setDtStep("date")}
+                className="flex items-center gap-2 mt-3 text-xs opacity-60 hover:opacity-100"
+              >
+                <ArrowLeft size={16} /> Change date
+              </button>
+            </>
+          )}
+
+        </div>
+      )}
+    </div>
+  </div>
+
+  {/* SUMMARY CHIPS */}
+  {(formData.date || formData.time) && (
+    <div className="flex gap-2 flex-wrap text-sm mb-11">
+
+      {formData.date && (
+        <button
+          type="button"
+          onClick={() => {
+            setShowDateTime(true);
+            setDtStep("date");
+          }}
+          className="flex items-center gap-3 px-3 py-1 rounded-full bg-black/5 hover:bg-black/10 transition"
+        >
+          <Calendar size={18} />
+          {new Date(formData.date).toDateString()}
+        </button>
+      )}
+
+      {formData.time && (
+        <button
+          type="button"
+          onClick={() => {
+            setShowDateTime(true);
+            setDtStep("time");
+          }}
+          className="flex items-center gap-3 px-3 py-1 rounded-full bg-black/5 hover:bg-black/10 transition"
+        >
+          <Clock size={18} />
+          {formData.time}
+        </button>
+      )}
+
+    </div>
+  )}
+
+</div>
 
           <FloatingInput
-            label="Location"
+            label="Venue"
             value={formData.location}
             onChange={(v) => handleChange("location", v)}
             placeholder="Enter venue"
+            inputRef={locationRef}
           />
 
           <FloatingInput
@@ -641,7 +808,7 @@ export default function BlueprintForm() {
           </div>
 
           <FloatingInput
-            label="Expected Guests"
+            label="Expected Guests Count"
             value={formData.guestCount}
             onChange={(v) => handleChange("guestCount", v)}
             type="number"
@@ -721,7 +888,7 @@ export default function BlueprintForm() {
                   style={{
                     border: isSelected
                       ? "3px solid var(--color-primary)"
-                      : "3px solid var(--glass-border)",
+                      : "3px solid transparent",
                   }}
                 >
                   {/* IMAGE */}
@@ -785,11 +952,12 @@ function FloatingInput({
   type = "text",
   placeholder,
   onWheel,
+  inputRef,
 }) {
   const [focused, setFocused] = useState(false);
 
   return (
-    <div className="relative">
+    <div className="relative py-2">
       <motion.label
         animate={{
           y: focused || value ? -28 : 0,
@@ -810,15 +978,30 @@ function FloatingInput({
         {label}
       </motion.label>
 
+      <motion.div
+        layout
+        className="absolute left-0 bottom-0 h-[1px] w-full"
+        animate={{
+          scaleX: focused ? 1 : 0,
+          opacity: focused ? 1 : 0.3,
+        }}
+        transition={{ duration: 0.25 }}
+        style={{
+          backgroundColor: "#62754c",
+          transformOrigin: "left",
+        }}
+      />
+
       <input
+        ref={inputRef}
         type={type}
         value={value}
         onChange={(e) => onChange(e.target.value)}
         onFocus={() => setFocused(true)}
         onBlur={() => setFocused(false)}
         placeholder={focused ? placeholder : ""}
-        onWheel={onWheel} // Prevent scroll change
-        className="w-full px-0 py-4 bg-transparent outline-none transition-all duration-300"
+        onWheel={onWheel}
+        className="w-full px-0 bg-transparent outline-none transition-all duration-300"
         style={{
           borderColor: focused
             ? "var(--color-primary)"

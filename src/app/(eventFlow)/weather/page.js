@@ -564,6 +564,7 @@ export default function WeatherPage() {
   };
 
   const isNight = eventHour >= 19 || eventHour < 6;
+  const isDark = eventHour >= 16 || eventHour < 6;
 
   useEffect(() => {
     async function loadWeather() {
@@ -634,7 +635,7 @@ export default function WeatherPage() {
       {/* LEFT PANEL */}
       <motion.div
         className={`w-1/4 p-6 flex flex-col justify-between ${
-          isNight ? 'text-white' : 'text-gray-800'
+          isDark ? 'text-white' : 'text-gray-800'
         }`}
         style={{ background: getBackground() }}
       >

@@ -133,7 +133,7 @@ setActiveStep("menu");
                   transition={{ delay: idx * 0.1, ease: [0.16, 1, 0.3, 1] }}
                   onMouseEnter={() => setHoveredVendor(vendor.id)}
                   onMouseLeave={() => setHoveredVendor(null)}
-                  className="flex-shrink-0 rounded-3xl overflow-hidden relative group cursor-pointer"
+                  className="flex-shrink-0 rounded-3xl overflow-hidden relative group cursor-pointer mt-2"
                   style={{
                     width: "400px",
                     height: "500px",

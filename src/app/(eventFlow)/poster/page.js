@@ -543,7 +543,7 @@ export default function PosterGenerator() {
           {status === "idle" && (
             <div className="relative mb-12">
               <img
-                src="/poster-placeholder.png"
+                src="/poster-hero.png"
                 className="rounded-3xl w-full"
               />
 
@@ -562,7 +562,7 @@ export default function PosterGenerator() {
           {/* ---------------- GENERATING ---------------- */}
           {status === "generating" && (
             <div className="text-center py-24">
-              <motion.div
+              {/* <motion.div
                 animate={{ rotate: 360 }}
                 transition={{
                   duration: 1.5,
@@ -571,7 +571,7 @@ export default function PosterGenerator() {
                 }}
               >
                 <Sparkles size={42} />
-              </motion.div>
+              </motion.div> */}
 
               <p className="mt-4 text-gray-500">
                 Generating your poster...
@@ -608,7 +608,7 @@ export default function PosterGenerator() {
                   value={customPrompt}
                   onChange={(e) => setCustomPrompt(e.target.value)}
                   placeholder="Refine poster..."
-                  className="w-full p-4 rounded-xl border mb-4"
+                  className="w-full p-4 rounded-xl border mb-4 hide-scrollbar"
                 />
 
                 <button

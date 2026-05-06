@@ -21,20 +21,20 @@ export const useCanvasStore = create((set, get) => ({
       ),
     })),
 
-  // 🔥 NEW: replace entire canvas
+  // NEW: replace entire canvas
   setItems: (items) =>
     set(() => ({
       items,
     })),
 
-  // 🔥 NEW: clear canvas
+  // NEW: clear canvas
   clearCanvas: () =>
     set(() => ({
       items: [],
       hasInitializedLayout: false,
     })),
 
-  // 🔥 NEW: load preset layout safely
+  // NEW: load preset layout safely
   loadLayout: (layoutItems) => {
     const { hasInitializedLayout } = get();
 

@@ -17,9 +17,12 @@ export const useEventStore = create(
         venueType: "",
       },
       setEventDetails: (details) =>
-        set((state) => ({
-          eventDetails: { ...state.eventDetails, ...details },
-        })),
+  set((state) => ({
+    eventDetails: {
+      ...state.eventDetails,
+      ...details,
+    },
+  })),
 
       theme: null,
       setTheme: (theme) => set({ theme }),
@@ -31,6 +34,9 @@ export const useEventStore = create(
       activeStep: "form",
       setActiveStep: (step) =>
       set({ activeStep: step.toLowerCase() }),
+
+      formValid: false,
+setFormValid: (val) => set({ formValid: val }),
 
       // ==================== SCREEN 2: Guests ====================
       guests: [],

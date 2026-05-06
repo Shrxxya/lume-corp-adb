@@ -161,6 +161,7 @@ export default function ProgressMap() {
   );
 
   const isWithinForecast = daysUntilEvent >= 0 && daysUntilEvent <= 16;
+  const formValid = useEventStore((s) => s.formValid);
 
   // Sync activeStep with current route on mount
   useEffect(() => {
@@ -213,7 +214,10 @@ export default function ProgressMap() {
           const isActive = step.name === activeStep;
           const isCompleted = completedSteps.includes(step.name);
           const isClickable =
-            completedSteps.includes(step.name) || step.name === activeStep;
+            // always allow backward navigation
+            step.id <= steps.find(s => s.name === activeStep)?.id ||
+            // allow forward ONLY if current step is valid
+            (activeStep === "form" ? formValid : completedSteps.includes(step.name));
           //const prevCompleted = completedSteps.includes(steps[index - 1]?.name);
           const prevStep = steps[index - 1];
           const prevIsGreen =

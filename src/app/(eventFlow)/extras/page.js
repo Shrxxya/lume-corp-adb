@@ -203,7 +203,7 @@ const eventDetails = useEventStore((s) => s.eventDetails);
             >
               <div className="flex justify-between items-center">
                 <h3 className="text-xl font-semibold">
-                  Top {selectedCategory}
+                  Top {selectedCategory} Options
                 </h3>
 
                 <button
@@ -253,12 +253,22 @@ const eventDetails = useEventStore((s) => s.eventDetails);
                       <span>{item.name}</span>
 
                       <button
-                        onClick={() =>
+                        onClick={() => {
+                          const keyMap = {
+                            Performance: "selectedArtist",
+                            Host: "selectedHost",
+                            LightShow: "selectedLightShow",
+                          };
+
                           setSelections((prev) => ({
                             ...prev,
                             [category]: null,
-                          }))
-                        }
+                          }));
+
+                          setEntertainment({
+                            [keyMap[category]]: null,
+                          });
+                        }}
                       >
                         <X size={14} />
                       </button>
