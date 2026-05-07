@@ -143,7 +143,7 @@ setActiveStep("summary");
 
         </div>
 
-        <div className="grid grid-cols-2 gap-8">
+        <div className="grid grid-cols-2 gap-8 pb-5">
           {/* File Drop Zone */}
           <div>
             <h3

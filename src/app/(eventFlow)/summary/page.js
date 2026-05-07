@@ -127,6 +127,8 @@ export default function FinalSummary({ appData, onReset }) {
 
   const [isPosterOpen, setIsPosterOpen] = useState(false);
 
+  const generatedCanvasImage = useEventStore((s) => s.generatedCanvasImage || null);
+
   const generatePdfIfNeeded = async () => {
     if (isGenerating || isSending) return;
     if (pdfUrl) return pdfUrl;
@@ -223,7 +225,10 @@ export default function FinalSummary({ appData, onReset }) {
             </p>
 
             <button
-              onClick={() => setShowSuccess(false)}
+              onClick={() => {
+                setShowSuccess(false);
+                router.push("/");
+              }}
               className="px-4 py-2 rounded-lg bg-[#62754c] text-white"
             >
               Close
@@ -597,77 +602,71 @@ export default function FinalSummary({ appData, onReset }) {
                 </div>
               )}
             </ScrollRevealCard>
-
-            <ScrollRevealCard index={9}>
-              <h3 
-                style={{ 
-                  fontFamily: "var(--font-body)",
-                  fontSize: "1.2rem",
-                  fontWeight: 700,
-                  color: "var(--color-primary)",
-                  marginBottom: "var(--space-4)"
-                }}
-              >
-                Event Layout
-              </h3>
-              <div 
-                className="p-4 rounded-2xl"
-                style={{ 
-                  backgroundColor: "rgba(139, 166, 114, 0.15)",
-                  border: "1px solid rgba(139, 166, 114, 0.3)"
-                }}
-              >
-                <p 
-                  style={{ 
-                    fontFamily: "var(--font-body)",
-                    fontSize: "1.1rem",
-                    fontWeight: 600,
-                    color: "var(--color-dark)"
-                  }}
-                >
-                  {summaryData.decor}
-                </p>
-                <p 
-                  style={{ 
-                    fontFamily: "var(--font-body)",
-                    fontSize: "0.8rem",
-                    color: "var(--color-green-mid)"
-                  }}
-                >
-                  Visual Design
-                </p>
-              </div>
-            </ScrollRevealCard>
           </div>
 
-          {/* Poster */}
-          <ScrollRevealCard index={10}>
-  <div className="flex justify-center">
-    <div className="w-fit flex flex-col items-center">
-      
-      <h3
-        style={{
-          fontFamily: "var(--font-body)",
-          fontSize: "1.2rem",
-          fontWeight: 700,
-          color: "var(--color-primary)",
-          marginBottom: "var(--space-4)"
-        }}
-      >
-        Event Poster
-      </h3>
+          {/* Poster + Canvas Side-by-Side */}
+          <div
+            className={`grid gap-6 items-stretch ${
+              generatedCanvasImage ? "md:grid-cols-2" : "grid-cols-1"
+            }`}
+          >
 
-      {summaryData.poster && (
-        <img
-          src={summaryData.poster}
-          onClick={() => setIsPosterOpen(true)}
-          className="w-full max-w-xs sm:max-w-sm md:max-w-md rounded-2xl cursor-zoom-in transition-transform duration-500 ease-out hover:scale-105 shadow-lg"
-        />
-      )}
+            {/* Poster */}
+            <ScrollRevealCard index={10}>
+              <div className="flex flex-col items-center h-full">
+                <h3
+                  style={{
+                    fontFamily: "var(--font-body)",
+                    fontSize: "1.2rem",
+                    fontWeight: 700,
+                    color: "var(--color-primary)",
+                    marginBottom: "var(--space-4)",
+                  }}
+                >
+                  Event Poster
+                </h3>
 
-    </div>
-  </div>
-</ScrollRevealCard>
+                {summaryData.poster ? (
+                  <img
+                    src={summaryData.poster}
+                    onClick={() => setIsPosterOpen(true)}
+                    className="w-full max-w-xs sm:max-w-sm md:max-w-md rounded-2xl cursor-zoom-in transition-transform duration-500 ease-out hover:scale-105 shadow-lg"
+                  />
+                ) : (
+                  <p className="opacity-60 text-sm">No poster generated</p>
+                )}
+              </div>
+            </ScrollRevealCard>
+
+            {/* Canvas Image */}
+            <ScrollRevealCard index={10.2}>
+              <div className="flex flex-col items-center h-full">
+                <h3
+                  style={{
+                    fontFamily: "var(--font-body)",
+                    fontSize: "1.2rem",
+                    fontWeight: 700,
+                    color: "var(--color-primary)",
+                    marginBottom: "var(--space-4)",
+                  }}
+                >
+                  Event Setup
+                </h3>
+
+                {generatedCanvasImage ? (
+                  <img
+                    src={generatedCanvasImage}
+                    className="w-full max-w-xs sm:max-w-sm md:max-w-md rounded-2xl shadow-lg"
+                  />
+                ) : (
+                  <div className="p-6 rounded-2xl border opacity-70 text-center">
+                    Indoor setup selected — no spatial canvas required
+                  </div>
+                )}
+              </div>
+            </ScrollRevealCard>
+
+          </div>
 
           {/* Progress Checklist */}
           {/* <ScrollRevealCard index={11}>

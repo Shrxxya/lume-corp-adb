@@ -583,7 +583,64 @@ export default function WeatherPage() {
     );
   }
 
-  if (!weatherData) return <div className="p-10">Loading...</div>;
+  if (!weatherData) {
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-[var(--color-bg)]">
+      <motion.div
+        initial={{ opacity: 0, scale: 0.9 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.6, ease: "easeOut" }}
+        className="flex flex-col items-center text-center px-6"
+      >
+        {/* soft glowing orb */}
+        <motion.div
+          animate={{
+            scale: [1, 1.15, 1],
+            opacity: [0.6, 0.9, 0.6],
+          }}
+          transition={{
+            duration: 2.2,
+            repeat: Infinity,
+            ease: "easeInOut",
+          }}
+          className="w-20 h-20 rounded-full blur-xl"
+          style={{
+            background:
+              "radial-gradient(circle, var(--color-primary), transparent 70%)",
+          }}
+        />
+
+        {/* spinner ring */}
+        <motion.div
+          animate={{ rotate: 360 }}
+          transition={{
+            repeat: Infinity,
+            duration: 1.2,
+            ease: "linear",
+          }}
+          className="absolute w-16 h-16 border-2 border-[var(--color-primary)] border-t-transparent rounded-full"
+        />
+
+        {/* text */}
+        <div className="mt-10 space-y-2">
+          <h2
+            className="text-lg font-semibold"
+            style={{ color: "var(--color-dark)" }}
+          >
+            Fetching weather insights
+          </h2>
+
+          <p
+            className="text-sm opacity-70"
+            style={{ color: "var(--color-dark)" }}
+          >
+            Preparing forecast for your event day...
+          </p>
+        </div>
+      </motion.div>
+    </div>
+  );
+}
 
   // transform data
   const chartData = weatherData.time.map((t, i) => ({

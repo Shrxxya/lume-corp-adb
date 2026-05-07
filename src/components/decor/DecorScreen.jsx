@@ -34,6 +34,8 @@ const eventDetails = useEventStore((s) => s.eventDetails);
   const canvasItems = useCanvasStore((s) => s.items);
   const canvasRef = useRef(null);
 
+  const setGeneratedCanvasImage = useEventStore((s) => s.setGeneratedCanvasImage);
+
   // Save decor data to store
   const handleSaveDecor = () => {
     setDecor({
@@ -90,8 +92,8 @@ const eventDetails = useEventStore((s) => s.eventDetails);
         e.preventDefault();
         // Save decor data to store before navigating
         handleSaveDecor();
-        const image = await captureCanvas();
-        console.log(image); // base64 image
+        const canvasImage = await captureCanvas();
+        setGeneratedCanvasImage(canvasImage);
         completeStep(currentStep);
         //setStep(currentStep + 1);
         setStep("poster"); // or nextStepName

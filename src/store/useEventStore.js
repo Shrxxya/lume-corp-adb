@@ -199,6 +199,9 @@ setFormValid: (val) => set({ formValid: val }),
           paletteItems: [...state.paletteItems, item],
         })),
 
+      generatedCanvasImage: null,
+      setGeneratedCanvasImage: (img) => set({ generatedCanvasImage: img }),
+
       // ==================== SCREEN 11: Poster ====================
       poster: {
         status: "idle", // 'idle' | 'generating' | 'complete'
@@ -325,6 +328,7 @@ setFormValid: (val) => set({ formValid: val }),
           decor: state.decor.selectedTheme || "TBD",
           poster: state.poster.generatedData,
           guests: state.guests,
+          generatedCanvasImage: state.generatedCanvasImage,
         };
       },
     }),

@@ -89,7 +89,7 @@ setActiveStep("poster");
             marginBottom: "3rem"
           }}
         >
-          Visualize your final day set up
+          Visualize your final day setup
         </p>
           <DecorScreen />
           </motion.div>

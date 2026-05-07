@@ -238,7 +238,7 @@ export default function EntertainmentSelection() {
                       item ? (
                         <motion.div
                           key={category}
-                          layout
+                          //layout
                           className="px-4 py-2 rounded-full flex items-center gap-2 will-change-transform"
                           style={{
                             backgroundColor: "var(--color-primary)",
