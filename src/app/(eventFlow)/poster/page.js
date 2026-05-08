@@ -391,7 +391,7 @@
 
 import { motion } from "framer-motion";
 import { useState, useEffect } from "react";
-import { ArrowRight, Sparkles, X, Download } from "lucide-react";
+import { ArrowRight, Sparkles, X, Download, Check } from "lucide-react";
 import { useEventStore } from "@/store/useEventStore";
 
 import { getNextRoute } from "@/lib/eventFlow";
@@ -414,6 +414,7 @@ export default function PosterGenerator() {
   const getSummaryData = useEventStore((s) => s.getSummaryData);
 
   const summaryData = getSummaryData();
+  const [isEditingPrompt, setIsEditingPrompt] = useState(false);
 
   // local state
   const [status, setStatus] = useState(poster.status || "idle");
@@ -509,180 +510,424 @@ export default function PosterGenerator() {
     }   
 }, []);
 
-  return (
-    <div className="min-h-screen dark:bg-black">
-      <div
-        className="pt-20 pb-20 px-8 min-h-screen"
-        style={{ backgroundColor: "var(--color-bg)" }}
-      >
-        <motion.div
-          initial={{ opacity: 0, y: 40 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="max-w-6xl mx-auto"
-        >
-          {/* HEADER */}
-          <h1
-            style={{
-              fontFamily: "var(--font-serif)",
-              fontSize: "clamp(2.5rem, 5vw, 3.5rem)",
-              color: "var(--color-dark)",
-              marginBottom: "1rem",
-              fontStyle: "italic",
-              textAlign: "center",
-            }}
-          >
-            Spark
-          </h1>
+   return (
+//     <div className="min-h-screen dark:bg-black">
+//       <div
+//         className="pt-20 pb-20 px-8 min-h-screen"
+//         style={{ backgroundColor: "var(--color-bg)" }}
+//       >
+//         <motion.div
+//           initial={{ opacity: 0, y: 40 }}
+//           animate={{ opacity: 1, y: 0 }}
+//           className="max-w-6xl mx-auto"
+//         >
+//           {/* HEADER */}
+//           <h1
+//             style={{
+//               fontFamily: "var(--font-serif)",
+//               fontSize: "clamp(2.5rem, 5vw, 3.5rem)",
+//               color: "var(--color-dark)",
+//               marginBottom: "1rem",
+//               fontStyle: "italic",
+//               textAlign: "center",
+//             }}
+//           >
+//             Spark
+//           </h1>
 
-          <p
-            style={{
-              fontFamily: "var(--font-body)",
-              fontSize: "1.125rem",
-              color: "var(--color-dark)",
-              opacity: 0.7,
-              textAlign: "center",
-              marginBottom: "3rem",
-            }}
-          >
-            Unlock creativity using AI
-          </p>
+//           <p
+//             style={{
+//               fontFamily: "var(--font-body)",
+//               fontSize: "1.125rem",
+//               color: "var(--color-dark)",
+//               opacity: 0.7,
+//               textAlign: "center",
+//               marginBottom: "3rem",
+//             }}
+//           >
+//             Unlock creativity using AI
+//           </p>
 
-          {/* ---------------- IDLE ---------------- */}
-          {status === "idle" && (
-            <div className="relative mb-12">
-              <img
-                src="/poster-hero.png"
-                className="rounded-3xl w-full"
-              />
+//           {/* ---------------- IDLE ---------------- */}
+//           {status === "idle" && (
+//             <div className="relative mb-12">
+//               <img
+//                 src="/poster-hero.png"
+//                 className="rounded-3xl w-full"
+//               />
 
-              {/* Generate button (on arrow area) */}
-              <motion.button
-                onClick={generatePoster}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                className="absolute right-20 top-1/2 -translate-y-1/2 px-6 py-3 rounded-full bg-[#62754c] text-white shadow-lg"
-              >
-                Generate
-              </motion.button>
-            </div>
-          )}
+//               {/* Generate button (on arrow area) */}
+//               <motion.button
+//                 onClick={generatePoster}
+//                 whileHover={{ scale: 1.05 }}
+//                 whileTap={{ scale: 0.95 }}
+//                 className="absolute right-20 top-1/2 -translate-y-1/2 px-6 py-3 rounded-full bg-[#62754c] text-white shadow-lg"
+//               >
+//                 Generate
+//               </motion.button>
+//             </div>
+//           )}
 
-          {/* ---------------- GENERATING ---------------- */}
-          {status === "generating" && (
-            <div className="text-center py-24">
-              {/* <motion.div
-                animate={{ rotate: 360 }}
-                transition={{
-                  duration: 1.5,
-                  repeat: Infinity,
-                  ease: "linear",
-                }}
-              >
-                <Sparkles size={42} />
-              </motion.div> */}
+//           {/* ---------------- GENERATING ---------------- */}
+//           {status === "generating" && (
+//             <div className="text-center py-24">
+//               {/* <motion.div
+//                 animate={{ rotate: 360 }}
+//                 transition={{
+//                   duration: 1.5,
+//                   repeat: Infinity,
+//                   ease: "linear",
+//                 }}
+//               >
+//                 <Sparkles size={42} />
+//               </motion.div> */}
 
-              <p className="mt-4 text-gray-500">
-                Generating your poster...
-              </p>
-            </div>
-          )}
+//               <p className="mt-4 text-gray-500">
+//                 Generating your poster...
+//               </p>
+//             </div>
+//           )}
 
-          {/* ---------------- COMPLETE ---------------- */}
-          {status === "complete" && image && (
-  <div className="flex flex-col items-center">
+//           {/* ---------------- COMPLETE ---------------- */}
+//           {status === "complete" && image && (
+//   <div className="flex flex-col items-center">
     
-    {/* Poster + overlay buttons */}
-    <div className="relative w-full max-w-md">
-      {/* Skip */}
-      <button
-        onClick={handleSkip}
-        className="absolute top-3 right-3 bg-white p-2 rounded-full shadow flex items-center gap-1"
-      >
-        <X size={18} /> Skip
-      </button>
+//     {/* Poster + overlay buttons */}
+//     <div className="relative w-full max-w-md">
+//       {/* Skip */}
+//       <button
+//         onClick={handleSkip}
+//         className="absolute top-3 right-3 bg-white p-2 rounded-full shadow flex items-center gap-1"
+//       >
+//         <X size={18} /> Skip
+//       </button>
 
-      {/* Download */}
-      <a
-        href={image}
-        download="event-poster.png"
-        className="absolute top-3 left-3 bg-white p-2 rounded-full shadow"
-      >
-        <Download size={18} />
-      </a>
+//       {/* Download */}
+//       <a
+//         href={image}
+//         download="event-poster.png"
+//         className="absolute top-3 left-3 bg-white p-2 rounded-full shadow"
+//       >
+//         <Download size={18} />
+//       </a>
 
-      {/* Poster */}
-      <img
-        src={image}
-        onClick={() => setIsModalOpen(true)}
-        className="rounded-2xl w-full cursor-zoom-in transform transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] hover:scale-105"
+//       {/* Poster */}
+//       <img
+//         src={image}
+//         onClick={() => setIsModalOpen(true)}
+//         className="rounded-2xl w-full cursor-zoom-in transform transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] hover:scale-105"
+//       />
+//     </div>
+
+//     {/* Controls (same width as poster) */}
+//     <div className="mt-6 w-full max-w-xl flex items-stretch gap-3">
+//   <textarea
+//     value={customPrompt}
+//     onChange={(e) => setCustomPrompt(e.target.value)}
+//     placeholder="Refine poster..."
+//     className="flex-1 p-4 rounded-xl border resize-none h-[56px] hide-scrollbar"
+//   />
+
+//   <button
+//     onClick={generatePoster}
+//     className="px-5 py-3 bg-[#62754c] text-white rounded-xl whitespace-nowrap"
+//   >
+//     Regenerate
+//   </button>
+// </div>
+//   </div>
+// )}
+
+//           {/* ---------------- FOOTER BUTTONS ---------------- */}
+
+//           {/* Skip (idle) */}
+//           {status === "idle" && (
+//             <motion.button
+//               onClick={handleSkip}
+//               className="w-full px-8 py-5 rounded-full flex justify-center items-center gap-3"
+//               style={{
+//                 backgroundColor: "var(--color-dark)",
+//                 color: "var(--color-bg)",
+//               }}
+//             >
+//               Skip <ArrowRight size={20} />
+//             </motion.button>
+//           )}
+
+//           {/* Continue */}
+//           {status === "complete" && (
+//           <div className="flex justify-center">
+//             <motion.button
+//               onClick={handleSubmit}
+//               className="w-full max-w-xl mt-10 px-8 py-5 rounded-full flex justify-center items-center gap-3"
+//               style={{
+//                 backgroundColor: "var(--color-dark)",
+//                 color: "var(--color-bg)",
+//               }}
+//             >
+//               Continue <ArrowRight size={20} />
+//             </motion.button>
+//           </div>
+//         )}
+
+//           {isModalOpen && (
+//             <div
+//               className="fixed inset-0 bg-black/80 flex items-center justify-center z-50"
+//               onClick={() => setIsModalOpen(false)}
+//             >
+//               <img
+//                 src={image}
+//                 onClick={(e) => e.stopPropagation()}
+//                 className="max-h-[90vh] max-w-[90vw] rounded-xl shadow-2xl"
+//               />
+//             </div>
+//           )}
+//         </motion.div>
+//       </div>
+//     </div>
+//   );
+
+    <motion.div
+  initial={{ opacity: 0, y: 40 }}
+  animate={{ opacity: 1, y: 0 }}
+  className="max-w-[1400px] mx-auto pt-16"
+>
+  <div className="grid grid-cols-12 gap-10 items-start">
+
+    {/* ================= LEFT PANEL ================= */}
+    <div className="col-span-3 hidden lg:block">
+      <div
+        className="w-full h-[100vh] mt-3"
+        style={{
+          backgroundImage: "url('https://images.squarespace-cdn.com/content/v1/61956e0ecf51420b77c68474/e2c72fef-080c-4af3-aeaf-33a7804c5f8b/CC-Stripe-Pattern-Sq.jpg')",
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          //opacity: 0.25,
+          //borderRadius: "24px",
+        }}
       />
     </div>
 
-    {/* Controls (same width as poster) */}
-    <div className="mt-6 w-full max-w-xl flex items-stretch gap-3">
-  <textarea
-    value={customPrompt}
-    onChange={(e) => setCustomPrompt(e.target.value)}
-    placeholder="Refine poster..."
-    className="flex-1 p-4 rounded-xl border resize-none h-[56px] hide-scrollbar"
-  />
+    {/* ================= CENTER PANEL ================= */}
+    <div className="col-span-12 lg:col-span-6">
 
-  <button
-    onClick={generatePoster}
-    className="px-5 py-3 bg-[#62754c] text-white rounded-xl whitespace-nowrap"
-  >
-    Regenerate
-  </button>
-</div>
+      {/* HEADINGS */}
+      <div className="text-center mb-5">
+        <h1
+          style={{
+            fontFamily: "var(--font-serif)",
+            fontSize: "clamp(2.5rem, 5vw, 3.5rem)",
+            color: "var(--color-dark)",
+            fontStyle: "italic",
+          }}
+        >
+          Spark
+        </h1>
+
+        <p
+          style={{
+            fontFamily: "var(--font-body)",
+            fontSize: "1.125rem",
+            color: "var(--color-dark)",
+            opacity: 0.7,
+            marginTop: "0.5rem",
+          }}
+        >
+          Unlock creativity using AI
+        </p>
+      </div>
+
+      {/* ---------------- IDLE ---------------- */}
+      {status === "idle" && (
+        <div className="relative mb-12">
+          <img
+            src="/poster-hero.png"
+            className="rounded-3xl w-full"
+          />
+
+          <motion.button
+            onClick={generatePoster}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            className="absolute right-10 top-1/2 -translate-y-1/2 px-6 py-3 rounded-full bg-[#62754c] text-white shadow-lg"
+          >
+            Generate
+          </motion.button>
+        </div>
+      )}
+
+      {/* ---------------- GENERATING ---------------- */}
+      {status === "generating" && (
+  <div className="min-h-[60vh] flex items-center justify-center">
+    <motion.div
+      initial={{ opacity: 0, scale: 0.9 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ duration: 0.6, ease: "easeOut" }}
+      className="flex flex-col items-center text-center px-6"
+    >
+      {/* soft glowing orb */}
+      <motion.div
+        animate={{
+          scale: [1, 1.15, 1],
+          opacity: [0.6, 0.9, 0.6],
+        }}
+        transition={{
+          duration: 2.2,
+          repeat: Infinity,
+          ease: "easeInOut",
+        }}
+        className="w-20 h-20 rounded-full blur-xl"
+        style={{
+          background:
+            "radial-gradient(circle, var(--color-primary), transparent 70%)",
+        }}
+      />
+
+      {/* spinner ring */}
+      <motion.div
+        animate={{ rotate: 360 }}
+        transition={{
+          repeat: Infinity,
+          duration: 1.2,
+          ease: "linear",
+        }}
+        className="absolute w-16 h-16 border-2 border-[var(--color-primary)] border-t-transparent rounded-full"
+      />
+
+      {/* text */}
+      <div className="mt-10 space-y-2">
+        <h2
+          className="text-lg font-semibold"
+          style={{ color: "var(--color-dark)" }}
+        >
+          Creating your event poster
+        </h2>
+
+        <p
+          className="text-sm opacity-70"
+          style={{ color: "var(--color-dark)" }}
+        >
+          Designing a cinematic visual tailored to your event...
+        </p>
+      </div>
+    </motion.div>
   </div>
 )}
 
-          {/* ---------------- FOOTER BUTTONS ---------------- */}
+      {/* ---------------- COMPLETE ---------------- */}
+      {status === "complete" && image && (
+        <div className="flex flex-col items-center">
 
-          {/* Skip (idle) */}
-          {status === "idle" && (
-            <motion.button
-              onClick={handleSkip}
-              className="w-full px-8 py-5 rounded-full flex justify-center items-center gap-3"
-              style={{
-                backgroundColor: "var(--color-dark)",
-                color: "var(--color-bg)",
-              }}
-            >
-              Skip <ArrowRight size={20} />
-            </motion.button>
-          )}
+          <div className="relative w-full max-w-md group">
 
-          {/* Continue */}
-          {status === "complete" && (
-          <div className="flex justify-center">
-            <motion.button
-              onClick={handleSubmit}
-              className="w-full max-w-xl mt-10 px-8 py-5 rounded-full flex justify-center items-center gap-3"
-              style={{
-                backgroundColor: "var(--color-dark)",
-                color: "var(--color-bg)",
-              }}
+  {/* BUTTONS (always on top) */}
+  <div className="absolute top-3 right-3 z-20 flex items-center gap-2">
+
+  {/* ACCEPT */}
+    <button
+      onClick={handleSubmit}
+      className="px-4 py-2 rounded-full shadow text-sm font-medium flex items-center justify-center"
+      style={{
+        backgroundColor: "var(--color-dark)",
+        color: "var(--color-bg)",
+      }}
+    >
+      <Check/> Accept
+    </button>
+
+    {/* SKIP / CLOSE */}
+    <button
+      onClick={handleSkip}
+      className="bg-white p-2 rounded-full shadow flex items-center justify-center"
+    >
+      <X size={18} /> Reject
+    </button>
+
+  </div>
+
+  <a
+    href={image}
+    download="event-poster.png"
+    className="absolute top-3 left-3 z-20 bg-white p-2 rounded-full shadow"
+  >
+    <Download size={18} />
+  </a>
+
+  {/* IMAGE WRAPPER (controls hover safely) */}
+  <div className="overflow-hidden rounded-2xl">
+    <img
+      src={image}
+      onClick={() => setIsModalOpen(true)}
+      className="w-full cursor-zoom-in transition-transform duration-700 group-hover:scale-105"
+    />
+  </div>
+
+</div>
+
+          <div className="mt-6 w-full max-w-xl flex gap-3">
+            <textarea
+              value={customPrompt}
+              onChange={(e) => setCustomPrompt(e.target.value)}
+              placeholder="Refine poster..."
+              className="flex-1 p-4 rounded-xl border resize-none h-[56px] hide-scrollbar"
+            />
+
+            <button
+              onClick={generatePoster}
+              className="px-5 py-3 bg-[#62754c] text-white rounded-xl"
             >
-              Continue <ArrowRight size={20} />
-            </motion.button>
+              Regenerate
+            </button>
           </div>
-        )}
+        </div>
+      )}
 
-          {isModalOpen && (
-            <div
-              className="fixed inset-0 bg-black/80 flex items-center justify-center z-50"
-              onClick={() => setIsModalOpen(false)}
-            >
-              <img
-                src={image}
-                onClick={(e) => e.stopPropagation()}
-                className="max-h-[90vh] max-w-[90vw] rounded-xl shadow-2xl"
-              />
-            </div>
-          )}
-        </motion.div>
-      </div>
+      {/* CONTINUE */}
+      {/* {status === "complete" && (
+        <div className="flex justify-center">
+          <motion.button
+            onClick={handleSubmit}
+            className="w-full max-w-xl mt-10 px-8 py-5 rounded-full flex justify-center items-center gap-3"
+            style={{
+              backgroundColor: "var(--color-dark)",
+              color: "var(--color-bg)",
+            }}
+          >
+            Continue <ArrowRight size={20} />
+          </motion.button>
+        </div>
+      )} */}
     </div>
-  );
+
+    {/* ================= RIGHT PANEL ================= */}
+    <div className="col-span-3 hidden lg:block">
+      <div
+        className="w-full h-[100vh] mt-3"
+        style={{
+          backgroundImage: "url('https://images.squarespace-cdn.com/content/v1/61956e0ecf51420b77c68474/e2c72fef-080c-4af3-aeaf-33a7804c5f8b/CC-Stripe-Pattern-Sq.jpg')",
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          // opacity: 0.25,
+          // borderRadius: "24px",
+        }}
+      />
+    </div>
+
+  </div>
+
+  {/* MODAL */}
+  {isModalOpen && (
+    <div
+      className="fixed inset-0 bg-black/80 flex items-center justify-center z-50"
+      onClick={() => setIsModalOpen(false)}
+    >
+      <img
+        src={image}
+        onClick={(e) => e.stopPropagation()}
+        className="max-h-[90vh] max-w-[90vw] rounded-xl"
+      />
+    </div>
+  )}
+</motion.div>
+   );
 }
