@@ -125,7 +125,7 @@ export default function FinalSummary({ appData, onReset }) {
   const [isSending, setIsSending] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
 
-  const [isPosterOpen, setIsPosterOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const generatedCanvasImage = useEventStore((s) => s.generatedCanvasImage || null);
 
@@ -199,20 +199,118 @@ export default function FinalSummary({ appData, onReset }) {
     <div className="min-h-screen" style={{ backgroundColor: "var(--color-bg)" }}>
       {/* <ProgressMap currentStep={currentStep} onStepClick={handleStepClick} /> */}
       {isGenerating && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black/40 z-50">
-          <div className="px-6 py-4 rounded-xl bg-white text-black">
-            Generating your proposal...
-          </div>
-        </div>
-      )}
+  <div className="fixed inset-0 flex items-center justify-center bg-black/40 backdrop-blur-sm z-50">
+    <motion.div
+      initial={{ opacity: 0, scale: 0.9 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ duration: 0.6, ease: "easeOut" }}
+      className="flex flex-col items-center text-center px-6"
+    >
+      {/* glowing orb */}
+      <motion.div
+        animate={{
+          scale: [1, 1.15, 1],
+          opacity: [0.6, 0.9, 0.6],
+        }}
+        transition={{
+          duration: 2.2,
+          repeat: Infinity,
+          ease: "easeInOut",
+        }}
+        className="w-20 h-20 rounded-full blur-xl"
+        style={{
+          background:
+            "radial-gradient(circle, var(--color-primary), transparent 70%)",
+        }}
+      />
 
-      {isSending && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black/40 z-50">
-          <div className="px-6 py-4 rounded-xl bg-white text-black">
-            Sending request...
-          </div>
-        </div>
-      )}
+      {/* spinner */}
+      <motion.div
+        animate={{ rotate: 360 }}
+        transition={{
+          repeat: Infinity,
+          duration: 1.2,
+          ease: "linear",
+        }}
+        className="absolute w-16 h-16 border-2 border-[var(--color-primary)] border-t-transparent rounded-full"
+      />
+
+      {/* text */}
+      <div className="mt-10 space-y-2">
+        <h2
+          className="text-lg font-semibold"
+          style={{ color: "white" }}
+        >
+          Generating your proposal
+        </h2>
+
+        <p
+          className="text-sm opacity-70"
+          style={{ color: "white" }}
+        >
+          Preparing a polished proposal for your event...
+        </p>
+      </div>
+    </motion.div>
+  </div>
+)}
+
+{isSending && (
+  <div className="fixed inset-0 flex items-center justify-center bg-black/40 backdrop-blur-sm z-50">
+    <motion.div
+      initial={{ opacity: 0, scale: 0.9 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ duration: 0.6, ease: "easeOut" }}
+      className="flex flex-col items-center text-center px-6"
+    >
+      {/* glowing orb */}
+      <motion.div
+        animate={{
+          scale: [1, 1.15, 1],
+          opacity: [0.6, 0.9, 0.6],
+        }}
+        transition={{
+          duration: 2.2,
+          repeat: Infinity,
+          ease: "easeInOut",
+        }}
+        className="w-20 h-20 rounded-full blur-xl"
+        style={{
+          background:
+            "radial-gradient(circle, var(--color-primary), transparent 70%)",
+        }}
+      />
+
+      {/* spinner */}
+      <motion.div
+        animate={{ rotate: 360 }}
+        transition={{
+          repeat: Infinity,
+          duration: 1.2,
+          ease: "linear",
+        }}
+        className="absolute w-16 h-16 border-2 border-[var(--color-primary)] border-t-transparent rounded-full"
+      />
+
+      {/* text */}
+      <div className="mt-10 space-y-2">
+        <h2
+          className="text-lg font-semibold"
+          style={{ color: "white" }}
+        >
+          Sending request
+        </h2>
+
+        <p
+          className="text-sm opacity-70"
+          style={{ color: "white" }}
+        >
+          Finalizing your request...
+        </p>
+      </div>
+    </motion.div>
+  </div>
+)}
 
       {showSuccess && (
         <div className="fixed inset-0 flex items-center justify-center bg-black/40 z-50">
@@ -629,7 +727,7 @@ export default function FinalSummary({ appData, onReset }) {
                 {summaryData.poster ? (
                   <img
                     src={summaryData.poster}
-                    onClick={() => setIsPosterOpen(true)}
+                    onClick={() => setIsModalOpen(true)}
                     className="w-full max-w-xs sm:max-w-sm md:max-w-md rounded-2xl cursor-zoom-in transition-transform duration-500 ease-out hover:scale-105 shadow-lg"
                   />
                 ) : (
@@ -894,15 +992,19 @@ export default function FinalSummary({ appData, onReset }) {
           </motion.button> */}
         </motion.div>
       </div>
-      {isPosterOpen && summaryData.poster && (
-        <div className="flex justify-center mt-4">
-  <img
-    src={summaryData.poster}
-    onClick={() => setIsPosterOpen(true)}
-    className="w-full max-w-xs sm:max-w-sm md:max-w-md rounded-2xl cursor-zoom-in transform transition-transform duration-500 ease-out hover:scale-105 shadow-lg"
-  />
-</div>
-      )}
+      {/* MODAL */}
+      {isModalOpen && summaryData.poster && (
+    <div
+      className="fixed inset-0 bg-black/80 flex items-center justify-center z-50"
+      onClick={() => setIsModalOpen(false)}
+    >
+      <img
+        src={summaryData.poster}
+        onClick={(e) => e.stopPropagation()}
+        className="max-h-[90vh] max-w-[90vw] rounded-xl"
+      />
+    </div>
+  )}
     </div>
   );
 }

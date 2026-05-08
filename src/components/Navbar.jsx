@@ -35,7 +35,13 @@ export default function Navbar({ visible }) {
     //   `}
     >
       <div className="flex items-center">
-        <a href="#home">
+        <a href="#home" className="flex ">
+        <Image
+          src= "/WhiteLogo.png"
+          alt="Logo"
+          width={40}
+          height={50}
+        />
         <Image
           src="/logo_rect.svg"
           alt="Logo Rectangle"

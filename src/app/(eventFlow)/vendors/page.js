@@ -69,7 +69,7 @@ setActiveStep("menu");
     <div className="min-h-screen dark:bg-black">
         {/* <ProgressMap currentStep={currentStep} onStepClick={handleStepClick}/> */}
         <div
-      className="pt-20 pb-20 px-8 min-h-screen"
+      className="pt-16 pb-1 px-8 min-h-screen"
       style={{ backgroundColor: "var(--color-bg)" }}
     >
       <motion.div
@@ -110,7 +110,7 @@ setActiveStep("menu");
             fontSize: "0.95rem",
             color: "var(--color-primary)",
             textAlign: "center",
-            marginBottom: "3rem",
+            marginBottom: "1rem",
             fontWeight: 500,
           }}
         >
@@ -118,7 +118,13 @@ setActiveStep("menu");
         </p>
 
         {/* Vendor Carousel */}
-        <div className="overflow-x-auto pb-8 mb-8 hide-scrollbar">
+        <div className="overflow-x-auto mb-8 hide-scrollbar"
+        // style={{
+        //             scrollbarWidth: "thin",
+        //             scrollbarColor: "#62754c transparent",
+        //             scrollbarbutton: "none",
+        //         }}
+                >
           <div className="flex gap-6 px-4" style={{ width: "max-content" }}>
             {vendorsList.map((vendor, idx) => {
               const isShortlisted = shortlistedIds.includes(vendor.id);
@@ -136,7 +142,7 @@ setActiveStep("menu");
                   className="flex-shrink-0 rounded-3xl overflow-hidden relative group cursor-pointer mt-2"
                   style={{
                     width: "400px",
-                    height: "500px",
+                    height: "300px",
                     backgroundColor: "var(--glass-fill)",
                     backdropFilter: "blur(var(--blur))",
                     border: `2px solid ${

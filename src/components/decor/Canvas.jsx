@@ -269,14 +269,13 @@ export const Canvas = forwardRef(function Canvas(_, ref) {
   const eventType = useEventStore((state) => state.eventDetails?.eventType);
 
   useEffect(() => {
-    if (!eventType) return;
+  if (!eventType) return;
 
-    const layout = layouts[eventType];
+  const layout = layouts[eventType];
+  if (!layout) return;
 
-    if (layout) {
-      loadLayout(layout);
-    }
-  }, [eventType]);
+  loadLayout(layout, eventType);
+}, [eventType]);
 
   return (
     <div

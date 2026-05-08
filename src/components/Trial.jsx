@@ -296,7 +296,7 @@ function ButtonGlobal({ onStartPlanning }) {
 
   return (
     <div
-      className="absolute backdrop-blur-md bg-[#62754c]/80 border border-[#62754c]/20 shadow-xl shadow-black/20 flex items-center justify-center left-1/2 px-[22px] py-3 rounded-[38px] -translate-x-1/2 -translate-y-1/2 transition-all duration-300 hover:bg-white/30 hover:border-white/50 hover:shadow-2xl hover:shadow-black/30 hover:scale-105 active:scale-95 group overflow-visible z-20 cursor-pointer"
+      className="absolute backdrop-blur-md bg-[#62754c] border border-[#62754c]/20 shadow-xl shadow-black/20 flex items-center justify-center left-1/2 px-[22px] py-3 rounded-[38px] -translate-x-1/2 -translate-y-1/2 transition-all duration-300 hover:bg-white/30 hover:border-white/50 hover:shadow-2xl hover:shadow-black/30 hover:scale-105 active:scale-95 group overflow-visible z-20 cursor-pointer"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       onClick={() => {

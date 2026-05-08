@@ -398,7 +398,7 @@ export default function MainPage({ setNavbarVisible }) {
       <section
         id="work_gallery"
         ref={galleryRef}
-        className="min-h-screen py-32 px-8 bg-white dark:bg-black"
+        className="min-h-screen pt-14 pb-6 px-8 bg-white dark:bg-black"
       >
         <h2 className="text-center italic text-[3vw] font-serif font-medium mb-12">
           Our Work

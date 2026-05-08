@@ -36,14 +36,8 @@ export const useCanvasStore = create((set, get) => ({
 
   // NEW: load preset layout safely
   loadLayout: (layoutItems) => {
-    const { hasInitializedLayout } = get();
-
-    // prevent overwriting user work
-    if (hasInitializedLayout) return;
-
     set(() => ({
       items: layoutItems,
-      hasInitializedLayout: true,
     }));
   },
 }));
