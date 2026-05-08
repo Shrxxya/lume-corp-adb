@@ -582,22 +582,46 @@ function TestimonialScroll({ testimonials }) {
 
 /* PHOTOS GRID - WITH SCROLL ANIMATION */
 function PhotosGrid() {
-    return (
-        <div className="grid grid-cols-3 gap-6 max-w-7xl mx-auto">
-            {Array.from({ length: 9 }).map((_, i) => (
-                <motion.div
-                    key={i}
-                    initial={{ opacity: 0, y: 30 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    transition={{ delay: i * 0.1 }}
-                    viewport={{ once: false }}
-                    className="aspect-square bg-gray-200 dark:bg-gray-800 rounded-xl flex items-center justify-center"
-                >
-                    Photo {i + 1}
-                </motion.div>
-            ))}
-        </div>
-    );
+  const images = [
+  "/homeAssets/AdobeStock_275942386.jpeg",
+  "/homeAssets/AdobeStock_201548577.jpeg",
+  "/homeAssets/AdobeStock_239982949.jpeg",
+  "/homeAssets/AdobeStock_194420149.jpeg",
+  "/homeAssets/AdobeStock_433864397.jpeg",
+  "/homeAssets/AdobeStock_306652796.jpeg",
+  "/homeAssets/AdobeStock_433863441.jpeg",
+  "/homeAssets/AdobeStock_295853718.jpeg",
+  "/homeAssets/AdobeStock_572053745_Preview.jpeg",
+];
+
+  return (
+    <div className="grid grid-cols-3 gap-6 max-w-7xl mx-auto">
+      {images.map((src, i) => (
+        <motion.div
+          key={i}
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ delay: i * 0.08 }}
+          viewport={{ once: false }}
+          className="relative aspect-square overflow-hidden rounded-2xl group"
+        >
+          <Image
+            src={src}
+            alt={`Gallery image ${i + 1}`}
+            fill
+            className="
+              object-cover
+              transition-transform duration-700
+              group-hover:scale-105
+            "
+          />
+
+          {/* subtle overlay */}
+          <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-500" />
+        </motion.div>
+      ))}
+    </div>
+  );
 }
 
 /* VIDEOS GRID - WITH SCROLL ANIMATION */

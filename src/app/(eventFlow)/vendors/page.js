@@ -10,12 +10,54 @@ import { getNextRoute } from "@/lib/eventFlow";
 import { useRouter, usePathname } from "next/navigation";
 
 const vendorsList = [
-  { id: "1", name: "Elegant Blooms", category: "Floristry", rating: 4.9, projects: 150 },
-  { id: "2", name: "Peak Productions", category: "AV & Tech", rating: 4.8, projects: 200 },
-  { id: "3", name: "Gourmet Events", category: "Catering", rating: 4.9, projects: 300 },
-  { id: "4", name: "Light Masters", category: "Lighting", rating: 4.7, projects: 180 },
-  { id: "5", name: "Stage Craft", category: "Stage Design", rating: 4.8, projects: 120 },
-  { id: "6", name: "Sound Perfect", category: "Audio", rating: 4.6, projects: 160 },
+  {
+    id: "1",
+    name: "Elegant Blooms",
+    category: "Floristry",
+    rating: 4.9,
+    projects: 150,
+    image: "/vendorAssets/blooms.jpg",
+  },
+  {
+    id: "2",
+    name: "Peak Productions",
+    category: "AV & Tech",
+    rating: 4.8,
+    projects: 200,
+    image: "/vendorAssets/productions.png",
+  },
+  {
+    id: "3",
+    name: "Gourmet Events",
+    category: "Catering",
+    rating: 4.9,
+    projects: 300,
+    image: "/vendorAssets/catering.jpg",
+  },
+  {
+    id: "4",
+    name: "Light Masters",
+    category: "Lighting",
+    rating: 4.7,
+    projects: 180,
+    image: "/vendorAssets/lighting.jpg",
+  },
+  {
+    id: "5",
+    name: "Stage Craft",
+    category: "Stage Design",
+    rating: 4.8,
+    projects: 120,
+    image: "/vendorAssets/stage.jpg",
+  },
+  {
+    id: "6",
+    name: "Sound Perfect",
+    category: "Audio",
+    rating: 4.6,
+    projects: 160,
+    image: "/vendorAssets/audio.png",
+  },
 ];
 
 export default function VendorMarketplace() {
@@ -154,46 +196,48 @@ setActiveStep("menu");
                 >
                   {/* Background */}
                   <div
-                    className="absolute inset-0 transition-transform duration-500"
-                    style={{
-                      background: `linear-gradient(135deg,
-                        rgba(98,117,76,${0.3 + (idx % 3) * 0.1}),
-                        rgba(20,24,42,${0.2 + (idx % 2) * 0.1}))`,
-                      transform: isHovered ? "scale(1.05)" : "scale(1)",
-                    }}
-                  >
-                    {isHovered && (
-                      <motion.div
-                        className="absolute inset-0 flex items-center justify-center"
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        style={{
-                          backgroundColor: "rgba(0,0,0,0.3)",
-                          backdropFilter: "blur(2px)",
-                        }}
-                      >
-                        <motion.div
-                          animate={{
-                            scale: [1, 1.1, 1],
-                            rotate: [0, 5, -5, 0],
-                          }}
-                          transition={{
-                            duration: 3,
-                            repeat: Infinity,
-                            ease: "easeInOut",
-                          }}
-                          style={{
-                            fontFamily: "var(--font-body)",
-                            fontSize: "0.875rem",
-                            color: "var(--color-bg)",
-                            opacity: 0.7,
-                          }}
-                        >
-                          Playing Preview...
-                        </motion.div>
-                      </motion.div>
-                    )}
-                  </div>
+  className="absolute inset-0 transition-transform duration-700"
+  style={{
+    backgroundImage: `url(${vendor.image})`,
+    backgroundSize: "cover",
+    backgroundPosition: "center",
+    transform: isHovered ? "scale(1.05)" : "scale(1)",
+  }}
+>
+  {/* dark overlay */}
+  <div
+    className="absolute inset-0"
+    style={{
+      background:
+        "linear-gradient(to top, rgba(0,0,0,0.72), rgba(0,0,0,0.18))",
+    }}
+  />
+
+  {isHovered && (
+    <motion.div
+      className="absolute inset-0 flex items-center justify-center"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      style={{
+        backgroundColor: "rgba(0,0,0,0.25)",
+        backdropFilter: "blur(2px)",
+      }}
+    >
+      {/* <motion.div
+        animate={{
+          scale: [1, 1.08, 1],
+        }}
+        transition={{
+          duration: 2,
+          repeat: Infinity,
+          ease: "easeInOut",
+        }}
+        className="text-white text-sm tracking-wide"
+      >
+      </motion.div> */}
+    </motion.div>
+  )}
+</div>
 
                   {/* Content */}
                   <div

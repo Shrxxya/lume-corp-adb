@@ -60,9 +60,9 @@ const dishesData = {
     { name: "Key Lime Pie", type: "Dessert" },
   ],
   live_counter: [
-    { name: "Pasta Live Counter (White/Red Sauce)", type: "Main" },
+    { name: "Pasta Live Counter", type: "Main" },
     { name: "Tandoor Grill Station", type: "Main" },
-    { name: "Chaat Counter (Pani Puri / Bhel)", type: "Appetizer" },
+    { name: "Chaat Counter", type: "Appetizer" },
     { name: "Dosa Live Station", type: "Main" },
     { name: "Dim Sum Counter", type: "Appetizer" },
     { name: "Wok Stir-Fry Station", type: "Appetizer" },
