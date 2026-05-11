@@ -40,23 +40,36 @@ export default function InvitesEmail() {
 
   const [isSending, setIsSending] = useState(false);
   const [sent, setSent] = useState(invites.isSent);
+  const [isGeneratingDraft, setIsGeneratingDraft] = useState(false);
+
+  const getSummaryData = useEventStore((s) => s.getSummaryData);
+  const summaryData = getSummaryData();
 
   // GENERATE DRAFT
-  const generateDraft = () => {
-    const draft = `Dear [Guest Name],
+  const generateDraft = async () => {
+  try {
+    setIsGeneratingDraft(true);
 
-We’re delighted to invite you to our upcoming corporate event on [Event Date] at [Venue].
+    const res = await fetch("/api/generate-invite-email", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        summaryData,
+      }),
+    });
 
-Join us for an evening of networking, keynote sessions, and celebration.
+    const data = await res.json();
 
-We look forward to hosting you.
-
-Warm regards,
-[Your Company]`;
-
-    setLocalEmailDraft(draft);
-    setEmailDraft(draft);
-  };
+    setLocalEmailDraft(data.email);
+    setEmailDraft(data.email);
+  } catch (err) {
+    console.error(err);
+  } finally {
+    setIsGeneratingDraft(false);
+  }
+};
 
   // DROP HANDLER
   const handleDrop = (e) => {
@@ -73,9 +86,9 @@ Warm regards,
       setFile(droppedFile);
       setInvitesFile(droppedFile);
 
-      setTimeout(() => {
-        generateDraft();
-      }, 600);
+      // setTimeout(() => {
+      //   generateDraft();
+      // }, 600);
     }
   };
 
@@ -93,8 +106,9 @@ Warm regards,
       setIsSending(false);
       setSent(true);
       setInvitesSent(true);
+
+      handleSubmit();
     }, 2000);
-    handleSubmit();
   };
 
   // CONTINUE
@@ -281,13 +295,20 @@ Warm regards,
 
                 <button
                   onClick={generateDraft}
-                  className="flex items-center gap-2 text-sm"
+                  disabled={isGeneratingDraft}
+                  className="flex items-center gap-2 text-sm disabled:opacity-50"
                   style={{
                     color: "var(--color-primary)",
                   }}
                 >
-                  <Sparkles size={16} />
-                  Generate with AI
+                  <Sparkles
+                    size={16}
+                    className={isGeneratingDraft ? "animate-pulse" : ""}
+                  />
+
+                  {isGeneratingDraft
+                    ? "Generating..."
+                    : "Generate with AI"}
                 </button>
               </div>
 
