@@ -114,7 +114,7 @@
 
 import { motion } from "framer-motion";
 import { useEventStore } from "@/store/useEventStore";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import {
   FileText, Palette, Cloud, DollarSign,
@@ -145,6 +145,8 @@ const routeToStep = Object.fromEntries(
 export default function ProgressMap() {
   const stepRefs = useRef({});
   const containerRef = useRef(null);
+  const [hovered, setHovered] = useState(null);
+  const [tooltipPos, setTooltipPos] = useState({ top: 0, left: 0 });
   //const currentStep = useEventStore((state) => state.currentStep);
   const completedSteps = useEventStore((state) => state.completedSteps);
   const activeStep = useEventStore((s) => s.activeStep);
@@ -172,22 +174,22 @@ export default function ProgressMap() {
   }, [pathname]);
 
   const steps = [
-    { id: 1, name: "form", icon: FileText },
-    { id: 2, name: "budget", icon: DollarSign },
+    { id: 1, name: "form", icon: FileText, label: "Form" },
+    { id: 2, name: "budget", icon: DollarSign, label: "Budget" },
     ...(isWithinForecast
-    ? [{ id: 3, name: "weather", icon: Cloud }]
+    ? [{ id: 3, name: "weather", icon: Cloud, label: "Weather" }]
     : []),
     // { id: 3, name: "weather", icon: Cloud },
-    { id: 4, name: "vendors", icon: Store },
-    { id: 5, name: "menu", icon: UtensilsCrossed },
-    { id: 6, name: "timeline", icon: Calendar },
-    { id: 7, name: "extras", icon: Star },
+    { id: 4, name: "vendors", icon: Store, label: "Vendors" },
+    { id: 5, name: "menu", icon: UtensilsCrossed,  label: "Menu" },
+    { id: 6, name: "timeline", icon: Calendar, label: "Timeline" },
+    { id: 7, name: "extras", icon: Star, label: "Extras" },
     ...(eventDetails?.venueType === "Open Air"
-    ? [{ id: 8, name: "decor", icon: Sofa }]
+    ? [{ id: 8, name: "decor", icon: Sofa, label: "Setup" }]
     : []),
-    { id: 9, name: "poster", icon: Palette },
-    { id: 10, name: "invites", icon: Mail },
-    { id: 11, name: "summary", icon: CheckCircle2 }
+    { id: 9, name: "poster", icon: Palette, label: "Poster" },
+    { id: 10, name: "invites", icon: Mail, label: "Email" },
+    { id: 11, name: "summary", icon: CheckCircle2, label: "Summary" }
   ];
   useEffect(() => {
     const el = stepRefs.current[activeStep];
@@ -248,6 +250,17 @@ export default function ProgressMap() {
 
               {/* Node */}
               <motion.div
+                  onMouseEnter={(e) => {
+                    const rect = e.currentTarget.getBoundingClientRect();
+
+                    setTooltipPos({
+                      top: rect.bottom + 15,
+                      left: rect.left + rect.width / 2 - 62,
+                    });
+
+                    setHovered(step.label);
+                  }}
+                  onMouseLeave={() => setHovered(null)}
                   ref={(el) => (stepRefs.current[step.name] = el)}
                   onClick={() => {
                     if (isClickable) {
@@ -302,7 +315,28 @@ export default function ProgressMap() {
             </div>
           );
         })}
-      </div>
+      </div> {/* end of glassmorphic-container */}
+
+      {hovered && (
+        <motion.div
+          initial={{ opacity: 0, y: -4 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="
+            fixed z-[9999]
+            px-3 py-1 rounded-full text-sm font-bold
+            bg-[transparent] text-[#62754c] shadow-md
+            pointer-events-none
+            whitespace-nowrap
+          "
+          style={{
+            top: tooltipPos.top,
+            left: tooltipPos.left,
+            transform: "translateX(-50%)",
+          }}
+        >
+          {hovered}
+        </motion.div>
+      )}
 
       <style jsx>{`
         .glassmorphic-container {

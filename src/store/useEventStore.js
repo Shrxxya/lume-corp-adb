@@ -206,6 +206,7 @@ setFormValid: (val) => set({ formValid: val }),
       poster: {
         status: "idle", // 'idle' | 'generating' | 'complete'
         generatedData: null,
+        finalized: false,
       },
       setPosterStatus: (status) =>
         set((state) => ({
@@ -214,6 +215,13 @@ setFormValid: (val) => set({ formValid: val }),
       setPosterData: (data) =>
         set((state) => ({
           poster: { ...state.poster, generatedData: data, status: "complete" },
+        })),
+      setPosterFinalized: (finalized) =>
+        set((state) => ({
+          poster: {
+            ...state.poster,
+            finalized,
+          },
         })),
 
       // ==================== SCREEN 12: Email Invites ====================
@@ -294,7 +302,7 @@ setFormValid: (val) => set({ formValid: val }),
             selectedLightShow: null,
           },
           decor: { selectedTheme: null, colorPalette: [], items: [] },
-          poster: { status: "idle", generatedData: null },
+          poster: { status: "idle", generatedData: null, finalized: false },
           invites: { file: null, emailDraft: "", isSent: false },
           currentStep: "form",
           completedSteps: [],
@@ -306,6 +314,7 @@ setFormValid: (val) => set({ formValid: val }),
         return {
           eventName: state.eventDetails.eventName || "North Star",
           date: state.eventDetails.date || "TBD",
+          eventType: state.eventDetails.eventType || "TBD",
           location: state.eventDetails.location || "TBD",
           guestCount: state.eventDetails.guestCount || state.guests.length || 0,
           budget: state.eventDetails.budget || state.budget.totalBudget || 0,
@@ -335,7 +344,7 @@ setFormValid: (val) => set({ formValid: val }),
     {
       name: "event-progress",
       onRehydrateStorage: () => (state) => {
-        state.setHasHydrated(true);
+        state?.setHasHydrated(true);
       },
     }
   )

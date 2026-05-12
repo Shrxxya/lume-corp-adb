@@ -62,7 +62,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { ArrowRight, Sparkles } from "lucide-react";
 import ProgressMap from "@/components/ProgressMap";
 import { useEventStore } from "@/store/useEventStore";
@@ -153,6 +153,12 @@ export default function BudgetOptimizer() {
   const totalBudget = 100;
   const [showSuggestion, setShowSuggestion] = useState(false);
 
+  const hasShownSuggestion = useRef(false);
+  const getSummaryData = useEventStore((s) => s.getSummaryData);
+  const summaryData = getSummaryData();
+  const [suggestion, setSuggestion] = useState(null);
+  const hasRequested = useRef(false);
+
   const [showBudgetModal, setShowBudgetModal] = useState(false);
   const [pendingSubmit, setPendingSubmit] = useState(false);
 
@@ -175,20 +181,55 @@ export default function BudgetOptimizer() {
     // Save to store in real-time
     setBudgetAllocation(id, newValue);
 
-    if (!showSuggestion && Math.random() > 0.7) {
-      setTimeout(() => setShowSuggestion(true), 500);
-    }
   };
 
   const applySuggestion = () => {
+    if (!suggestion) return;
+
     setSliders((prev) =>
       prev.map((s) => {
-        if (s.id === "decor") return { ...s, value: s.value - 5 };
+        if (s.id === suggestion.reduce.category) {
+          return { ...s, value: s.value - suggestion.reduce.percent };
+        }
+        if (s.id === suggestion.increase.category) {
+          return { ...s, value: s.value + suggestion.increase.percent };
+        }
         return s;
       })
     );
+
     setShowSuggestion(false);
   };
+
+  useEffect(() => {
+    const fetchSuggestion = async () => {
+      if (!summaryData || hasRequested.current) return;
+
+      hasRequested.current = true;
+
+      try {
+        const res = await fetch("/api/budget-suggestion", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ summaryData }),
+        });
+
+        if (!res.ok) throw new Error("AI request failed");
+
+        const data = await res.json();
+        console.log(data.suggestion)
+
+        setSuggestion(data.suggestion); // store AI output
+        setShowSuggestion(true);        // show popup ONLY after success
+      } catch (err) {
+        console.error("AI suggestion failed:", err);
+      }
+    };
+
+    fetchSuggestion();
+  }, [summaryData]);
 
   return (
     <div className="min-h-screen dark:bg-black">
@@ -317,43 +358,94 @@ export default function BudgetOptimizer() {
         {/* Suggestion */}
         {showSuggestion && (
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="fixed bottom-8 right-8 p-5 rounded-3xl max-w-sm shadow-xl"
+            initial={{ opacity: 0, y: 20, scale: 0.98 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            transition={{ duration: 0.25 }}
+            className="fixed bottom-8 right-8 p-6 rounded-3xl max-w-sm shadow-2xl z-50"
             style={{
-              backgroundColor: "var(--glass-fill)",
-              backdropFilter: "blur(var(--blur))",
-              border: "1px solid var(--glass-border)",
+              backgroundColor: "transparent",
+              backdropFilter: "blur(50px)",
+              border: "1px solid rgba(255, 255, 255, 0.12)",
+              boxShadow: "0 20px 60px rgba(0,0,0,0.4)",
             }}
           >
             <div className="flex gap-3">
-              <div className="w-10 h-10 flex items-center justify-center rounded-full bg-[var(--color-primary)]">
+              <div className="w-40 h-10 flex items-center justify-center rounded-full bg-[var(--color-primary)]">
                 <Sparkles size={18} className="text-white" />
               </div>
 
               <div>
-                <p className="text-sm mb-2">
-                  Found cheaper decor vendor (20% less). Adjust?
-                </p>
+  {/* TITLE */}
+  <h2 className="text-lg font-semibold mb-3">
+    {suggestion?.title}
+  </h2>
 
-                <div className="flex gap-2">
-                  <button
-                    onClick={applySuggestion}
-                    className="px-3 py-1 rounded-full bg-[var(--color-primary)] text-white text-sm"
-                  >
-                    Accept
-                  </button>
-                  <button
-                    onClick={() => setShowSuggestion(false)}
-                    className="px-3 py-1 rounded-full border text-sm"
-                  >
-                    Dismiss
-                  </button>
-                </div>
-              </div>
+  {/* MESSAGE */}
+  <p className="text-sm opacity-80 mb-4 leading-relaxed">
+    Impact:
+  </p>
+
+  {/* IMPACT */}
+  {suggestion?.impact && (
+    <div className="text-sm text-green-600 mb-4">
+      {suggestion.impact}
+    </div>
+  )}
+
+  {/* ACTION BLOCK (VERY IMPORTANT) */}
+  <div className="p-3 rounded-2xl bg-white/10 border border-white/10 mb-4">
+    
+    <p className="text-xs opacity-60 mb-2">
+      AI Suggested Adjustment
+    </p>
+
+    <div className="flex items-center justify-between text-sm">
+      <span>
+        Reduce{" "}
+        <span className="font-semibold capitalize">
+          {suggestion?.reduce?.category}
+        </span>
+      </span>
+
+      <span className="text-red-500 font-semibold">
+        -{suggestion?.reduce?.percent}%
+      </span>
+    </div>
+
+    <div className="flex items-center justify-between text-sm mt-2">
+      <span>
+        Increase{" "}
+        <span className="font-semibold capitalize">
+          {suggestion?.increase?.category}
+        </span>
+      </span>
+
+      <span className="text-green-500 font-semibold">
+        +{suggestion?.increase?.percent}%
+      </span>
+    </div>
+  </div>
+
+  {/* BUTTONS */}
+  <div className="flex gap-2">
+    <button
+      onClick={applySuggestion}
+      className="px-3 py-1 rounded-full bg-[var(--color-primary)] text-white text-sm"
+    >
+      Apply
+    </button>
+
+    <button
+      onClick={() => setShowSuggestion(false)}
+      className="px-3 py-1 rounded-full border border-[var(--color-dark)] text-[var(--color-dark)] text-sm"
+    >
+      Dismiss
+    </button>
+  </div>
+</div>
             </div>
           </motion.div>
-        )}
+        )} 
 
         {/* Continue */}
         <motion.button
