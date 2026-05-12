@@ -35,8 +35,8 @@ const styles = StyleSheet.create({
   },
 
   logo: {
-    width: 40,
-    height: 40,
+    width: 60,
+    height: 60,
   },
 
   company: {
@@ -118,6 +118,14 @@ const styles = StyleSheet.create({
 });
 
 export default function EventPDF({ data, quotation, decorImage }) {
+  const formattedDate = new Date(data.date).toLocaleDateString(
+  "en-IN",
+  {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  }
+);
   return (
     <Document>
       <Page size="A4" style={styles.page}>
@@ -125,14 +133,16 @@ export default function EventPDF({ data, quotation, decorImage }) {
         {/* HEADER */}
         <View style={styles.header}>
           <View style={styles.brandRow}>
-            {/* Replace with your logo path */}
-            <Image src="/logo.png" style={styles.logo} />
-            <Text style={styles.company}>Lume Corp</Text>
+            <Image
+              src={`${process.env.NEXT_PUBLIC_BASE_URL}/nobg_logo2.png`}
+              style={styles.logo}
+            />
+            {/* <Text style={styles.company}>Lume Corp</Text> */}
           </View>
 
           <Text style={styles.title}>{data.eventName}</Text>
           <Text style={styles.subtitle}>
-            {data.date} • {data.location}
+            {formattedDate} • {data.location}
           </Text>
         </View>
 

@@ -62,6 +62,10 @@ export default function InvitesEmail() {
 
     const data = await res.json();
 
+    if (!res.ok) {
+      throw new Error(data.error);
+    }
+
     setLocalEmailDraft(data.email);
     setEmailDraft(data.email);
   } catch (err) {
@@ -345,7 +349,7 @@ export default function InvitesEmail() {
                 {!sent ? (
                   <motion.button
                     onClick={handleSend}
-                    disabled={!emailDraft || isSending}
+                    disabled={!emailDraft?.trim() || !file || isSending}
                     whileTap={{ scale: 0.98 }}
                     className="w-full mt-5 px-8 py-4 rounded-2xl flex items-center justify-center gap-3 disabled:opacity-50"
                     style={{

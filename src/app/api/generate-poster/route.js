@@ -8,10 +8,11 @@ export async function POST(req) {
 
   try {
     const imageBlob = await client.textToImage({
-      model: "stabilityai/stable-diffusion-xl-base-1.0",
+      model: "black-forest-labs/FLUX.1-schnell",
       inputs: prompt,
       parameters: {
-        num_inference_steps: 20,
+        num_inference_steps: 4, // FLUX works best with low steps
+        guidance_scale: 3.5,     // optional but helps stability
       },
     });
 
@@ -21,9 +22,16 @@ export async function POST(req) {
       },
     });
   } catch (err) {
-  console.error("HF ERROR:", err);
-  return new Response(JSON.stringify({ error: err.message }), {
-    status: 500,
-  });
+    console.error("FLUX ERROR:", err);
+
+    return new Response(
+      JSON.stringify({ error: err.message || "Image generation failed" }),
+      {
+        status: 500,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
   }
 }
