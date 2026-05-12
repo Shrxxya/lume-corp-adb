@@ -144,7 +144,7 @@ export default function FinalSummary({ appData, onReset }) {
 
       const { url } = await res.json();
 
-      const fullUrl = `${window.location.origin}${url}`;
+      const fullUrl = url;
 
       const qr = await QRCode.toDataURL(fullUrl);
 

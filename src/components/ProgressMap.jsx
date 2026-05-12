@@ -324,7 +324,7 @@ export default function ProgressMap() {
           className="
             fixed z-[9999]
             px-3 py-1 rounded-full text-sm font-bold
-            bg-[transparent] text-[#62754c] shadow-md
+            bg-[#fdfdf8] text-[#62754c] shadow-md
             pointer-events-none
             whitespace-nowrap
           "

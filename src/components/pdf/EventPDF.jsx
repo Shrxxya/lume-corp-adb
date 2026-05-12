@@ -14,6 +14,12 @@ const COLORS = {
   border: "#e5e5e5",
 };
 
+const safeImage = (img) => {
+  if (!img) return null;
+  if (img.startsWith("data:image")) return img;
+  return `data:image/png;base64,${img}`;
+};
+
 const styles = StyleSheet.create({
   page: {
     padding: 32,
@@ -111,9 +117,9 @@ const styles = StyleSheet.create({
 
   poster: {
     width: "100%",
-    height: 200,
+    maxHeight: 400,
+    objectFit: "contain",
     marginTop: 10,
-    objectFit: "cover",
   },
 });
 
@@ -198,11 +204,25 @@ export default function EventPDF({ data, quotation, decorImage }) {
           ))}
         </View>
 
-        {/* DECOR IMAGE */}
-        {decorImage && (
+        {/* EVENT POSTER */}
+        {data.poster && (
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Visual Concept</Text>
-            <Image src={decorImage} style={styles.poster} />
+            <Text style={styles.sectionTitle}>Event Poster</Text>
+            <Image
+              src={safeImage(data.poster)}
+              style={styles.poster}
+            />
+          </View>
+        )}
+
+        {/*CANVAS GENERATED IMAGE */}
+        {data.generatedCanvasImage && (
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>Final Day Setup</Text>
+            <Image
+              src={safeImage(data.generatedCanvasImage)}
+              style={styles.poster}
+            />
           </View>
         )}
 
