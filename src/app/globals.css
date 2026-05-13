@@ -100,6 +100,40 @@
 .hide-scrollbar::-webkit-scrollbar {
   display: none;
 }
+
+.custom-scrollbar {
+  overflow-x: auto;
+  scrollbar-width: thin; /* Firefox */
+}
+
+/* Chrome / Edge */
+.custom-scrollbar::-webkit-scrollbar {
+  height: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #62754c;
+  border-radius: 999px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar-button {
+  display: none;
+  width: 0;
+  height: 0;
+}
+
+.venue-marker {
+  transition: transform 0.2s ease;
+}
+
+.venue-marker:hover {
+  transform: scale(1.2);
+}
+
 body {
   background: var(--background);
   color: var(--foreground);
@@ -194,31 +228,59 @@ body {
   transition: background 0.8s ease;
 }
 
-/* Wrap everything under .rdp to override library styles */
+/* root theme */
+.rdp {
+  --rdp-accent-color: #62754c;
+  --rdp-background-color: rgba(98,117,76,0.1);
+}
 .rdp {
   --rdp-accent-color: #62754c !important;
-  --rdp-background-color: rgba(98,117,76,0.1) !important;
+  --rdp-accent-background-color: rgba(98, 117, 76, 0.15) !important;
 }
-
-/* Selected day */
-.rdp .rdp-day_selected,
-.rdp .rdp-day_selected:focus,
-.rdp .rdp-day_selected:hover {
+.rdp-button[aria-selected="true"] {
   background-color: #62754c !important;
   color: white !important;
-  border-radius: 12px;
+  border-radius: 12px !important;
 }
 
-/* Today (optional highlight) */
-.rdp .rdp-day_today {
-  font-weight: bold;
+.rdp .rdp-selected {
+  border: #62754c !important;
+}
+/* IMPORTANT: kill all default button styling */
+.rdp button {
+  all: unset;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 12px;
+  color: inherit;
+}
+
+/* SELECTED DAY (this is the real target) */
+.rdp button[aria-selected="true"] {
+  background-color: #62754c !important;
+  color: white !important;
+  border-radius: 12px !important;
+}
+
+/* TODAY */
+.rdp button[aria-current="date"] {
   border: 1px solid #62754c;
+  font-weight: 600;
 }
 
-/* Hover effect */
-.rdp .rdp-day:hover {
+/* HOVER */
+.rdp button:hover:not([aria-selected="true"]) {
   background-color: rgba(98,117,76,0.15);
-  border-radius: 12px;
+}
+
+/* REMOVE BLUE FOCUS GLOW */
+.rdp button:focus {
+  outline: none !important;
+  box-shadow: none !important;
 }
 
 /* Make all buttons show pointer cursor */

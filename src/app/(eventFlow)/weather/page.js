@@ -463,6 +463,7 @@ import { ArrowRight, CloudRain, Sun, Moon, Home } from "lucide-react";
 import { useEventStore } from "@/store/useEventStore";
 import { useRouter, usePathname } from "next/navigation";
 import { getNextRoute } from "@/lib/eventFlow";
+import VenueSuggestions from "@/components/VenueSuggestions";
 
 export default function WeatherPage() {
   const router = useRouter();
@@ -800,8 +801,10 @@ export default function WeatherPage() {
         </div>
       </div>
 
+      <VenueSuggestions />
+
       {/* CONTINUE */}
-      <div className="w-full mx-auto">
+      <div className="w-full mx-auto mt-10">
         <button
           onClick={handleContinue}
           className="w-full py-4 rounded-full bg-[var(--color-dark)] text-white flex items-center justify-center gap-2"
