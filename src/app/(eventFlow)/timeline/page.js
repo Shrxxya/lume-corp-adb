@@ -202,19 +202,37 @@ setActiveStep("extras");
   };
 
   const handleDragOver = (e, index) => {
-    e.preventDefault();
-    if (draggedIndex === null || draggedIndex === index) return;
+  e.preventDefault();
 
-    const newTimeline = [...timeline];
-    const draggedItem = newTimeline[draggedIndex];
+  if (draggedIndex === null || draggedIndex === index) return;
 
-    newTimeline.splice(draggedIndex, 1);
-    newTimeline.splice(index, 0, draggedItem);
+  const newTimeline = [...timeline];
 
-    // setTimeline(newTimeline);
-    reorderTimeline(newTimeline);
-    setDraggedIndex(index);
-  };
+  // remove dragged item
+  const draggedItem = newTimeline[draggedIndex];
+  newTimeline.splice(draggedIndex, 1);
+
+  // insert into new position
+  newTimeline.splice(index, 0, draggedItem);
+
+  const baseStart = parseTime(eventTime);
+
+  const updatedTimeline = newTimeline.map((event, i) => {
+    const newTime = new Date(baseStart);
+
+    // every event = +30 mins from previous
+    newTime.setMinutes(baseStart.getMinutes() + i * 30);
+
+    return {
+      ...event,
+      time: formatTime(newTime),
+    };
+  });
+
+  reorderTimeline(updatedTimeline);
+
+  setDraggedIndex(index);
+};
 
   const handleDragEnd = () => {
     setDraggedIndex(null);

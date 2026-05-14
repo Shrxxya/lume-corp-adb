@@ -1,5 +1,6 @@
 "use client";
 
+import { X } from "lucide-react";
 import { useState } from "react";
 import { useDraggable } from "@dnd-kit/core";
 import { useCanvasStore } from "@/store/useCanvasStore";
@@ -7,6 +8,7 @@ import { cn } from "@/components/utils";
 
 export function CanvasItem({ item }) {
   const updateItem = useCanvasStore((s) => s.updateItem);
+  const removeItem = useCanvasStore((s) => s.removeItem);
 
   const { attributes, listeners, setNodeRef, transform } = useDraggable({
     id: item.id,
@@ -77,6 +79,7 @@ export function CanvasItem({ item }) {
       {...listeners}
       {...attributes}
       className={cn(
+        "group",
         "absolute cursor-move",
         "bg-white/20 backdrop-blur-md border border-white/30",
         "rounded-lg text-white text-sm",
@@ -107,6 +110,25 @@ export function CanvasItem({ item }) {
         onMouseDown={handleRotate}
         className="absolute -top-4 left-1/2 -translate-x-1/2 w-3 h-3 bg-blue-400 rounded-full cursor-pointer"
       />
+      {/* Delete button */}
+      <button
+        onPointerDown={(e) => {
+          e.stopPropagation();
+          removeItem(item.id);
+        }}
+        className="
+          absolute -top-2 -right-2
+          w-5 h-5 rounded-full
+          bg-red-500 text-white
+          flex items-center justify-center
+          opacity-0 hover:opacity-100
+          group-hover:opacity-100
+          transition
+          z-50
+        "
+      >
+        <X size={12} />
+      </button>
     </div>
   );
 }

@@ -7,250 +7,86 @@ import { forwardRef, useEffect } from "react";
 import { useEventStore } from "@/store/useEventStore";
 
 const awardsLayout = [
-  {
-    id: "stage-center",
-    type: "Stage",
-    x: 210,
-    y: 210,
-    width: 500,
-    height: 120,
-    rotation: 0,
-  },
-  {
-    id: "led-backdrop",
-    type: "LED Screen",
-    x: 180,
-    y: 40,
-    width: 540,
-    height: 160,
-    rotation: 0,
-  },
-  {
-    id: "award-table",
-    type: "Table",
-    x: 80,
-    y: 320,
-    width: 120,
-    height: 80,
-    rotation: 0,
-  },
-  {
-    id: "vip-seating",
-    type: "Seating Zone",
-    x: 275,
-    y: 425,
-    width: 324,
-    height: 187,
-    rotation: 0,
-  },
+  { id: "entrance-red-carpet", type: "Red Carpet", x: 350, y: 185, width: 120, height: 350, rotation: 0 },
+  { id: "photo-wall", type: "Photo Wall", x: 40, y: 40, width: 200, height: 120, rotation: 0 },
+
+  { id: "stage-main", type: "Stage", x: 260, y: 40, width: 520, height: 120, rotation: 0 },
+
+  { id: "vip-table-1", type: "VIP Table", x: 200, y: 280, width: 110, height: 110, rotation: 0 },
+  { id: "vip-table-2", type: "VIP Table", x: 200, y: 410, width: 110, height: 110, rotation: 0 },
+  { id: "vip-table-3", type: "VIP Table", x: 65, y: 340, width: 110, height: 110, rotation: 0 },
+
+  { id: "guest-seating", type: "Seating Area", x: 520, y: 250, width: 260, height: 200, rotation: 0 },
+
+  { id: "award-desk", type: "Award Desk", x: 48, y: 175, width: 160, height: 60, rotation: 0 },
+  { id: "camera-zone", type: "Camera Zone", x: 675, y: 172, width: 105, height: 54, rotation: 0 },
 ];
 const techLaunchLayout = [
-  {
-    id: "main-led",
-    type: "LED Wall",
-    x: 145,
-    y: 50,
-    width: 600,
-    height: 200,
-    rotation: 0,
-  },
-  {
-    id: "podium",
-    type: "Podium",
-    x: 385,
-    y: 270,
-    width: 120,
-    height: 80,
-    rotation: 0,
-  },
-  {
-    id: "demo-zone",
-    type: "Demo Zone",
-    x: 145,
-    y: 375,
-    width: 200,
-    height: 150,
-    rotation: 0,
-  },
-  {
-    id: "media-area",
-    type: "Media Area",
-    x: 560,
-    y: 375,
-    width: 180,
-    height: 120,
-    rotation: 0,
-  },
+  { id: "registration", type: "Registration Desk", x: 58, y: 432, width: 180, height: 80, rotation: 0 },
+
+  { id: "main-stage", type: "LED Stage", x: 250, y: 40, width: 560, height: 160, rotation: 0 },
+
+  { id: "demo-1", type: "Demo Pod", x: 90, y: 290, width: 140, height: 120, rotation: 0 },
+  { id: "demo-2", type: "Demo Pod", x: 242, y: 290, width: 140, height: 120, rotation: 0 },
+  { id: "demo-3", type: "Demo Pod", x: 395, y: 290, width: 140, height: 120, rotation: 0 },
+
+  { id: "media-zone", type: "Press Zone", x: 585, y: 220, width: 220, height: 200, rotation: 0 },
+
+  { id: "network-lounge", type: "Networking Lounge", x: 50, y: 120, width: 180, height: 120, rotation: 0 },
+
+  { id: "charging-bar", type: "Charging Station", x: 70, y: 50, width: 140, height: 60, rotation: 0 },
 ];
 const workshopLayout = [
-  {
-    id: "instructor-zone",
-    type: "Instructor Area",
-    x: 450,
-    y: 100,
-    width: 180,
-    height: 100,
-    rotation: 0,
-  },
-  {
-    id: "screen",
-    type: "Projector",
-    x: 420,
-    y: 220,
-    width: 220,
-    height: 120,
-    rotation: 0,
-  },
-  {
-    id: "table-1",
-    type: "Table",
-    x: 200,
-    y: 350,
-    width: 120,
-    height: 80,
-    rotation: 0,
-  },
-  {
-    id: "table-2",
-    type: "Table",
-    x: 380,
-    y: 380,
-    width: 120,
-    height: 80,
-    rotation: 0,
-  },
-  {
-    id: "table-3",
-    type: "Table",
-    x: 560,
-    y: 350,
-    width: 120,
-    height: 80,
-    rotation: 0,
-  },
+  { id: "instructor", type: "Instructor Stage", x: 260, y: 40, width: 420, height: 120, rotation: 0 },
+
+  { id: "screen", type: "Projector Screen", x: 260, y: 180, width: 420, height: 100, rotation: 0 },
+
+  { id: "table-1", type: "Workshop Table", x: 120, y: 360, width: 120, height: 80, rotation: 0 },
+  { id: "table-2", type: "Workshop Table", x: 280, y: 360, width: 120, height: 80, rotation: 0 },
+  { id: "table-3", type: "Workshop Table", x: 444, y: 360, width: 120, height: 80, rotation: 0 },
+
+  { id: "whiteboard", type: "Whiteboard", x: 640, y: 310, width: 120, height: 160, rotation: 0 },
+
+  { id: "coffee-corner", type: "Refreshments Corner", x: 68, y: 115, width: 148, height: 121, rotation: 0 },
 ];
 const conferenceLayout = [
-  {
-    id: "stage",
-    type: "Stage",
-    x: 400,
-    y: 100,
-    width: 400,
-    height: 120,
-    rotation: 0,
-  },
-  {
-    id: "screen",
-    type: "LED Screen",
-    x: 420,
-    y: 230,
-    width: 360,
-    height: 140,
-    rotation: 0,
-  },
-  {
-    id: "seating-left",
-    type: "Seating Block",
-    x: 150,
-    y: 350,
-    width: 200,
-    height: 160,
-    rotation: 0,
-  },
-  {
-    id: "seating-right",
-    type: "Seating Block",
-    x: 700,
-    y: 350,
-    width: 200,
-    height: 160,
-    rotation: 0,
-  },
+  { id: "conf-stage", type: "Main Stage", x: 215, y: 35, width: 480, height: 120, rotation: 0 },
+
+  { id: "podium", type: "Speaker Podium", x: 385, y: 180, width: 126, height: 82, rotation: 0 },
+
+  { id: "audience-left", type: "Audience Block", x: 78, y: 245, width: 220, height: 220, rotation: 0 },
+  { id: "audience-right", type: "Audience Block", x: 605, y: 245, width: 220, height: 220, rotation: 0 },
+
+  { id: "sponsor-booth-1", type: "Sponsor Booth", x: 320, y: 282, width: 120, height: 120, rotation: 0 },
+  { id: "sponsor-booth-2", type: "Sponsor Booth", x: 460, y: 282, width: 120, height: 120, rotation: 0 },
+
+  { id: "media-row", type: "Media Row", x: 280, y: 505, width: 341, height: 45, rotation: 0 },
 ];
 const galaLayout = [
-  {
-    id: "dance-floor",
-    type: "Dance Floor",
-    x: 350,
-    y: 200,
-    width: 400,
-    height: 250,
-    rotation: 0,
-  },
-  {
-    id: "stage",
-    type: "Mini Stage",
-    x: 450,
-    y: 100,
-    width: 200,
-    height: 80,
-    rotation: 0,
-  },
-  {
-    id: "table-1",
-    type: "Dinner Table",
-    x: 150,
-    y: 400,
-    width: 120,
-    height: 120,
-    rotation: 0,
-  },
-  {
-    id: "table-2",
-    type: "Dinner Table",
-    x: 750,
-    y: 400,
-    width: 120,
-    height: 120,
-    rotation: 0,
-  },
+  { id: "dance-floor", type: "Dance Floor", x: 260, y: 180, width: 360, height: 220, rotation: 0 },
+
+  { id: "live-stage", type: "Live Band Stage", x: 310, y: 40, width: 260, height: 100, rotation: 0 },
+
+  { id: "bar", type: "Bar Counter", x: 648, y: 182, width: 140, height: 220, rotation: 0 },
+
+  { id: "lounge-1", type: "Lounge Sofa", x: 112, y: 195, width: 120, height: 80, rotation: 0 },
+  { id: "lounge-2", type: "Lounge Sofa", x: 112, y: 300, width: 120, height: 80, rotation: 0 },
+
+  { id: "candle-tables", type: "Candle Tables", x: 345, y: 442, width: 200, height: 120, rotation: 0 },
 ];
 const conventionLayout = [
-  {
-    id: "stage",
-    type: "Stage",
-    x: 400,
-    y: 80,
-    width: 350,
-    height: 100,
-    rotation: 0,
-  },
-  {
-    id: "booth-1",
-    type: "Booth",
-    x: 150,
-    y: 250,
-    width: 120,
-    height: 120,
-    rotation: 0,
-  },
-  {
-    id: "booth-2",
-    type: "Booth",
-    x: 300,
-    y: 250,
-    width: 120,
-    height: 120,
-    rotation: 0,
-  },
-  {
-    id: "booth-3",
-    type: "Booth",
-    x: 450,
-    y: 250,
-    width: 120,
-    height: 120,
-    rotation: 0,
-  },
-  {
-    id: "booth-4",
-    type: "Booth",
-    x: 600,
-    y: 250,
-    width: 120,
-    height: 120,
-    rotation: 0,
-  },
+  { id: "main-stage", type: "Main Stage", x: 260, y: 40, width: 420, height: 100, rotation: 0 },
+
+  { id: "info-desk", type: "Info Desk", x: 108, y: 46, width: 140, height: 80, rotation: 0 },
+
+  { id: "booth-1", type: "Exhibit Booth", x: 60, y: 170, width: 140, height: 140, rotation: 0 },
+  { id: "booth-2", type: "Exhibit Booth", x: 240, y: 170, width: 140, height: 140, rotation: 0 },
+  { id: "booth-3", type: "Exhibit Booth", x: 410, y: 170, width: 140, height: 140, rotation: 0 },
+  { id: "booth-4", type: "Exhibit Booth", x: 590, y: 170, width: 140, height: 140, rotation: 0 },
+
+  { id: "food-court", type: "Food Court", x: 120, y: 340, width: 260, height: 140, rotation: 0 },
+
+  { id: "network-zone", type: "Networking Zone", x: 420, y: 340, width: 260, height: 140, rotation: 0 },
 ];
 const layouts = {
   "Awards & Recognition": awardsLayout,

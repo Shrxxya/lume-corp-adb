@@ -650,24 +650,69 @@ function PhotosGrid() {
 }
 
 /* VIDEOS GRID - WITH SCROLL ANIMATION */
+/* VIDEOS GRID */
 function VideosGrid() {
-    return (
-        <div className="grid grid-cols-2 gap-8 max-w-6xl mx-auto">
-            {Array.from({ length: 4 }).map((_, i) => (
-                <motion.div
-                    key={i}
-                    initial={{ opacity: 0, y: 30 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    transition={{ delay: i * 0.1 }}
-                    viewport={{ once: false }}
-                    className="aspect-video bg-gray-300 dark:bg-gray-700 rounded-xl flex items-center justify-center relative"
-                >
-                    <Play className="absolute text-white" />
-                    Video {i + 1}
-                </motion.div>
-            ))}
-        </div>
-    );
+  const videos = [
+    "/homeAssets/AdobeStock_219933972 (1).mp4",
+    "/homeAssets/AdobeStock_1841747216.mp4",
+    "/homeAssets/AdobeStock_407078462.mp4",
+    "/homeAssets/AdobeStock_282168741.mp4",
+  ];
+
+  return (
+    <div className="grid grid-cols-2 gap-8 max-w-6xl mx-auto">
+      {videos.map((src, i) => (
+        <HoverVideo key={i} src={src} />
+      ))}
+    </div>
+  );
+}
+
+function HoverVideo({ src }) {
+  const videoRef = useRef(null);
+
+  const handleMouseEnter = () => {
+    videoRef.current?.play();
+  };
+
+  const handleMouseLeave = () => {
+    if (videoRef.current) {
+      videoRef.current.pause();
+      videoRef.current.currentTime = 0;
+    }
+  };
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 30 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: false }}
+      className="relative aspect-video overflow-hidden rounded-2xl group"
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+    >
+      <video
+        ref={videoRef}
+        src={src}
+        muted
+        playsInline
+        preload="metadata"
+        className="
+          w-full h-full object-cover
+          transition-transform duration-700
+          group-hover:scale-105
+        "
+      />
+
+      {/* overlay */}
+      <div className="absolute inset-0 bg-black/10 group-hover:bg-black/0 transition-colors duration-500" />
+
+      {/* play icon */}
+      <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+        <Play className="text-white w-14 h-14 opacity-80 group-hover:opacity-0 transition-opacity duration-300" />
+      </div>
+    </motion.div>
+  );
 }
 
 const testimonials = [

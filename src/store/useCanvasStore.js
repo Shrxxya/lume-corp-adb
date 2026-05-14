@@ -27,6 +27,11 @@ export const useCanvasStore = create((set, get) => ({
       items,
     })),
 
+  removeItem: (id) =>
+  set((state) => ({
+    items: state.items.filter((i) => i.id !== id),
+  })),
+
   // NEW: clear canvas
   clearCanvas: () =>
     set(() => ({

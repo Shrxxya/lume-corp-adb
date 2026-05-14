@@ -478,6 +478,7 @@ const [dtStep, setDtStep] = useState("date");
 
   const firstInputRef = useRef(null);
   const locationRef = useRef(null);
+  const guestCountRef = useRef(null);
   const popRef = useRef(null);
 
   useEffect(() => {
@@ -543,7 +544,7 @@ const [dtStep, setDtStep] = useState("date");
 
   return (
     <motion.div
-      className="pt-20 pb-20 px-8 min-h-screen flex items-center justify-center"
+      className="pt-20 pb-10 px-8 min-h-screen flex items-center justify-center"
       animate={{ backgroundColor: bgColor }}
       transition={{ duration: 0.8, ease: "easeInOut" }}
     >
@@ -786,7 +787,17 @@ const [dtStep, setDtStep] = useState("date");
                 <motion.button
                   key={type}
                   type="button"
-                  onClick={() => handleChange("venueType", type)}
+                  onClick={() => {
+                    handleChange("venueType", type);
+
+                    setTimeout(() => {
+                      guestCountRef.current?.focus();
+                      guestCountRef.current?.scrollIntoView({
+                        behavior: "smooth",
+                        block: "center",
+                      });
+                    }, 0);
+                  }}
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                   className="px-4 py-3 rounded-2xl transition-all duration-300"
@@ -808,12 +819,13 @@ const [dtStep, setDtStep] = useState("date");
           </div>
 
           <FloatingInput
+            inputRef={guestCountRef}
             label="Expected Guests Count"
             value={formData.guestCount}
             onChange={(v) => handleChange("guestCount", v)}
             type="number"
             placeholder="Number of attendees"
-            onWheel={(e) => e.target.blur()} // Prevent scroll change
+            onWheel={(e) => e.target.blur()}
           />
 
           <FloatingInput
@@ -1001,7 +1013,7 @@ function FloatingInput({
         onBlur={() => setFocused(false)}
         placeholder={focused ? placeholder : ""}
         onWheel={onWheel}
-        className="w-full px-0 bg-transparent outline-none transition-all duration-300"
+        className="w-full px-0 bg-transparent outline-none transition-all duration-300 appearance-none"
         style={{
           borderColor: focused
             ? "var(--color-primary)"
