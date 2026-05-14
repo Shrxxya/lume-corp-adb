@@ -32,7 +32,7 @@ const techLaunchLayout = [
 
   { id: "media-zone", type: "Press Zone", x: 585, y: 220, width: 220, height: 200, rotation: 0 },
 
-  { id: "network-lounge", type: "Networking Lounge", x: 50, y: 120, width: 180, height: 120, rotation: 0 },
+  { id: "network-lounge", type: "Networking Lounge", x: 50, y: 130, width: 180, height: 120, rotation: 0 },
 
   { id: "charging-bar", type: "Charging Station", x: 70, y: 50, width: 140, height: 60, rotation: 0 },
 ];
@@ -104,14 +104,25 @@ export const Canvas = forwardRef(function Canvas(_, ref) {
   const loadLayout = useCanvasStore((s) => s.loadLayout);
   const eventType = useEventStore((state) => state.eventDetails?.eventType);
 
+  const initializedEventType = useCanvasStore(
+    (s) => s.initializedEventType
+  );
+
   useEffect(() => {
-  if (!eventType) return;
+    if (!eventType) return;
 
-  const layout = layouts[eventType];
-  if (!layout) return;
+    // Prevent resetting if same event type
+    if (initializedEventType === eventType) return;
 
-  loadLayout(layout, eventType);
-}, [eventType]);
+    const layout = layouts[eventType];
+    if (!layout) return;
+
+    const clonedLayout = layout.map((item) => ({
+      ...item,
+    }));
+
+    loadLayout(clonedLayout, eventType);
+  }, [eventType, initializedEventType]);
 
   return (
     <div
