@@ -332,11 +332,36 @@ export default function MainPage({ setNavbarVisible }) {
               <div className="flex flex-col items-center bg-zinc-50 dark:bg-black overflow-x-hidden"> 
               <main className="flex w-full flex-col items-center bg-white dark:bg-black"> 
                 {/* HERO */} 
-                <section id="home" ref={heroRef} className="relative w-full h-screen overflow-hidden bg-[#dfe2da]" > 
+                <section
+  id="home"
+  ref={heroRef}
+  className="relative w-full h-screen overflow-hidden"
+>
+  {/* Video background */}
+  <video
+    ref={videoRef}
+    className="absolute inset-0 w-full h-full object-cover"
+    autoPlay
+    muted
+    loop
+    playsInline
+    preload="auto"
+    onCanPlay={() => setVideoReady(true)}
+  >
+    <source src="/herovid.mov" type="video/quicktime" />
+    <source src="/herovid.mp4" type="video/mp4" />
+  </video>
+
+  {/* Fade-in on ready */}
+  <motion.div
+    className="absolute inset-0 bg-black"
+    animate={{ opacity: videoReady ? 0 : 1 }}
+    transition={{ duration: 1.2, ease: "easeOut" }}
+  />
                   <div className="text-center absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"> 
-                  <h1 className="text-[6vw] pb-12 font-serif italic font-medium leading-tight"> 
+                  <h1 className="text-[6vw] pb-12 font-serif italic font-medium leading-tight text-white"> 
                     Moments, Mastered. </h1> 
-                  <p className="text-[1.25rem] mt-4 font-light"> 
+                  <p className="text-[1.25rem] mt-4 font-light text-white"> 
                     Corporate events, engineered to perfection </p> 
                     <div className="mt-8"> <
                       GravityButton onClick={scrollToGallery} /> 
@@ -431,7 +456,7 @@ export default function MainPage({ setNavbarVisible }) {
       </section>
 
       {/* CTA SECTION */}
-      <section className="relative w-full h-screen overflow-hidden">
+      <section className="relative w-full h-[90vh] overflow-hidden">
         {/* <Image
           src="/Hero.jpeg"
           alt="Hero image"
