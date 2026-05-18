@@ -121,6 +121,88 @@ const styles = StyleSheet.create({
     objectFit: "contain",
     marginTop: 10,
   },
+
+  frame: {
+    position: "absolute",
+    top: 14,
+    left: 14,
+    right: 14,
+    bottom: 14,
+    border: `2px solid ${COLORS.primary}`,
+  },
+
+  innerFrame: {
+    position: "absolute",
+    top: 24,
+    left: 24,
+    right: 24,
+    bottom: 24,
+    border: "1px solid rgba(98,117,76,0.35)",
+  },
+
+  cornerTopLeftH: {
+    position: "absolute",
+    top: 14,
+    left: 14,
+    width: 54,
+    borderTop: `2px solid ${COLORS.primary}`,
+  },
+
+  cornerTopLeftV: {
+    position: "absolute",
+    top: 14,
+    left: 14,
+    height: 54,
+    borderLeft: `2px solid ${COLORS.primary}`,
+  },
+
+  cornerTopRightH: {
+    position: "absolute",
+    top: 14,
+    right: 14,
+    width: 54,
+    borderTop: `2px solid ${COLORS.primary}`,
+  },
+
+  cornerTopRightV: {
+    position: "absolute",
+    top: 14,
+    right: 14,
+    height: 54,
+    borderRight: `2px solid ${COLORS.primary}`,
+  },
+
+  cornerBottomLeftH: {
+    position: "absolute",
+    bottom: 14,
+    left: 14,
+    width: 54,
+    borderBottom: `2px solid ${COLORS.primary}`,
+  },
+
+  cornerBottomLeftV: {
+    position: "absolute",
+    bottom: 14,
+    left: 14,
+    height: 54,
+    borderLeft: `2px solid ${COLORS.primary}`,
+  },
+
+  cornerBottomRightH: {
+    position: "absolute",
+    bottom: 14,
+    right: 14,
+    width: 54,
+    borderBottom: `2px solid ${COLORS.primary}`,
+  },
+
+  cornerBottomRightV: {
+    position: "absolute",
+    bottom: 14,
+    right: 14,
+    height: 54,
+    borderRight: `2px solid ${COLORS.primary}`,
+  },
 });
 
 export default function EventPDF({ data, quotation, decorImage }) {
@@ -135,6 +217,21 @@ export default function EventPDF({ data, quotation, decorImage }) {
   return (
     <Document>
       <Page size="A4" style={styles.page}>
+        {/* Decorative Border */}
+        <View fixed style={styles.frame} />
+
+        {/* Corners */}
+        <View fixed style={styles.cornerTopLeftH} />
+        <View fixed style={styles.cornerTopLeftV} />
+
+        <View fixed style={styles.cornerTopRightH} />
+        <View fixed style={styles.cornerTopRightV} />
+
+        <View fixed style={styles.cornerBottomLeftH} />
+        <View fixed style={styles.cornerBottomLeftV} />
+
+        <View fixed style={styles.cornerBottomRightH} />
+        <View fixed style={styles.cornerBottomRightV} />
         
         {/* HEADER */}
         <View style={styles.header}>

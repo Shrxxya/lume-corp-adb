@@ -75,6 +75,7 @@ export default function BudgetOptimizer() {
   const router = useRouter();
   const pathname = usePathname();
   const eventDetails = useEventStore((s) => s.eventDetails);
+  
 
   // Get store functions
   const budget = useEventStore((state) => state.budget);
@@ -156,6 +157,12 @@ export default function BudgetOptimizer() {
   const hasShownSuggestion = useRef(false);
   const getSummaryData = useEventStore((s) => s.getSummaryData);
   const summaryData = getSummaryData();
+  const totalEventBudget = Number(summaryData?.budget || 0);
+  const formatLakhs = (value) => {
+    if (!value || isNaN(value)) return "₹0L";
+
+    return `₹${Math.round(value)}L`;
+  };
   const [suggestion, setSuggestion] = useState(null);
   const hasRequested = useRef(false);
 
@@ -283,12 +290,20 @@ export default function BudgetOptimizer() {
           <div className="flex justify-between font-dm items-center mb-4">
             <span className="text-sm opacity-70">Total Allocation</span>
             <span
-              className="text-2xl font-semibold"
+              className="text-2xl font-semibold flex flex-col"
               style={{
                 color: isOverBudget ? "#d4183d" : "#62754c",
               }}
             >
               {currentTotal}%
+              <span
+                className="text-sm font-normal items-end"
+                style={{
+                  color: isOverBudget ? "#d4183d" : "black",
+                }}
+              >
+                ₹{totalEventBudget}L
+              </span>
             </span>
           </div>
 
@@ -329,9 +344,22 @@ export default function BudgetOptimizer() {
             >
               <div className="flex justify-between mb-3">
                 <span>{slider.label}</span>
-                <span style={{ color: slider.color }}>
-                  {slider.value}%
-                </span>
+                <div className="text-right">
+                  <div style={{ color: slider.color }}>
+                    {slider.value}%
+                  </div>
+
+                  <motion.div
+                    key={`${slider.id}-${slider.value}-${totalEventBudget}`}
+                    initial={{ opacity: 0, y: 4 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="text-sm opacity-70"
+                  >
+                    {formatLakhs(
+                      (slider.value / 100) * totalEventBudget
+                    )}
+                  </motion.div>
+                </div>
               </div>
 
               <input

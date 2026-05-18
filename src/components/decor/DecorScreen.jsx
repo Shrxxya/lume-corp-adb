@@ -121,7 +121,7 @@ setActiveStep("poster");
     <div className="flex h-screen w-full overflow-hidden">
       
       {/* LEFT PANEL */}
-      <div className="w-1/4 shrink-0 border-r border-white/10 relative z-10">
+      <div className="w-[23.5%] shrink-0 border-r border-white/10 relative z-10">
         <Palette />
       </div>
 
