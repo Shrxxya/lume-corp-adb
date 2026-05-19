@@ -17,12 +17,17 @@ export const useEventStore = create(
         venueType: "",
       },
       setEventDetails: (details) =>
-  set((state) => ({
-    eventDetails: {
-      ...state.eventDetails,
-      ...details,
-    },
-  })),
+      set((state) => ({
+        eventDetails: {
+          ...state.eventDetails,
+          ...details,
+        },
+      })),
+      selectedVenue: null,
+      setSelectedVenue: (venue) =>
+        set({
+          selectedVenue: venue,
+        }),
 
       theme: null,
       setTheme: (theme) => set({ theme }),
@@ -274,6 +279,7 @@ setFormValid: (val) => set({ formValid: val }),
             city: "",
             venueType: "",
           },
+          selectedVenue: null,
           guests: [],
           timings: { selectedDate: "", timeSlots: [] },
           weather: {
@@ -326,6 +332,7 @@ setFormValid: (val) => set({ formValid: val }),
               amount,
             })
           ),
+          selectedVenue: state.selectedVenue,
           vendors: state.vendors,
           menu: state.menu.plate,
           timeline: state.timeline,

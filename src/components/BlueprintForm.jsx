@@ -353,6 +353,7 @@ import { ArrowRight, ArrowLeft, Check, Calendar, Clock } from "lucide-react";
 import { useEventStore } from "@/store/useEventStore";
 import { DayPicker } from "react-day-picker";
 import "react-day-picker/dist/style.css";
+import Map from "@/components/Map";
 // import img1 from "/themes/CharcoalGraynCopper.png";
 // import img2 from "/themes/ForestGreennBeige.png";
 // import img3 from "/themes/GoldnBlack.png";
@@ -365,11 +366,11 @@ import { useRouter, usePathname } from "next/navigation";
 
 
 const eventTypeColors = {
-  "Awards & Recognition": "#F5E6C8",
-  "Tech Launch": "#C8D4F0",
-  Workshop: "#D6DCE8",
-  Conference: "#E8D6E8",
-  Gala: "#F0D8C8",
+  "Awards & Recognition": "#FDFDF8",
+  "Tech Launch": "#FDFDF8",
+  Workshop: "#FDFDF8",
+  Conference: "#FDFDF8",
+  Gala: "#FDFDF8",
   Convention: "#FDFDF8",
 };
 
@@ -396,6 +397,8 @@ const [dtStep, setDtStep] = useState("date");
   // Get store functions
   const eventDetails = useEventStore((state) => state.eventDetails);
   const setEventDetails = useEventStore((state) => state.setEventDetails);
+  const selectedVenue = useEventStore((s) => s.selectedVenue);
+  const setSelectedVenue = useEventStore((s) => s.setSelectedVenue);
   const currentStep = useEventStore((state) => state.currentStep);
   const completeStep = useEventStore((state) => state.completeStep);
   const setStep = useEventStore((state) => state.setStep);
@@ -754,19 +757,19 @@ const [dtStep, setDtStep] = useState("date");
 </div>
 
           <FloatingInput
-            label="Venue"
+            label="City"
             value={formData.location}
             onChange={(v) => handleChange("location", v)}
-            placeholder="Enter venue"
+            placeholder="Enter city"
             inputRef={locationRef}
           />
 
-          <FloatingInput
+          {/* <FloatingInput
             label="City"
             value={formData.city}
             onChange={(v) => handleChange("city", v)}
-            placeholder="Enter city"
-          />
+            placeholder="Enter venue"
+          /> */}
 
           <div className="space-y-3 flex flex-col">
             <label
@@ -887,7 +890,7 @@ const [dtStep, setDtStep] = useState("date");
               Event Theme
             </label>
 
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-6 mt-3">
             {themes.map((theme) => {
               const isSelected = selectedTheme?.id === theme.id;
 
@@ -931,6 +934,11 @@ const [dtStep, setDtStep] = useState("date");
               );
             })}
           </div>
+
+          <Map
+            summaryData={formData}
+            onSelectVenue={setSelectedVenue}
+          />
 
           <motion.button
             type="submit"
