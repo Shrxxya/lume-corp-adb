@@ -20,52 +20,52 @@ const cuisines = [
 
 const dishesData = {
   italian: [
-    { name: "Margherita Pizza", type: "Main" },
-    { name: "Pasta Carbonara", type: "Main" },
-    { name: "Caprese Salad", type: "Appetizer" },
-    { name: "Tiramisu", type: "Dessert" },
-    { name: "Bruschetta", type: "Appetizer" },
-    { name: "Risotto", type: "Main" },
+    { name: "Margherita Pizza", type: "Main", image: "margherita.jpg" },
+    { name: "Pasta Carbonara", type: "Main", image: "pasta.jpg" },
+    { name: "Caprese Salad", type: "Appetizer", image: "caprese.jpeg" },
+    { name: "Tiramisu", type: "Dessert", image: "tiramisu.png" },
+    { name: "Bruschetta", type: "Appetizer", image: "bruschetta.jpg" },
+    { name: "Risotto", type: "Main", image: "risotto.png" },
   ],
   fusion: [
-    { name: "Korean Tacos", type: "Appetizer" },
-    { name: "Sushi Burrito", type: "Main" },
-    { name: "Thai Pizza", type: "Main" },
-    { name: "Matcha Cheesecake", type: "Dessert" },
-    { name: "Kimchi Quesadilla", type: "Appetizer" },
-    { name: "Ramen Burger", type: "Main" },
+    { name: "Korean Tacos", type: "Appetizer", image: "koreanTaco.png" },
+    { name: "Sushi Burrito", type: "Main", image: "sushiBurrito.jpg" },
+    { name: "Thai Pizza", type: "Main", image: "thaiPizza.png" },
+    { name: "Matcha Cheesecake", type: "Dessert", image: "matcha.png" },
+    { name: "Kimchi Quesadilla", type: "Appetizer", image: "kimchiQuesadilla.jpg" },
+    { name: "Ramen Burger", type: "Main", image: "ramenBurger.jpg" },
   ],
   vegan: [
-    { name: "Quinoa Bowl", type: "Main" },
-    { name: "Jackfruit Tacos", type: "Main" },
-    { name: "Buddha Bowl", type: "Main" },
-    { name: "Avocado Toast", type: "Appetizer" },
-    { name: "Chia Pudding", type: "Dessert" },
-    { name: "Hummus Platter", type: "Appetizer" },
+    { name: "Quinoa Bowl", type: "Main", image: "quinoa.jpg" },
+    { name: "Jackfruit Tacos", type: "Main", image: "jfTacos.jpg" },
+    { name: "Buddha Bowl", type: "Main", image: "buddha.png" },
+    { name: "Avocado Toast", type: "Appetizer", image: "avocado.jpg" },
+    { name: "Chia Pudding", type: "Dessert", image: "chia.png" },
+    { name: "Hummus Platter", type: "Appetizer", image: "hummus.png" },
   ],
   indian: [
-    { name: "Paneer Tikka", type: "Appetizer" },
-    { name: "Biryani", type: "Main" },
-    { name: "Butter Chicken", type: "Main" },
-    { name: "Gulab Jamun", type: "Dessert" },
-    { name: "Samosa", type: "Appetizer" },
-    { name: "Dal Makhani", type: "Main" },
+    { name: "Paneer Tikka", type: "Appetizer", image: "paneer.png" },
+    { name: "Biryani", type: "Main", image: "biryani.jpg" },
+    { name: "Butter Chicken", type: "Main", image: "butterChicken.jpg" },
+    { name: "Gulab Jamun", type: "Dessert", image: "gulabJamun.jpg" },
+    { name: "Samosa", type: "Appetizer", image: "samosa.jpeg" },
+    { name: "Dal Makhani", type: "Main", image: "dalMakhani.jpg" },
   ],
   coastal: [
-    { name: "Grilled Fish", type: "Main" },
-    { name: "Shrimp Scampi", type: "Main" },
-    { name: "Crab Cakes", type: "Appetizer" },
-    { name: "Clam Chowder", type: "Appetizer" },
-    { name: "Lobster Roll", type: "Main" },
-    { name: "Key Lime Pie", type: "Dessert" },
+    { name: "Grilled Fish", type: "Main", image: "fish.jpg" },
+    { name: "Shrimp Scampi", type: "Main", image: "shrimp.jpeg" },
+    { name: "Crab Cakes", type: "Appetizer", image: "crab.png" },
+    { name: "Clam Chowder", type: "Appetizer", image: "clam.jpg" },
+    { name: "Lobster Roll", type: "Main", image: "lobster.jpg" },
+    { name: "Key Lime Pie", type: "Dessert", image: "key.png" },
   ],
   live_counter: [
-    { name: "Pasta Live Counter", type: "Main" },
-    { name: "Tandoor Grill Station", type: "Main" },
-    { name: "Chaat Counter", type: "Appetizer" },
-    { name: "Dosa Live Station", type: "Main" },
-    { name: "Dim Sum Counter", type: "Appetizer" },
-    { name: "Wok Stir-Fry Station", type: "Appetizer" },
+    { name: "Pasta Live Counter", type: "Main", image: "livePasta.jpg" },
+    { name: "Tandoor Grill Station", type: "Main", image: "tandoor.png" },
+    { name: "Chaat Counter", type: "Appetizer", image: "chaat.jpg" },
+    { name: "Dosa Live Station", type: "Main", image: "dosa.png" },
+    { name: "Dim Sum Counter", type: "Appetizer", image: "dimsum.png" },
+    { name: "Wok Stir-Fry Station", type: "Appetizer", image: "wok.png" },
   ],
 };
 
@@ -217,17 +217,49 @@ export default function MenuBuilder({ onNext }) {
 
                     <div className="grid grid-cols-3 gap-4">
                       {dishesData[selectedCuisine]?.map((dish) => (
-                        <button
+                        <motion.button
                           key={dish.name}
                           onClick={() => handleDishDrop(dish, selectedCuisine)}
-                          className="p-6 rounded-2xl"
+                          whileHover={{ y: -6, scale: 1.02 }}
+                          whileTap={{ scale: 0.98 }}
+                          className="p-6 rounded-3xl flex flex-col items-center text-center"
                           style={{
                             backgroundColor: "var(--glass-fill)",
+                            border: "1px solid var(--glass-border)",
                           }}
                         >
-                          <h4>{dish.name}</h4>
-                          <span className="text-[#9f9f9f] text-sm">{dish.type}</span>
-                        </button>
+                          {/* ROUND IMAGE */}
+                          <div
+                            className="w-24 h-24 rounded-full overflow-hidden mb-4 
+                            border border-white/10 shadow-md"
+                          >
+                            <img
+                              src={`/food/${dish.image}`}
+                              alt={dish.name}
+                              className="w-full h-full object-cover"
+                            />
+                          </div>
+
+                          {/* TEXT */}
+                          <h4
+                            className="font-semibold"
+                            style={{
+                              color: "var(--color-dark)",
+                            }}
+                          >
+                            {dish.name}
+                          </h4>
+
+                          <span
+                            className="text-sm mt-1"
+                            style={{
+                              color: "var(--color-dark)",
+                              opacity: 0.6,
+                            }}
+                          >
+                            {dish.type}
+                          </span>
+                        </motion.button>
                       ))}
                     </div>
                   </motion.div>

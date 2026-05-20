@@ -2,6 +2,8 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Playfair_Display } from "next/font/google";
 import { DM_Sans, Cormorant_Garamond, JetBrains_Mono } from "next/font/google";
+import "leaflet/dist/leaflet.css";
+import "maplibre-gl/dist/maplibre-gl.css";
 
 
 const geistSans = Geist({

@@ -5,7 +5,6 @@ import { useState, useRef, useEffect } from "react";
 import { ArrowRight, Music, Mic, Lightbulb, X } from "lucide-react";
 import { useEventStore } from "@/store/useEventStore";
 import ProgressMap from "@/components/ProgressMap";
-
 import { getNextRoute } from "@/lib/eventFlow";
 import { useRouter, usePathname } from "next/navigation";
 
@@ -56,9 +55,9 @@ export default function EntertainmentSelection() {
   });
 
   const categories = [
-    { id: "Performance", icon: Music, title: "Performance", subtitle: "Dance / Song", color: "#FF6B6B" },
-    { id: "Host", icon: Mic, title: "Host / Emcee", subtitle: "Professional hosting", color: "#4ECDC4" },
-    { id: "LightShow", icon: Lightbulb, title: "Light Show", subtitle: "Visual spectacle", color: "#F38181" }
+    { id: "Performance", icon: Music, title: "Performance", subtitle: "Dance / Song", color: "#FF6B6B", image: "/performance.jpeg" },
+    { id: "Host", icon: Mic, title: "Host / Emcee", subtitle: "Professional hosting", color: "#4ECDC4", image: "/host.jpeg" },
+    { id: "LightShow", icon: Lightbulb, title: "Light Show", subtitle: "Visual spectacle", color: "#F38181", image: "/lights.jpeg" }
   ];
 
   const getCelebritiesForCategory = (category) => {
@@ -99,6 +98,11 @@ export default function EntertainmentSelection() {
     const nextRoute = getNextRoute(eventDetails, pathname);
     router.push(nextRoute);
   };
+
+  useEffect(() => {
+    setSelectedCategory(null);
+    setExpandedCard(null);
+  }, []);
 
   useEffect(() => {
     setSelections({
@@ -165,11 +169,19 @@ export default function EntertainmentSelection() {
                     className="p-8 rounded-3xl cursor-pointer bg-transparent flex flex-col items-center text-center"
                   >
                     <div
-                      className="w-20 h-20 rounded-full flex items-center justify-center mb-6"
-                      style={{ backgroundColor: category.color }}
-                    >
-                      <category.icon size={36} color="white" />
-                    </div>
+  className="w-30 h-30 rounded-full flex items-center justify-center mb-6 overflow-hidden"
+  style={{ backgroundColor: category.color }}
+>
+  {category.image ? (
+    <img
+      src={category.image}
+      alt={category.title}
+      className="w-full h-full object-cover"
+    />
+  ) : (
+    <category.icon size={36} color="white" />
+  )}
+</div>
 
                     <h3 className="text-xl font-bold">{category.title}</h3>
                     <p className="text-gray-500">{category.subtitle}</p>
