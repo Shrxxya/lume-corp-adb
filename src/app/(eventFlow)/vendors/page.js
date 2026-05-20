@@ -307,7 +307,7 @@ setActiveStep("menu");
           onClick={handleSubmit}
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
-          className="w-full px-8 py-5 rounded-full flex items-center justify-center gap-3"
+          className="w-[30%] px-8 mx-auto py-5 rounded-full flex items-center justify-center gap-3"
           style={{
             backgroundColor: "var(--color-dark)",
             color: "var(--color-bg)",

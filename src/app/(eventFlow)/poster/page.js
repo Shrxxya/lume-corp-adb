@@ -390,7 +390,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { ArrowRight, Sparkles, X, Download, Check } from "lucide-react";
 import { useEventStore } from "@/store/useEventStore";
 
@@ -400,6 +400,7 @@ import { useRouter, usePathname } from "next/navigation";
 export default function PosterGenerator() {
   const router = useRouter();
   const pathname = usePathname();
+  const hasGeneratedRef = useRef(false);
 
   const eventDetails = useEventStore((s) => s.eventDetails);
 
@@ -417,10 +418,13 @@ export default function PosterGenerator() {
   const [isEditingPrompt, setIsEditingPrompt] = useState(false);
 
   // local state
-  const [status, setStatus] = useState(poster.status || "idle");
-  const [image, setImage] = useState(poster.generatedData || null);
+    const status = useEventStore((s) => s.poster.status);
+  const image = useEventStore((s) => s.poster.generatedData);
+  const isFinalized = useEventStore((s) => s.poster.finalized);
+  const setPosterFinalized = useEventStore((s) => s.setPosterFinalized);
   const [customPrompt, setCustomPrompt] = useState("");
   const [loading, setLoading] = useState(false);
+  const hasHydrated = useEventStore((s) => s.hasHydrated);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -462,7 +466,6 @@ export default function PosterGenerator() {
   `;
 
   const generatePoster = async () => {
-    setStatus("generating");
     setPosterStatus("generating");
     setLoading(true);
 
@@ -477,10 +480,8 @@ export default function PosterGenerator() {
       const blob = await res.blob();
       const base64 = await blobToBase64(blob);
 
-      setImage(base64);
       setPosterData(base64);
 
-      setStatus("complete");
       setPosterStatus("complete");
     } catch (err) {
       console.error("Poster generation failed", err);
@@ -492,6 +493,7 @@ export default function PosterGenerator() {
   const handleSkip = () => {
     setPosterStatus("skipped");
     setPosterData(null);
+    setPosterFinalized(false);
     handleSubmit();
   };
 
@@ -505,10 +507,20 @@ export default function PosterGenerator() {
   };
 
   useEffect(() => {
-    if(poster.status != "complete"){
+    console.log(summaryData)
+    console.log(isFinalized)
+    console.log(image)
+    if (!hasHydrated) return;
+
+    if (hasGeneratedRef.current) return;
+
+    if (poster?.status === "complete" && poster?.generatedData) return;
+
+    if (!poster?.generatedData) {
+      hasGeneratedRef.current = true;
       generatePoster();
-    }   
-}, []);
+    }
+  }, [hasHydrated]);
 
    return (
 //     <div className="min-h-screen dark:bg-black">
@@ -821,11 +833,15 @@ export default function PosterGenerator() {
           <div className="relative w-full max-w-md group">
 
   {/* BUTTONS (always on top) */}
+  {!isFinalized && (
   <div className="absolute top-3 right-3 z-20 flex items-center gap-2">
 
   {/* ACCEPT */}
     <button
-      onClick={handleSubmit}
+      onClick={() => {
+        setPosterFinalized(true);
+        handleSubmit();
+      }}
       className="px-4 py-2 rounded-full shadow text-sm font-medium flex items-center justify-center"
       style={{
         backgroundColor: "var(--color-dark)",
@@ -844,6 +860,7 @@ export default function PosterGenerator() {
     </button>
 
   </div>
+  )}
 
   <a
     href={image}
@@ -862,8 +879,8 @@ export default function PosterGenerator() {
     />
   </div>
 
-</div>
-
+</div>  
+        {!isFinalized && (
           <div className="mt-6 w-full max-w-xl flex gap-3">
             <textarea
               value={customPrompt}
@@ -879,6 +896,7 @@ export default function PosterGenerator() {
               Regenerate
             </button>
           </div>
+        )}
         </div>
       )}
 
