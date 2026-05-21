@@ -981,6 +981,12 @@ export default function BudgetOptimizer() {
     proceedSubmit();
   };
 
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   useEffect(() => {
     if (!hasHydrated) return;
     if (!summaryData || hasRequested.current) return;
@@ -999,6 +1005,8 @@ export default function BudgetOptimizer() {
       } catch (e) { console.error(e); }
     })();
   }, [hasHydrated]);
+
+  if (!mounted) return null;
 
   // ── SVG ring dimensions ─────────────────────────────────────────────────
   const R = 64, stroke = 5;
@@ -1056,11 +1064,12 @@ export default function BudgetOptimizer() {
                 }}>
                   Balance
                 </h1>
+                {mounted && (
                 <p style={{
                   fontFamily: "var(--font-body, 'DM Sans', sans-serif)",
                   fontSize: "0.9rem",
                   color: "rgba(20,24,42,0.4)",
-                }}>Distribute your ₹{totalEventBudget}L</p>
+                }}>Distribute your ₹{totalEventBudget}L</p>)}
               </div>
 
               {/* SVG allocation ring */}
@@ -1228,15 +1237,21 @@ export default function BudgetOptimizer() {
           <motion.button
             onClick={handleSubmit}
             disabled={isOver}
-            whileHover={{ scale: 1.02 }}
-          whileTap={{ scale: 0.98 }}
-          className="w-full px-8 py-5 rounded-full flex items-center justify-center gap-3"
-          style={{
-            backgroundColor: "var(--color-dark)",
-            color: "var(--color-bg)",
-            fontSize: "1.125rem",
-            fontWeight: 600,
-          }}
+            whileHover={!isOver ? { scale: 1.02 } : undefined}
+            whileTap={!isOver ? { scale: 0.98 } : undefined}
+            className="w-full px-8 py-5 rounded-full flex items-center justify-center gap-3"
+            style={{
+              backgroundColor: isOver
+                ? "rgba(20,24,42,0.2)"
+                : "var(--color-dark)",
+              color: isOver
+                ? "rgba(253,253,248,0.4)"
+                : "var(--color-bg)",
+              fontSize: "1.125rem",
+              fontWeight: 600,
+              cursor: isOver ? "not-allowed" : "pointer",
+              opacity: isOver ? 0.7 : 1,
+            }}
           >
             Continue
             <motion.span>

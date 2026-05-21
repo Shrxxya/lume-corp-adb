@@ -84,7 +84,8 @@ export default function MenuBuilder({ onNext }) {
   const setActiveStep = useEventStore((state) => state.setActiveStep);
 
   const [selectedCuisine, setSelectedCuisine] = useState(menu.selectedCuisine);
-  const [plate, setPlate] = useState(menu.plate || []);
+  const plate = useEventStore((s) => s.menu.plate);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleDishDrop = (dish, cuisineId) => {
     const newDish = {
@@ -92,12 +93,13 @@ export default function MenuBuilder({ onNext }) {
       name: dish.name,
       cuisine: cuisines.find((c) => c.id === cuisineId)?.name || "",
     };
-    setPlate((prev) => [...prev, newDish]);
-    addDishToPlate(newDish);
+    addDishToPlate({
+      name: dish.name,
+      cuisine: cuisines.find((c) => c.id === cuisineId)?.name || "",
+    });
   };
 
   const removeDish = (dishId) => {
-    setPlate((prev) => prev.filter((d) => d.id !== dishId));
     removeDishFromPlate(dishId);
   };
 
@@ -111,6 +113,10 @@ export default function MenuBuilder({ onNext }) {
     const nextRoute = getNextRoute(eventDetails, pathname);
     router.push(nextRoute);
   };
+
+  const hasHydrated = useEventStore((s) => s.hasHydrated);
+
+  if (!hasHydrated) return null;
 
   return (
     <div className="min-h-screen dark:bg-black">
@@ -281,7 +287,7 @@ export default function MenuBuilder({ onNext }) {
                     boxShadow: "0 8px 32px rgba(98,117,76,0.25)",
                   }}
                 >
-                  <div className="flex items-center justify-between gap-4 flex-wrap">
+                  <div className="flex flex-col items-start gap-4">
 
                     <span
                       style={{
@@ -295,7 +301,7 @@ export default function MenuBuilder({ onNext }) {
                       <span style={{ opacity: 0.6 }}>({plate.length})</span>
                     </span>
 
-                    <div className="flex gap-2 flex-wrap justify-end">
+                    <div className="flex flex-wrap gap-2 items-start content-start">
                       {plate.slice(0, 5).map((dish) => (
                         <motion.div
                           key={dish.id}
@@ -318,18 +324,21 @@ export default function MenuBuilder({ onNext }) {
                         </motion.div>
                       ))}
                       {plate.length > 5 && (
-                        <span
+                        <button
+                          onClick={() => setIsModalOpen(true)}
                           style={{
                             fontFamily: "var(--font-body)",
                             fontSize: "0.85rem",
                             color: "var(--color-dark)",
-                            opacity: 0.6,
+                            opacity: 0.7,
                             alignSelf: "center",
                             marginLeft: "4px",
+                            cursor: "pointer",
+                            fontWeight: 600,
                           }}
                         >
                           +{plate.length - 5} more
-                        </span>
+                        </button>
                       )}
                     </div>
                   </div>
@@ -353,6 +362,119 @@ export default function MenuBuilder({ onNext }) {
           </div>
         </motion.div>
       </div>
+      <AnimatePresence>
+  {isModalOpen && (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.18 }}
+      className="fixed inset-0 z-50 flex items-center justify-center px-6"
+      style={{
+        background: "rgba(0,0,0,0.45)",
+        backdropFilter: "blur(6px)",
+      }}
+      onClick={() => setIsModalOpen(false)}
+    >
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: 10 }}
+        transition={{ duration: 0.2 }}
+        onClick={(e) => e.stopPropagation()}
+        className="w-full max-w-2xl rounded-3xl p-7"
+        style={{
+          backgroundColor: "#fdfdf8",
+          backdropFilter: "blur(10px)",
+          border: "1.5px solid var(--color-primary)",
+          boxShadow: "0 8px 32px rgba(98,117,76,0.18)",
+        }}
+      >
+        {/* Header */}
+        <div className="flex items-center justify-between mb-6">
+          <div>
+            <h2
+              style={{
+                fontFamily: "var(--font-serif)",
+                fontSize: "2rem",
+                fontStyle: "italic",
+                color: "var(--color-dark)",
+              }}
+            >
+              Your Plate
+            </h2>
+
+            <p
+              style={{
+                fontFamily: "var(--font-body)",
+                fontSize: "0.9rem",
+                opacity: 0.6,
+                marginTop: "2px",
+              }}
+            >
+              {plate.length} selected dishes
+            </p>
+          </div>
+
+          <button
+            onClick={() => setIsModalOpen(false)}
+            className="w-9 h-9 rounded-full flex items-center justify-center"
+            style={{
+              backgroundColor: "rgba(98,117,76,0.12)",
+              color: "var(--color-dark)",
+            }}
+          >
+            <X size={18} />
+          </button>
+        </div>
+
+        {/* Pills */}
+        <div className="flex flex-wrap gap-3">
+          {plate.map((dish) => (
+            <div
+              key={dish.id}
+              className="px-4 py-2 rounded-full flex items-center gap-3"
+              style={{
+                backgroundColor: "var(--color-primary)",
+                color: "var(--color-bg)",
+              }}
+            >
+              <div className="flex flex-col leading-tight">
+                <span
+                  style={{
+                    fontSize: "0.92rem",
+                    fontWeight: 600,
+                  }}
+                >
+                  {dish.name}
+                </span>
+
+                <span
+                  style={{
+                    fontSize: "0.72rem",
+                    opacity: 0.7,
+                  }}
+                >
+                  {dish.cuisine}
+                </span>
+              </div>
+
+              <button
+                onClick={() => removeDish(dish.id)}
+                className="flex items-center justify-center"
+                style={{
+                  opacity: 0.7,
+                }}
+              >
+                <X size={14} />
+              </button>
+            </div>
+          ))}
+        </div>
+      </motion.div>
+    </motion.div>
+  )}
+</AnimatePresence>
     </div>
   );
 }

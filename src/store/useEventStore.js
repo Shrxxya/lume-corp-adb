@@ -13,7 +13,6 @@ export const useEventStore = create(
         guestCount: "",
         eventType: "",
         budget: "",
-        city: "",
         venueType: "",
       },
       setEventDetails: (details) =>
@@ -131,12 +130,18 @@ setFormValid: (val) => set({ formValid: val }),
           menu: { ...state.menu, selectedCuisine: cuisine },
         })),
       addDishToPlate: (dish) =>
-        set((state) => ({
-          menu: {
-            ...state.menu,
-            plate: [...state.menu.plate, { id: Date.now(), ...dish }],
-          },
-        })),
+      set((state) => ({
+        menu: {
+          ...state.menu,
+          plate: [
+            ...state.menu.plate,
+            {
+              id: crypto.randomUUID(),
+              ...dish,
+            },
+          ],
+        },
+      })),
       removeDishFromPlate: (dishId) =>
         set((state) => ({
           menu: {
@@ -276,7 +281,6 @@ setFormValid: (val) => set({ formValid: val }),
             guestCount: "",
             eventType: "",
             budget: "",
-            city: "",
             venueType: "",
           },
           selectedVenue: null,

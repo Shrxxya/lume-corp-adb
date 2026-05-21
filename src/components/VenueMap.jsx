@@ -25,7 +25,7 @@ export default function VenueMap({
           osm: {
             type: "raster",
             tiles: [
-              "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
+              "https://basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png"
             ],
             tileSize: 256,
           },
@@ -168,7 +168,7 @@ export default function VenueMap({
         height: "500px",
         borderRadius: "20px",
         overflow: "hidden",
-
+        border: "2px solid #62754c",
         // earthy green tint
         //filter: "hue-rotate(85deg) saturate(1.2)",
       }}

@@ -1536,8 +1536,13 @@ export default function FinalSummary({ appData, onReset }) {
   const [currentStep] = useState(12);
 
   const { scrollYProgress } = useScroll({ target: heroRef });
-  const heroOpacity = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
-  const heroY = useTransform(scrollYProgress, [0, 0.5], [0, -60]);
+  const heroY = useTransform(scrollYProgress, [0, 1400], [0, -80]);
+
+  const heroOpacity = useTransform(
+    scrollYProgress,
+    [0, 700, 1200],
+    [1, 1, 0]
+  );
 
   const loadCashfree = () => new Promise((resolve) => {
     const script = document.createElement("script");
@@ -1585,6 +1590,7 @@ export default function FinalSummary({ appData, onReset }) {
   const [isGenerating, setIsGenerating] = useState(false);
   const [isSending, setIsSending] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
+  const [modalImage, setModalImage] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const hasHydrated = useEventStore((s) => s.hasHydrated);
@@ -1605,6 +1611,16 @@ export default function FinalSummary({ appData, onReset }) {
   const quotation = useMemo(() => calculateQuotation(summaryData), [summaryData]);
 
   const hasEntertainment = summaryData.entertainment?.artist || summaryData.entertainment?.host || summaryData.entertainment?.lightShow;
+
+  const smoothY = useSpring(heroY, {
+    stiffness: 90,
+    damping: 22,
+  });
+
+  const smoothOpacity = useSpring(heroOpacity, {
+    stiffness: 90,
+    damping: 22,
+  });
 
   const generatePdfIfNeeded = async () => {
     if (isGenerating || isSending) return;
@@ -1681,8 +1697,11 @@ export default function FinalSummary({ appData, onReset }) {
         {/* ══ HERO ═══════════════════════════════════════════════════════════ */}
         <motion.div
           ref={heroRef}
-          style={{ opacity: heroOpacity, y: heroY }}
-          className="relative min-h-screen flex flex-col justify-center items-center text-center px-6 pt-24 pb-16"
+          style={{
+            y: smoothY,
+            opacity: smoothOpacity,
+          }}
+          className="relative mt-1 min-h-screen flex flex-col justify-center items-center text-center px-6 pt-24 pb-16"
         >
           {/* Large decorative event name behind */}
           <div
@@ -1749,7 +1768,7 @@ export default function FinalSummary({ appData, onReset }) {
             initial={{ opacity: 0 }}
             animate={{ opacity: 0.55 }}
             transition={{ duration: 0.8, delay: 0.5 }}
-            style={{ fontFamily: "var(--font-body)", fontSize: "1.1rem", color: "var(--color-dark-mid)", marginBottom: "3.5rem" }}
+            style={{ fontFamily: "var(--font-body)", fontSize: "1.1rem", color: "var(--color-dark-mid)", marginBottom: "2rem" }}
           >
             Engineered. Mastered. Ready.
           </motion.p>
@@ -1761,7 +1780,7 @@ export default function FinalSummary({ appData, onReset }) {
 
           {/* Scroll cue */}
           <motion.div
-            className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
+            className="absolute bottom-2 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
             animate={{ y: [0, 8, 0] }}
             transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
           >
@@ -1771,7 +1790,7 @@ export default function FinalSummary({ appData, onReset }) {
         </motion.div>
 
         {/* ══ CONTENT ════════════════════════════════════════════════════════ */}
-        <div className="max-w-5xl mx-auto px-6 pb-32 space-y-32">
+        <div className="max-w-5xl mx-auto px-6 pb-15 space-y-32">
 
           {/* ── BUDGET ──────────────────────────────────────────────────────── */}
           <section>
@@ -1985,7 +2004,7 @@ export default function FinalSummary({ appData, onReset }) {
                   The <em>Stage</em>
                 </h2>
                 <div className="rounded-2xl overflow-hidden" style={{ boxShadow: "0 12px 40px rgba(20,24,42,0.12)" }}>
-                  <img src={summaryData.theme.image} className="w-full h-52 object-cover" />
+                  <img src={summaryData.theme.image} className="w-full h-48 object-cover" />
                   <div className="p-4" style={{ background: "rgba(253,253,248,0.9)", backdropFilter: "blur(12px)" }}>
                     <p style={{ fontFamily: "var(--font-body)", fontWeight: 600, color: "var(--color-dark)" }}>{summaryData.theme.label}</p>
                   </div>
@@ -2010,18 +2029,39 @@ export default function FinalSummary({ appData, onReset }) {
                     whileHover={{ scale: 1.02 }}
                     className="cursor-zoom-in rounded-2xl overflow-hidden"
                     style={{ boxShadow: "0 20px 60px rgba(20,24,42,0.15)" }}
-                    onClick={() => setIsModalOpen(true)}
+                    onClick={() => {
+                      setModalImage(summaryData.poster);
+                      setIsModalOpen(true);
+                    }}
                   >
-                    <img src={summaryData.poster} className="w-full" />
+                    <div className="aspect-[4/3] w-full">
+                      <img
+                        src={summaryData.poster}
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
                   </motion.div>
                 </Reveal>
               )}
               {generatedCanvasImage && (
                 <Reveal delay={0.15}>
                   <p style={{ fontFamily: "var(--font-body)", fontSize: "0.7rem", fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", color: "var(--color-accent)", marginBottom: "1rem" }}>Event Setup</p>
-                  <div className="rounded-2xl overflow-hidden" style={{ boxShadow: "0 20px 60px rgba(20,24,42,0.15)" }}>
-                    <img src={generatedCanvasImage} className="w-full" />
-                  </div>
+                    <motion.div
+                      whileHover={{ scale: 1.02 }}
+                      className="cursor-zoom-in rounded-2xl overflow-hidden"
+                      style={{ boxShadow: "0 20px 60px rgba(20,24,42,0.15)" }}
+                      onClick={() => {
+                        setModalImage(generatedCanvasImage);
+                        setIsModalOpen(true);
+                      }}
+                    >
+                    <div className="aspect-[4/3] w-full">
+                      <img
+                        src={generatedCanvasImage}
+                        className="w-full h-full object-contain"
+                      />
+                    </div>
+                  </motion.div>
                 </Reveal>
               )}
             </div>
@@ -2156,7 +2196,7 @@ export default function FinalSummary({ appData, onReset }) {
 
       {/* ── POSTER MODAL ──────────────────────────────────────────────────── */}
       <AnimatePresence>
-        {isModalOpen && summaryData.poster && (
+        {isModalOpen && modalImage && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -2169,7 +2209,7 @@ export default function FinalSummary({ appData, onReset }) {
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
               transition={{ ease: [0.16, 1, 0.3, 1] }}
-              src={summaryData.poster}
+              src={modalImage}
               onClick={(e) => e.stopPropagation()}
               className="max-h-[90vh] max-w-[90vw] rounded-2xl"
               style={{ boxShadow: "0 40px 120px rgba(0,0,0,0.5)" }}

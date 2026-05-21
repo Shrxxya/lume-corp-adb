@@ -160,14 +160,14 @@ setActiveStep("menu");
         </p>
 
         {/* Vendor Carousel */}
-        <div className="overflow-x-auto mb-8 hide-scrollbar"
+        <div className="overflow-x-auto mb-6 custom-scrollbar"
         // style={{
         //             scrollbarWidth: "thin",
         //             scrollbarColor: "#62754c transparent",
         //             scrollbarbutton: "none",
         //         }}
                 >
-          <div className="flex gap-6 px-4" style={{ width: "max-content" }}>
+          <div className="flex gap-6 px-4 mb-1" style={{ width: "max-content" }}>
             {vendorsList.map((vendor, idx) => {
               const isShortlisted = shortlistedIds.includes(vendor.id);
               
@@ -183,7 +183,7 @@ setActiveStep("menu");
                   onMouseLeave={() => setHoveredVendor(null)}
                   className="flex-shrink-0 rounded-3xl overflow-hidden relative group cursor-pointer mt-2"
                   style={{
-                    width: "400px",
+                    width: "380px",
                     height: "300px",
                     backgroundColor: "var(--glass-fill)",
                     backdropFilter: "blur(var(--blur))",

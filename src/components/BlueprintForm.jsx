@@ -416,7 +416,6 @@ const [dtStep, setDtStep] = useState("date");
     guestCount: eventDetails.guestCount || "",
     eventType: eventDetails.eventType || "",
     budget: eventDetails.budget || "",
-    city: eventDetails.city || "",
     venueType: eventDetails.venueType || "",
   });
 
@@ -476,7 +475,6 @@ const [dtStep, setDtStep] = useState("date");
     formData.guestCount &&
     formData.eventType &&
     formData.budget &&
-    formData.city &&
     formData.venueType;
 
   const firstInputRef = useRef(null);
@@ -521,7 +519,6 @@ const [dtStep, setDtStep] = useState("date");
     formData.guestCount &&
     formData.eventType &&
     formData.budget &&
-    formData.city &&
     formData.venueType;
 
   setFormValid(Boolean(isValid));
@@ -538,7 +535,6 @@ const [dtStep, setDtStep] = useState("date");
     guestCount: eventDetails.guestCount || "",
     eventType: eventDetails.eventType || "",
     budget: eventDetails.budget || "",
-    city: eventDetails.city || "",
     venueType: eventDetails.venueType || "",
   });
 }, [hasHydrated]);
@@ -877,6 +873,11 @@ const [dtStep, setDtStep] = useState("date");
             </div>
           </div>
 
+          <Map
+            summaryData={formData}
+            onSelectVenue={setSelectedVenue}
+          />
+
           <label
               style={{
                 fontFamily: "var(--font-body)",
@@ -934,11 +935,6 @@ const [dtStep, setDtStep] = useState("date");
               );
             })}
           </div>
-
-          <Map
-            summaryData={formData}
-            onSelectVenue={setSelectedVenue}
-          />
 
           <motion.button
             type="submit"

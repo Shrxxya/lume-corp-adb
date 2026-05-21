@@ -446,6 +446,387 @@
 
 
 
+// "use client";
+
+// import { useEffect, useMemo, useState } from "react";
+// import { motion } from "framer-motion";
+// import {
+//   LineChart,
+//   Line,
+//   XAxis,
+//   Tooltip,
+//   ResponsiveContainer,
+//   ReferenceLine,
+// } from "recharts";
+// import { ArrowRight, CloudRain, Sun, Moon, Home } from "lucide-react";
+
+// import { useEventStore } from "@/store/useEventStore";
+// import { useRouter, usePathname } from "next/navigation";
+// import { getNextRoute } from "@/lib/eventFlow";
+
+// export default function WeatherPage() {
+//   const router = useRouter();
+//   const pathname = usePathname();
+
+//   const eventDetails = useEventStore((s) => s.eventDetails);
+//   const completeStep = useEventStore((s) => s.completeStep);
+//   const setStep = useEventStore((s) => s.setStep);
+//   const setActiveStep = useEventStore((s) => s.setActiveStep);
+
+//   const [weatherData, setWeatherData] = useState(null);
+
+//   const eventDate = new Date(eventDetails?.date);
+//   const eventTime = eventDetails?.time || "18:00";
+
+//   const today = new Date();
+//   const daysUntilEvent = Math.ceil(
+//     (eventDate - today) / (1000 * 60 * 60 * 24)
+//   );
+
+//   const isWithinForecast = daysUntilEvent >= 0 && daysUntilEvent <= 16;
+//   const WEATHER_CODE_MAP = {
+//     0: "Clear sky",
+
+//     1: "Mainly clear",
+//     2: "Partly cloudy",
+//     3: "Overcast",
+
+//     45: "Fog",
+//     48: "Rime fog",
+
+//     51: "Light drizzle",
+//     53: "Moderate drizzle",
+//     55: "Heavy drizzle",
+
+//     56: "Freezing drizzle (light)",
+//     57: "Freezing drizzle (dense)",
+
+//     61: "Light rain",
+//     63: "Moderate rain",
+//     65: "Heavy rain",
+
+//     66: "Freezing rain (light)",
+//     67: "Freezing rain (heavy)",
+
+//     71: "Light snow",
+//     73: "Moderate snow",
+//     75: "Heavy snow",
+
+//     77: "Snow grains",
+
+//     80: "Light rain showers",
+//     81: "Moderate rain showers",
+//     82: "Violent rain showers",
+
+//     85: "Light snow showers",
+//     86: "Heavy snow showers",
+
+//     95: "Thunderstorm",
+//     96: "Thunderstorm with hail",
+//     99: "Severe thunderstorm with hail",
+//   };
+
+//   // parse hour
+//   const getHour = () => {
+//     const [time, modifier] = eventTime.split(" ");
+//     let [h] = time.split(":").map(Number);
+
+//     if (modifier === "PM" && h !== 12) h += 12;
+//     if (modifier === "AM" && h === 12) h = 0;
+
+//     return h;
+//   };
+
+//   const eventHour = getHour();
+
+//   // background logic
+//   const getBackground = () => {
+//     // if (eventHour >= 6 && eventHour < 12) return "#FFE8A3"; // morning
+//     // if (eventHour >= 12 && eventHour < 16) return "#FFE8A3"; // day
+//     // if (eventHour >= 16 && eventHour < 18) return "linear-gradient(to bottom, #2F3E66, #5F7FA3, #C9D6E3, #F2B36A, #FFE08A)"; // sunset
+//     // return "#2D2A5A"; // night
+//     if (eventHour >= 6 && eventHour < 10)
+//       return "linear-gradient(to bottom, #FFE6A6, #FFD07A, #F7B267)"; // sunrise
+
+//     if (eventHour >= 10 && eventHour < 12)
+//       return "linear-gradient(to bottom, #FFF1C1, #FFD98A, #FFBE76)"; // late morning
+
+//     if (eventHour >= 12 && eventHour < 16)
+//       return "linear-gradient(to bottom, #87CEEB, #FFD36E, #FFA94D)"; // midday
+
+//     if (eventHour >= 16 && eventHour < 18)
+//       return "linear-gradient(to bottom, #2F3E66, #5F7FA3, #C9D6E3, #F2B36A, #FFE08A)"; // sunset
+
+//     if (eventHour >= 18 && eventHour < 20)
+//       return "linear-gradient(to bottom, #1E2A4A, #3B4F7A, #6C86A8, #E29578)"; // dusk
+
+//     return "linear-gradient(to bottom, #0B1026, #1C1B3A, #2D2A5A, #3B2F63)"; // night
+//   };
+
+//   const isNight = eventHour >= 19 || eventHour < 6;
+//   const isDark = eventHour >= 16 || eventHour < 6;
+
+//   useEffect(() => {
+//     async function loadWeather() {
+//       const res = await fetch("/api/weather?lat=12.9716&lon=77.5946");
+//       const data = await res.json();
+//       setWeatherData(data);
+//     }
+//     loadWeather();
+//   }, []);
+
+//   if (!isWithinForecast) {
+//     return (
+//       <div className="min-h-screen flex items-center justify-center">
+//         Event beyond forecast range
+//       </div>
+//     );
+//   }
+
+//   if (!weatherData) {
+//   return (
+//     <div className="min-h-screen flex items-center justify-center bg-[var(--color-bg)]">
+//       <motion.div
+//         initial={{ opacity: 0, scale: 0.9 }}
+//         animate={{ opacity: 1, scale: 1 }}
+//         transition={{ duration: 0.6, ease: "easeOut" }}
+//         className="flex flex-col items-center text-center px-6"
+//       >
+//         {/* soft glowing orb */}
+//         <motion.div
+//           animate={{
+//             scale: [1, 1.15, 1],
+//             opacity: [0.6, 0.9, 0.6],
+//           }}
+//           transition={{
+//             duration: 2.2,
+//             repeat: Infinity,
+//             ease: "easeInOut",
+//           }}
+//           className="w-20 h-20 rounded-full blur-xl"
+//           style={{
+//             background:
+//               "radial-gradient(circle, var(--color-primary), transparent 70%)",
+//           }}
+//         />
+
+//         {/* spinner ring */}
+//         <motion.div
+//           animate={{ rotate: 360 }}
+//           transition={{
+//             repeat: Infinity,
+//             duration: 1.2,
+//             ease: "linear",
+//           }}
+//           className="absolute w-16 h-16 border-2 border-[var(--color-primary)] border-t-transparent rounded-full"
+//         />
+
+//         {/* text */}
+//         <div className="mt-10 space-y-2">
+//           <h2
+//             className="text-lg font-semibold"
+//             style={{ color: "var(--color-dark)" }}
+//           >
+//             Fetching weather insights
+//           </h2>
+
+//           <p
+//             className="text-sm opacity-70"
+//             style={{ color: "var(--color-dark)" }}
+//           >
+//             Preparing forecast for your event day...
+//           </p>
+//         </div>
+//       </motion.div>
+//     </div>
+//   );
+// }
+
+//   // transform data
+//   const chartData = weatherData.time.map((t, i) => ({
+//     date: new Date(t).toLocaleDateString("en-IN", {
+//       day: "numeric",
+//       month: "short",
+//     }),
+//     max: Number(weatherData.maxTemp[i].toFixed(2)),
+//     min: Number(weatherData.minTemp[i].toFixed(2)),
+//     rain: Number(weatherData.precipitation[i].toFixed(2)),
+//   }));
+
+//   const eventDay = chartData[daysUntilEvent];
+//   const rainChance = weatherData.precipitationProbability[daysUntilEvent];
+//   //const weatherCode = weatherData.weatherCode[daysUntilEvent];
+//   const weatherCodeRaw = weatherData.weatherCode?.[daysUntilEvent];
+//   const weatherLabel =
+//     WEATHER_CODE_MAP[weatherCodeRaw] || "Unknown conditions";
+
+//   // const chartData = weatherData.time.map((t, i) => ({
+//   //   date: new Date(t).toLocaleDateString("en-IN", { day: "numeric", month: "short" }),
+//   //   max: weatherData.maxTemp[i],
+//   //   min: weatherData.minTemp[i],
+//   //   rain: weatherData.precipitation[i],
+//   // }));
+
+//   const eventDayWeather = chartData[daysUntilEvent] || chartData[0];
+
+//   const isRainy = eventDayWeather?.rain > 5;
+//   const isHot = eventDayWeather?.max > 32;
+
+//   // convert precipitation → "chance"
+//   const rainMM = Number(eventDay.rain).toFixed(2);
+
+//   const eventTemp = Math.round(
+//     (eventDay.max + eventDay.min) / 2
+//   );
+
+//   const handleContinue = () => {
+//     completeStep("weather");
+//     setStep("vendors");
+//     setActiveStep("vendors");
+//     router.push(getNextRoute(eventDetails, pathname));
+//   };
+
+//   return (
+//     <div className="flex min-h-screen pt-20">
+
+//       {/* LEFT PANEL */}
+//       <motion.div
+//         className={`w-1/4 p-6 flex flex-col justify-between ${
+//           isDark ? 'text-white' : 'text-gray-800'
+//         }`}
+//         style={{ background: getBackground() }}
+//       >
+//         <div>
+//           <h2 className="text-xl font-bold mb-2">Event Weather</h2>
+//           <p className="text-sm opacity-70">
+//             {eventDate.toDateString()}
+//           </p>
+
+//           <div className="text-5xl font-bold">
+//             {eventTemp}°C
+//           </div>
+
+//           <p className="opacity-80 mt-2">
+//             {eventHour}:00 hrs
+//           </p>
+
+//           <div className="mt-4">
+//             {isNight ? <Moon size={32} /> : <Sun size={32} />}
+//           </div>
+//         </div>
+//       </motion.div>
+
+//       {/* RIGHT CONTENT */}
+//       <div className="flex flex-col w-full">
+//       {/* HEADER */}
+//        <div className="text-center mb-10">
+//          <h1 className="text-4xl font-serif italic font-medium">Weather Insights</h1>
+//          <p className="opacity-60 mt-2">
+//            {daysUntilEvent} days until your event
+//          </p>
+//        </div>
+
+//        {/* ALERTS */}
+//       <div className="max-w-4xl mx-auto mb-8 space-y-3">
+
+//          {isRainy && (
+//           <div className="flex items-center gap-3 p-4 rounded-xl bg-blue-50 text-blue-700">
+//             <CloudRain />
+//             Rain expected on event day — consider backup indoor setup.
+//           </div>
+//         )}
+
+//         {eventDetails?.venueType === "Open Air" && (
+//           <div className="flex items-center gap-3 p-4 rounded-xl bg-green-50 text-green-700">
+//             <Home />
+//             Suggested: Add indoor decor fallback option.
+//           </div>
+//         )}
+
+//         {isHot && (
+//           <div className="flex items-center gap-3 p-4 rounded-xl bg-orange-50 text-orange-700">
+//             <Sun />
+//             High temperature expected — ensure cooling & hydration.
+//           </div>
+//         )}
+//       </div>
+
+//       <div className="p-6">
+
+//       {/* CHART */}
+//       <div className="w-full mx-auto bg-white p-6 rounded-2xl shadow-sm mb-10">
+//         <h2 className="font-semibold mb-4">16-Day Forecast</h2>
+
+//         <ResponsiveContainer width="100%" height={250}>
+//           <LineChart data={chartData}>
+//             <XAxis dataKey="date" />
+//             <Tooltip />
+//             <Line type="monotone" dataKey="max" stroke="#ff6b6b" />
+//             <Line type="monotone" dataKey="min" stroke="#4e9cff" />
+//             <Line type="monotone" dataKey="rain" stroke="#62754c" />
+//           </LineChart>
+//         </ResponsiveContainer>
+//       </div>
+
+//       {/* EVENT DAY SUMMARY */}
+//       <div className="w-full mx-auto grid grid-cols-3 gap-4 mb-10">
+
+//         <div className="p-4 bg-white rounded-xl">
+//           <p className="text-sm opacity-60">Max Temp</p>
+//           <p className="text-xl font-bold">{eventDayWeather.max}°C</p>
+//         </div>
+
+//         <div className="p-4 bg-white rounded-xl">
+//           <p className="text-sm opacity-60">Min Temp</p>
+//           <p className="text-xl font-bold">{eventDayWeather.min}°C</p>
+//         </div>
+
+//         <div className="p-4 bg-white rounded-xl">
+//           <p className="text-sm opacity-60">Precipitation</p>
+//           <p className="text-xl font-bold">{rainMM} mm</p>
+//         </div>
+//       </div>
+
+//       <div className="w-full mx-auto grid grid-cols-2 gap-4 mb-10">
+
+//         <div className="p-4 bg-white rounded-xl">
+//           <p className="text-sm opacity-60">Chance of Rain</p>
+//           <p className="text-xl font-bold">{rainChance}%</p>
+//         </div>
+
+//         <div className="p-4 bg-white rounded-xl">
+//           <p className="text-sm opacity-60">Weather Forecast</p>
+//           <p className="text-xl font-bold">{weatherLabel}</p>
+//         </div>
+//       </div>
+
+//       {/* CONTINUE */}
+//       <div className="w-[30%] mx-auto">
+//         <button
+//           onClick={handleContinue}
+//           className="w-full py-4 rounded-full bg-[var(--color-dark)] text-white flex items-center justify-center gap-2"
+//         >
+//           Continue <ArrowRight size={18} />
+//         </button>
+//       </div>
+//       </div>
+//     </div>
+//     </div>
+//   );
+// }
+
+// export function isWithinForecastRange(eventDateStr, forecastDays = 16) {
+//   if (!eventDateStr) return false;
+
+//   const eventDate = new Date(eventDateStr);
+//   const today = new Date();
+
+//   const maxDate = new Date();
+//   maxDate.setDate(today.getDate() + forecastDays);
+
+//   return eventDate >= today && eventDate <= maxDate;
+// }
+
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
@@ -484,43 +865,33 @@ export default function WeatherPage() {
   );
 
   const isWithinForecast = daysUntilEvent >= 0 && daysUntilEvent <= 16;
+
   const WEATHER_CODE_MAP = {
     0: "Clear sky",
-
     1: "Mainly clear",
     2: "Partly cloudy",
     3: "Overcast",
-
     45: "Fog",
     48: "Rime fog",
-
     51: "Light drizzle",
     53: "Moderate drizzle",
     55: "Heavy drizzle",
-
     56: "Freezing drizzle (light)",
     57: "Freezing drizzle (dense)",
-
     61: "Light rain",
     63: "Moderate rain",
     65: "Heavy rain",
-
     66: "Freezing rain (light)",
     67: "Freezing rain (heavy)",
-
     71: "Light snow",
     73: "Moderate snow",
     75: "Heavy snow",
-
     77: "Snow grains",
-
     80: "Light rain showers",
     81: "Moderate rain showers",
     82: "Violent rain showers",
-
     85: "Light snow showers",
     86: "Heavy snow showers",
-
     95: "Thunderstorm",
     96: "Thunderstorm with hail",
     99: "Severe thunderstorm with hail",
@@ -541,26 +912,17 @@ export default function WeatherPage() {
 
   // background logic
   const getBackground = () => {
-    // if (eventHour >= 6 && eventHour < 12) return "#FFE8A3"; // morning
-    // if (eventHour >= 12 && eventHour < 16) return "#FFE8A3"; // day
-    // if (eventHour >= 16 && eventHour < 18) return "linear-gradient(to bottom, #2F3E66, #5F7FA3, #C9D6E3, #F2B36A, #FFE08A)"; // sunset
-    // return "#2D2A5A"; // night
     if (eventHour >= 6 && eventHour < 10)
-      return "linear-gradient(to bottom, #FFE6A6, #FFD07A, #F7B267)"; // sunrise
-
+      return "linear-gradient(to bottom, #FFE6A6, #FFD07A, #F7B267)";
     if (eventHour >= 10 && eventHour < 12)
-      return "linear-gradient(to bottom, #FFF1C1, #FFD98A, #FFBE76)"; // late morning
-
+      return "linear-gradient(to bottom, #FFF1C1, #FFD98A, #FFBE76)";
     if (eventHour >= 12 && eventHour < 16)
-      return "linear-gradient(to bottom, #87CEEB, #FFD36E, #FFA94D)"; // midday
-
+      return "linear-gradient(to bottom, #87CEEB, #FFD36E, #FFA94D)";
     if (eventHour >= 16 && eventHour < 18)
-      return "linear-gradient(to bottom, #2F3E66, #5F7FA3, #C9D6E3, #F2B36A, #FFE08A)"; // sunset
-
+      return "linear-gradient(to bottom, #2F3E66, #5F7FA3, #C9D6E3, #F2B36A, #FFE08A)";
     if (eventHour >= 18 && eventHour < 20)
-      return "linear-gradient(to bottom, #1E2A4A, #3B4F7A, #6C86A8, #E29578)"; // dusk
-
-    return "linear-gradient(to bottom, #0B1026, #1C1B3A, #2D2A5A, #3B2F63)"; // night
+      return "linear-gradient(to bottom, #1E2A4A, #3B4F7A, #6C86A8, #E29578)";
+    return "linear-gradient(to bottom, #0B1026, #1C1B3A, #2D2A5A, #3B2F63)";
   };
 
   const isNight = eventHour >= 19 || eventHour < 6;
@@ -584,63 +946,62 @@ export default function WeatherPage() {
   }
 
   if (!weatherData) {
-  return (
-    <div className="min-h-screen flex items-center justify-center bg-[var(--color-bg)]">
-      <motion.div
-        initial={{ opacity: 0, scale: 0.9 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.6, ease: "easeOut" }}
-        className="flex flex-col items-center text-center px-6"
-      >
-        {/* soft glowing orb */}
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-[var(--color-bg)]">
         <motion.div
-          animate={{
-            scale: [1, 1.15, 1],
-            opacity: [0.6, 0.9, 0.6],
-          }}
-          transition={{
-            duration: 2.2,
-            repeat: Infinity,
-            ease: "easeInOut",
-          }}
-          className="w-20 h-20 rounded-full blur-xl"
-          style={{
-            background:
-              "radial-gradient(circle, var(--color-primary), transparent 70%)",
-          }}
-        />
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.6, ease: "easeOut" }}
+          className="flex flex-col items-center text-center px-6"
+        >
+          {/* soft glowing orb */}
+          <motion.div
+            animate={{
+              scale: [1, 1.15, 1],
+              opacity: [0.6, 0.9, 0.6],
+            }}
+            transition={{
+              duration: 2.2,
+              repeat: Infinity,
+              ease: "easeInOut",
+            }}
+            className="w-20 h-20 rounded-full blur-xl"
+            style={{
+              background:
+                "radial-gradient(circle, var(--color-primary), transparent 70%)",
+            }}
+          />
 
-        {/* spinner ring */}
-        <motion.div
-          animate={{ rotate: 360 }}
-          transition={{
-            repeat: Infinity,
-            duration: 1.2,
-            ease: "linear",
-          }}
-          className="absolute w-16 h-16 border-2 border-[var(--color-primary)] border-t-transparent rounded-full"
-        />
+          {/* spinner ring */}
+          <motion.div
+            animate={{ rotate: 360 }}
+            transition={{
+              repeat: Infinity,
+              duration: 1.2,
+              ease: "linear",
+            }}
+            className="absolute w-16 h-16 border-2 border-[var(--color-primary)] border-t-transparent rounded-full"
+          />
 
-        {/* text */}
-        <div className="mt-10 space-y-2">
-          <h2
-            className="text-lg font-semibold"
-            style={{ color: "var(--color-dark)" }}
-          >
-            Fetching weather insights
-          </h2>
-
-          <p
-            className="text-sm opacity-70"
-            style={{ color: "var(--color-dark)" }}
-          >
-            Preparing forecast for your event day...
-          </p>
-        </div>
-      </motion.div>
-    </div>
-  );
-}
+          {/* text */}
+          <div className="mt-10 space-y-2">
+            <h2
+              className="text-lg font-semibold"
+              style={{ color: "var(--color-dark)" }}
+            >
+              Fetching weather insights
+            </h2>
+            <p
+              className="text-sm opacity-70"
+              style={{ color: "var(--color-dark)" }}
+            >
+              Preparing forecast for your event day...
+            </p>
+          </div>
+        </motion.div>
+      </div>
+    );
+  }
 
   // transform data
   const chartData = weatherData.time.map((t, i) => ({
@@ -655,24 +1016,15 @@ export default function WeatherPage() {
 
   const eventDay = chartData[daysUntilEvent];
   const rainChance = weatherData.precipitationProbability[daysUntilEvent];
-  //const weatherCode = weatherData.weatherCode[daysUntilEvent];
   const weatherCodeRaw = weatherData.weatherCode?.[daysUntilEvent];
   const weatherLabel =
     WEATHER_CODE_MAP[weatherCodeRaw] || "Unknown conditions";
-
-  // const chartData = weatherData.time.map((t, i) => ({
-  //   date: new Date(t).toLocaleDateString("en-IN", { day: "numeric", month: "short" }),
-  //   max: weatherData.maxTemp[i],
-  //   min: weatherData.minTemp[i],
-  //   rain: weatherData.precipitation[i],
-  // }));
 
   const eventDayWeather = chartData[daysUntilEvent] || chartData[0];
 
   const isRainy = eventDayWeather?.rain > 5;
   const isHot = eventDayWeather?.max > 32;
 
-  // convert precipitation → "chance"
   const rainMM = Number(eventDay.rain).toFixed(2);
 
   const eventTemp = Math.round(
@@ -687,130 +1039,126 @@ export default function WeatherPage() {
   };
 
   return (
-    <div className="flex min-h-screen pt-20">
+    <div className="min-h-screen pt-20 bg-[var(--color-bg)]">
+      <div className="max-w-6xl mx-auto px-6 py-8">
 
-      {/* LEFT PANEL */}
-      <motion.div
-        className={`w-1/4 p-6 flex flex-col justify-between ${
-          isDark ? 'text-white' : 'text-gray-800'
-        }`}
-        style={{ background: getBackground() }}
-      >
-        <div>
-          <h2 className="text-xl font-bold mb-2">Event Weather</h2>
-          <p className="text-sm opacity-70">
-            {eventDate.toDateString()}
+        {/* HEADER */}
+        <div className="text-center mb-10">
+          <h1 className="text-4xl font-serif italic font-medium">Weather Insights</h1>
+          <p className="opacity-60 mt-2">
+            {daysUntilEvent} days until your event
           </p>
-
-          <div className="text-5xl font-bold">
-            {eventTemp}°C
-          </div>
-
-          <p className="opacity-80 mt-2">
-            {eventHour}:00 hrs
-          </p>
-
-          <div className="mt-4">
-            {isNight ? <Moon size={32} /> : <Sun size={32} />}
-          </div>
-        </div>
-      </motion.div>
-
-      {/* RIGHT CONTENT */}
-      <div className="flex flex-col w-full">
-      {/* HEADER */}
-       <div className="text-center mb-10">
-         <h1 className="text-4xl font-serif italic font-medium">Weather Insights</h1>
-         <p className="opacity-60 mt-2">
-           {daysUntilEvent} days until your event
-         </p>
-       </div>
-
-       {/* ALERTS */}
-      <div className="max-w-4xl mx-auto mb-8 space-y-3">
-
-         {isRainy && (
-          <div className="flex items-center gap-3 p-4 rounded-xl bg-blue-50 text-blue-700">
-            <CloudRain />
-            Rain expected on event day — consider backup indoor setup.
-          </div>
-        )}
-
-        {eventDetails?.venueType === "Open Air" && (
-          <div className="flex items-center gap-3 p-4 rounded-xl bg-green-50 text-green-700">
-            <Home />
-            Suggested: Add indoor decor fallback option.
-          </div>
-        )}
-
-        {isHot && (
-          <div className="flex items-center gap-3 p-4 rounded-xl bg-orange-50 text-orange-700">
-            <Sun />
-            High temperature expected — ensure cooling & hydration.
-          </div>
-        )}
-      </div>
-
-      <div className="p-6">
-
-      {/* CHART */}
-      <div className="w-full mx-auto bg-white p-6 rounded-2xl shadow-sm mb-10">
-        <h2 className="font-semibold mb-4">16-Day Forecast</h2>
-
-        <ResponsiveContainer width="100%" height={250}>
-          <LineChart data={chartData}>
-            <XAxis dataKey="date" />
-            <Tooltip />
-            <Line type="monotone" dataKey="max" stroke="#ff6b6b" />
-            <Line type="monotone" dataKey="min" stroke="#4e9cff" />
-            <Line type="monotone" dataKey="rain" stroke="#62754c" />
-          </LineChart>
-        </ResponsiveContainer>
-      </div>
-
-      {/* EVENT DAY SUMMARY */}
-      <div className="w-full mx-auto grid grid-cols-3 gap-4 mb-10">
-
-        <div className="p-4 bg-white rounded-xl">
-          <p className="text-sm opacity-60">Max Temp</p>
-          <p className="text-xl font-bold">{eventDayWeather.max}°C</p>
         </div>
 
-        <div className="p-4 bg-white rounded-xl">
-          <p className="text-sm opacity-60">Min Temp</p>
-          <p className="text-xl font-bold">{eventDayWeather.min}°C</p>
-        </div>
-
-        <div className="p-4 bg-white rounded-xl">
-          <p className="text-sm opacity-60">Precipitation</p>
-          <p className="text-xl font-bold">{rainMM} mm</p>
-        </div>
-      </div>
-
-      <div className="w-full mx-auto grid grid-cols-2 gap-4 mb-10">
-
-        <div className="p-4 bg-white rounded-xl">
-          <p className="text-sm opacity-60">Chance of Rain</p>
-          <p className="text-xl font-bold">{rainChance}%</p>
-        </div>
-
-        <div className="p-4 bg-white rounded-xl">
-          <p className="text-sm opacity-60">Weather Forecast</p>
-          <p className="text-xl font-bold">{weatherLabel}</p>
-        </div>
-      </div>
-
-      {/* CONTINUE */}
-      <div className="w-full mx-auto">
-        <button
-          onClick={handleContinue}
-          className="w-full py-4 rounded-full bg-[var(--color-dark)] text-white flex items-center justify-center gap-2"
+        {/* HERO */}
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, ease: "easeOut" }}
+          className="rounded-3xl p-8 mb-5 grid grid-cols-[1fr_auto] items-end gap-4 w-[70%] mx-auto"
+          style={{ background: getBackground() }}
         >
-          Continue <ArrowRight size={18} />
-        </button>
+          <div className={isDark ? "text-white" : "text-gray-800"}>
+            <p className="text-xs uppercase tracking-widest opacity-50 mb-1">
+              Event weather
+            </p>
+            <p className="text-sm opacity-70 mb-3">
+              {eventDate.toDateString()}
+            </p>
+            <div className="text-6xl font-medium leading-none tracking-tight">
+              {eventTemp}°
+              <span className="text-3xl opacity-60">C</span>
+            </div>
+            <p className="opacity-75 mt-2">{weatherLabel}</p>
+          </div>
+
+          <div className={`text-right ${isDark ? "text-white" : "text-gray-800"}`}>
+            <p className="text-sm opacity-50 mb-3">{eventHour}:00 hrs</p>
+            {isNight ? <Moon size={52} className="opacity-80 ml-auto" /> : <Sun size={52} className="opacity-80 ml-auto" />}
+          </div>
+        </motion.div>
+
+        {/* ALERTS */}
+        {(isRainy || isHot || eventDetails?.venueType === "Open Air") && (
+          <div className="mb-5 space-y-2 w-fit mx-auto">
+            {isRainy && (
+              <div className="flex items-center gap-3 p-4 rounded-xl bg-blue-50 text-blue-700">
+                <CloudRain size={18} />
+                Rain expected on event day — consider backup indoor setup.
+              </div>
+            )}
+            {eventDetails?.venueType === "Open Air" && (
+              <div className="flex items-center gap-3 p-4 rounded-xl bg-green-50 text-green-700">
+                <Home size={18} />
+                Suggested: Add indoor decor fallback option.
+              </div>
+            )}
+            {isHot && (
+              <div className="flex items-center gap-3 p-4 rounded-xl bg-orange-50 text-orange-700">
+                <Sun size={18} />
+                High temperature expected — ensure cooling & hydration.
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* STATS GRID */}
+        <div className="grid grid-cols-4 gap-3 mb-5">
+          <div className="p-4 bg-white rounded-md shadow-sm">
+            <p className="text-xs text-gray-400 mb-1">Max temp</p>
+            <p className="text-2xl font-medium">
+              {eventDayWeather.max}
+              <span className="text-base font-normal text-gray-400">°C</span>
+            </p>
+          </div>
+          <div className="p-4 bg-white rounded-md shadow-sm">
+            <p className="text-xs text-gray-400 mb-1">Min temp</p>
+            <p className="text-2xl font-medium">
+              {eventDayWeather.min}
+              <span className="text-base font-normal text-gray-400">°C</span>
+            </p>
+          </div>
+          <div className="p-4 bg-white rounded-md shadow-sm">
+            <p className="text-xs text-gray-400 mb-1">Rain chance</p>
+            <p className="text-2xl font-medium">
+              {rainChance}
+              <span className="text-base font-normal text-gray-400">%</span>
+            </p>
+          </div>
+          <div className="p-4 bg-white rounded-md shadow-sm">
+            <p className="text-xs text-gray-400 mb-1">Precipitation</p>
+            <p className="text-2xl font-medium">
+              {rainMM}
+              <span className="text-base font-normal text-gray-400">mm</span>
+            </p>
+          </div>
+        </div>
+
+        {/* CHART */}
+        <div className="bg-white p-6 rounded-2xl shadow-sm mb-6">
+          <h2 className="font-semibold mb-4">16-Day Forecast</h2>
+          <ResponsiveContainer width="100%" height={250}>
+            <LineChart data={chartData}>
+              <XAxis dataKey="date" />
+              <Tooltip />
+              <Line type="monotone" dataKey="max" stroke="#ff6b6b" />
+              <Line type="monotone" dataKey="min" stroke="#4e9cff" />
+              <Line type="monotone" dataKey="rain" stroke="#62754c" />
+            </LineChart>
+          </ResponsiveContainer>
+        </div>
+
+        {/* CONTINUE */}
+        <div className="flex justify-center">
+          <button
+            onClick={handleContinue}
+            className="w-[30%] py-4 px-10 rounded-full bg-[var(--color-dark)] text-white flex items-center justify-center gap-2"
+          >
+            Continue <ArrowRight size={18} />
+          </button>
+        </div>
+
       </div>
-      </div>
-    </div>
     </div>
   );
 }
