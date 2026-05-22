@@ -1554,7 +1554,7 @@ export default function FinalSummary({ appData, onReset }) {
 
   const generateBookingId = () => `BK-${Math.floor(100000 + Math.random() * 900000)}`;
 
-  const handlePayment = async () => {
+  const handlePayment = async (leadData) => {
   try {
     const loaded = await loadCashfree();
 
@@ -1571,8 +1571,11 @@ export default function FinalSummary({ appData, onReset }) {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        amount: advanceAmount,
-      }),
+            pdfUrl: url,
+            summaryData,
+            quotation,
+            leadData,
+          }),
     });
 
     const data = await res.json();
@@ -1637,6 +1640,16 @@ export default function FinalSummary({ appData, onReset }) {
   const getSummaryData = useEventStore((s) => s.getSummaryData);
   const generatedCanvasImage = useEventStore((s) => s.generatedCanvasImage || null);
 
+  const [showLeadModal, setShowLeadModal] = useState(false);
+  const [pendingAction, setPendingAction] = useState(null);
+
+  const [leadForm, setLeadForm] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    company: "",
+  });
+
   const formatDate = (date) => {
     if (!date) return "—";
     return new Date(date).toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" });
@@ -1681,20 +1694,42 @@ export default function FinalSummary({ appData, onReset }) {
     finally { setIsGenerating(false); }
   };
 
-  const handleSubmitRequest = async () => {
-    if (isGenerating || isSending) return;
-    try {
-      setIsSending(true);
-      const url = await generatePdfIfNeeded();
-      await fetch("/api/send-email", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ pdfUrl: url, summaryData, quotation }),
-      });
-      setShowSuccess(true);
-    } catch (err) { console.error(err); }
-    finally { setIsSending(false); }
-  };
+  const handleSubmitRequest = async (leadData) => {
+  if (isGenerating || isSending) return;
+
+  try {
+    setIsSending(true);
+
+    let url = pdfUrl;
+
+    if (!url) {
+      url = await generatePdfIfNeeded();
+    }
+
+    const res = await fetch("/api/send-email", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        pdfUrl: url,
+        summaryData,
+        quotation,
+        leadData,
+      }),
+    });
+
+    const data = await res.json();
+
+    setShowSuccess(true);
+
+  } catch (err) {
+    console.error(err);
+    alert("Failed to send email");
+  } finally {
+    setIsSending(false);
+  }
+};
 
   useEffect(() => {
     if (showQR && QRRef.current) QRRef.current.scrollIntoView({ behavior: "smooth", block: "center" });
@@ -2171,7 +2206,10 @@ export default function FinalSummary({ appData, onReset }) {
                     <motion.button
                       whileHover={{ scale: 1.03, boxShadow: "0 0 30px rgba(201,168,76,0.4)" }}
                       whileTap={{ scale: 0.97 }}
-                      onClick={handlePayment}
+                      onClick={() => {
+                        setPendingAction("payment");
+                        setShowLeadModal(true);
+                      }}
                       className="flex items-center justify-center gap-2 px-8 py-4 rounded-2xl"
                       style={{ fontFamily: "var(--font-body)", fontWeight: 700, fontSize: "0.95rem", background: "var(--color-gold)", color: "var(--color-dark)" }}
                     >
@@ -2213,14 +2251,20 @@ export default function FinalSummary({ appData, onReset }) {
 
                 <div className="flex justify-center gap-3 mt-8">
                   <button
-                    onClick={handleSubmitRequest}
+                    onClick={() => {
+                      setPendingAction("submit");
+                      setShowLeadModal(true);
+                    }}
                     className="px-6 py-3 rounded-xl font-semibold"
                     style={{ fontFamily: "var(--font-body)", border: "2px solid var(--color-primary)", color: "var(--color-primary)", background: "transparent" }}
                   >
                     Submit Request
                   </button>
                   <button
-                    onClick={handlePayment}
+                    onClick={() => {
+                      setPendingAction("payment");
+                      setShowLeadModal(true);
+                    }}
                     className="px-6 py-3 rounded-xl font-semibold text-white"
                     style={{ fontFamily: "var(--font-body)", background: "var(--color-primary)" }}
                   >
@@ -2341,6 +2385,223 @@ export default function FinalSummary({ appData, onReset }) {
           </div>
         )}
       </AnimatePresence>
+      <AnimatePresence>
+  {showLeadModal && (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      className="fixed inset-0 z-[120] flex items-center justify-center px-6"
+      style={{
+        background: "rgba(0,0,0,0.55)",
+        backdropFilter: "blur(10px)",
+      }}
+      onClick={() => setShowLeadModal(false)}
+    >
+      <motion.div
+        initial={{ opacity: 0, y: 30, scale: 0.96 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        exit={{ opacity: 0, y: 20, scale: 0.96 }}
+        transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+        onClick={(e) => e.stopPropagation()}
+        className="w-full max-w-lg rounded-[32px] p-8 relative overflow-hidden h-[83vh]"
+        style={{
+          background: "rgba(253,253,248,0.92)",
+          backdropFilter: "blur(24px)",
+          border: "1px solid rgba(98,117,76,0.2)",
+          boxShadow: "0 40px 120px rgba(0,0,0,0.2)",
+        }}
+      >
+        {/* Glow */}
+        <div
+          className="absolute -top-32 right-0 w-72 h-72 rounded-full"
+          style={{
+            background:
+              "radial-gradient(circle, rgba(98,117,76,0.18), transparent 70%)",
+            filter: "blur(40px)",
+          }}
+        />
+
+        {/* Heading */}
+        <div className="relative mb-8">
+          <p
+            style={{
+              fontFamily: "var(--font-body)",
+              fontSize: "0.72rem",
+              fontWeight: 700,
+              letterSpacing: "0.12em",
+              textTransform: "uppercase",
+              color: "var(--color-accent)",
+              marginBottom: "1rem",
+            }}
+          >
+            Final Step
+          </p>
+
+          <h2
+            style={{
+              fontFamily: "var(--font-display)",
+              fontSize: "2.5rem",
+              fontWeight: 700,
+              fontStyle: "italic",
+              color: "var(--color-dark)",
+              lineHeight: 1,
+              marginBottom: "1rem",
+            }}
+          >
+            Let’s bring this event to life
+          </h2>
+
+          <p
+            style={{
+              fontFamily: "var(--font-body)",
+              fontSize: "0.95rem",
+              color: "var(--color-dark-mid)",
+              opacity: 0.7,
+              lineHeight: 1.6,
+            }}
+          >
+            Share your details and we’ll send your proposal
+            and connect with you within 24 hours.
+          </p>
+        </div>
+
+        {/* Inputs */}
+        <div className="space-y-6 relative">
+          <LuxuryInput
+            autoFocus
+            label="Full Name"
+            value={leadForm.name}
+            onChange={(v) =>
+              setLeadForm((p) => ({ ...p, name: v }))
+            }
+          />
+
+          <LuxuryInput
+            label="Work Email"
+            value={leadForm.email}
+            onChange={(v) =>
+              setLeadForm((p) => ({ ...p, email: v }))
+            }
+            type="email"
+          />
+
+          <LuxuryInput
+            label="Phone Number"
+            value={leadForm.phone}
+            onChange={(v) =>
+              setLeadForm((p) => ({ ...p, phone: v }))
+            }
+            type="tel"
+          />
+        </div>
+
+        {/* CTA */}
+        <motion.button
+          whileHover={{ scale: 1.02 }}
+          whileTap={{ scale: 0.98 }}
+          disabled={!leadForm.name || !leadForm.email}
+          onClick={async () => {
+            try {
+              // CLOSE MODAL FIRST
+              setShowLeadModal(false);
+
+              // small delay for smooth exit animation
+              await new Promise((resolve) => setTimeout(resolve, 250));
+
+              if (pendingAction === "submit") {
+                await handleSubmitRequest(leadForm);
+              }
+
+              if (pendingAction === "payment") {
+                await handlePayment(leadForm);
+              }
+
+            } catch (e) {
+              console.error(e);
+            }
+          }}
+          className="w-[40%] mx-auto mt-10 py-4 rounded-2xl flex items-center justify-center gap-3 disabled:opacity-40"
+          style={{
+            background: "var(--color-dark)",
+            color: "var(--color-bg)",
+            fontFamily: "var(--font-body)",
+            fontWeight: 600,
+            fontSize: "1rem",
+          }}
+        >
+          {pendingAction === "payment"
+            ? "Continue to Payment"
+            : "Send Proposal"}
+
+          <ArrowRight size={18} />
+        </motion.button>
+      </motion.div>
+    </motion.div>
+  )}
+</AnimatePresence>
+    </div>
+  );
+}
+
+
+function LuxuryInput({
+  label,
+  value,
+  onChange,
+  type = "text",
+  autoFocus = false,
+}) {
+  const [focused, setFocused] = useState(false);
+
+  return (
+    <div className="relative pt-3">
+      <motion.label
+        animate={{
+          y: focused || value ? -22 : 0,
+          scale: focused || value ? 0.82 : 1,
+          opacity: focused || value ? 0.65 : 0.45,
+        }}
+        transition={{ duration: 0.2 }}
+        className="absolute left-0 pointer-events-none"
+        style={{
+          fontFamily: "var(--font-body)",
+          fontSize: "0.8rem",
+          letterSpacing: "0.08em",
+          textTransform: "uppercase",
+          color: "var(--color-dark)",
+          transformOrigin: "left center",
+        }}
+      >
+        {label}
+      </motion.label>
+
+      <motion.div
+        animate={{
+          scaleX: focused ? 1 : 0,
+          opacity: focused ? 1 : 0.3,
+        }}
+        className="absolute left-0 bottom-0 h-px w-full"
+        style={{
+          background: "var(--color-primary)",
+          transformOrigin: "left",
+        }}
+      />
+
+      <input
+        autoFocus={autoFocus}
+        type={type}
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        onFocus={() => setFocused(true)}
+        onBlur={() => setFocused(false)}
+        className="w-full bg-transparent outline-none pt-2 pb-3"
+        style={{
+          fontFamily: "var(--font-body)",
+          fontSize: "1.05rem",
+          color: "var(--color-dark)",
+        }}
+      />
     </div>
   );
 }

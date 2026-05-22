@@ -51,11 +51,16 @@ export async function POST(req) {
     console.log("[EMAIL] Request received");
 
     const body = await req.json();
-    const { pdfUrl, summaryData, quotation } = body;
+    const {
+      pdfUrl,
+      summaryData,
+      quotation,
+      leadData,
+    } = body;
 
     console.log("[EMAIL] Payload parsed:", {
       pdfUrl,
-      email: process.env.RECP_EMAIL,
+      email_to: `${process.env.RECP_EMAIL}, ${leadData?.email}`,
       eventName: summaryData?.eventName,
       budget: summaryData?.budget,
       guestCount: summaryData?.guestCount,
@@ -100,7 +105,7 @@ export async function POST(req) {
     // ─────────────────────────────────────────────
     console.log("[EMAIL] Verifying SMTP connection...");
 
-    //await transporter.verify();
+    await transporter.verify();
 
     console.log("[EMAIL] SMTP verified successfully");
 
@@ -124,23 +129,53 @@ export async function POST(req) {
     // ─────────────────────────────────────────────
     // Send email
     // ─────────────────────────────────────────────
-    console.log("[EMAIL] Sending email to:", process.env.RECP_EMAIL);
+    console.log("[EMAIL] Sending email to:",`${process.env.RECP_EMAIL}, ${leadData?.email}`,process.env.RECP_EMAIL);
 
     const info = await transporter.sendMail({
-      from: process.env.EMAIL_USER,
-      to: process.env.RECP_EMAIL,
+      from: `"Lume Corp " <${process.env.EMAIL_USER}>`,
+      to: `${process.env.RECP_EMAIL}, ${leadData?.email}`,
       subject: `Your Event Proposal - ${summaryData?.eventName || "Event"}`,
 
       text: "Please find your event proposal attached.",
 
       html: `
-        <h2>Event Proposal</h2>
+        <div style="font-family: Arial, sans-serif; padding: 24px; color: #222;">
+    
+        <h2 style="margin-bottom: 20px;">
+          Dear ${leadData?.name || "Guest"},
+        </h2>
+
+        <p>
+          Thank you for choosing us for your event planning experience.
+          Please find your personalized proposal attached below.
+        </p>
+
+        <br/>
+
+        <h3>Customer Details</h3>
+
+        <p><b>Name:</b> ${leadData?.name}</p>
+        <p><b>Phone:</b> ${leadData?.phone}</p>
+        <p><b>Email:</b> ${leadData?.email}</p>
+
+        <br/>
+
+        <h3>Event Details</h3>
+
         <p><b>Event:</b> ${summaryData?.eventName}</p>
         <p><b>Budget:</b> ₹${summaryData?.budget}L</p>
         <p><b>Guests:</b> ${summaryData?.guestCount}</p>
         <p><b>Estimated Fee:</b> ₹${quotation?.total}L</p>
+
         <br/>
+
         <p>Attached is your full PDF proposal.</p>
+        <p>
+          Regards,<br/>
+          EventCraft Team
+        </p>
+
+      </div>
       `,
 
       attachments: [
