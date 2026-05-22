@@ -1555,32 +1555,72 @@ export default function FinalSummary({ appData, onReset }) {
   const generateBookingId = () => `BK-${Math.floor(100000 + Math.random() * 900000)}`;
 
   const handlePayment = async () => {
-    try {
-      const loaded = await loadCashfree();
-      if (!loaded) { alert("Cashfree SDK failed to load"); return; }
-      const advanceAmount = Math.round(quotation.total * 0.15 * 100000);
-      const res = await fetch("/api/cashfree/create-order", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ amount: advanceAmount }),
+  try {
+    const loaded = await loadCashfree();
+
+    if (!loaded) {
+      alert("Cashfree SDK failed to load");
+      return;
+    }
+
+    const advanceAmount = Math.round(quotation.total * 0.15 * 100000);
+
+    const res = await fetch("/api/cashfree/create-order", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        amount: advanceAmount,
+      }),
+    });
+
+    const data = await res.json();
+
+    const cashfree = window.Cashfree({
+      mode: "sandbox",
+    });
+
+    const checkoutOptions = {
+      paymentSessionId: data.payment_session_id,
+      redirectTarget: "_modal",
+    };
+
+    const result = await cashfree.checkout(checkoutOptions);
+
+    console.log("Cashfree Result:", result);
+
+    // Payment completed successfully
+    if (!result.error) {
+      setPaymentDetails({
+        bookingId: generateBookingId(),
+        amount: `₹${advanceAmount.toLocaleString("en-IN")}`,
+        date: new Date().toLocaleDateString("en-IN", {
+          day: "2-digit",
+          month: "short",
+          year: "numeric",
+        }),
       });
-      const data = await res.json();
-      const cashfree = window.Cashfree({ mode: "sandbox" });
-      cashfree.checkout({
-        paymentSessionId: data.payment_session_id,
-        redirectTarget: "_modal",
-        onSuccess: () => {
-          setPaymentDetails({
-            bookingId: generateBookingId(),
-            amount: `₹${advanceAmount.toLocaleString("en-IN")}`,
-            date: new Date().toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" }),
-          });
-          setShowPaymentSuccess(true);
-        },
-        onFailure: (err) => { console.error(err); alert("Payment failed"); },
-      });
-    } catch (err) { console.error(err); }
-  };
+
+      setShowPaymentSuccess(true);
+    }
+
+    // User closed modal or payment pending
+    if (result.redirect) {
+      console.log("Payment requires redirect");
+    }
+
+    // Payment failed
+    if (result.error) {
+      console.error(result.error);
+      alert(result.error.message || "Payment failed");
+    }
+
+  } catch (err) {
+    console.error(err);
+    alert("Something went wrong");
+  }
+};
 
   const [showPaymentSuccess, setShowPaymentSuccess] = useState(false);
   const [paymentDetails, setPaymentDetails] = useState({ bookingId: "", amount: "", date: "" });
@@ -1790,7 +1830,7 @@ export default function FinalSummary({ appData, onReset }) {
         </motion.div>
 
         {/* ══ CONTENT ════════════════════════════════════════════════════════ */}
-        <div className="max-w-5xl mx-auto px-6 pb-15 space-y-32">
+        <div className="max-w-5xl mx-auto px-6 pb-15 space-y-22">
 
           {/* ── BUDGET ──────────────────────────────────────────────────────── */}
           <section>
@@ -2222,7 +2262,7 @@ export default function FinalSummary({ appData, onReset }) {
       <AnimatePresence>
         {showPaymentSuccess && (
           <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-md">
-            <Confetti recycle={false} numberOfPieces={250} gravity={0.12} colors={["#62754C", "#8BA672", "#C9A84C", "#FDFDF8", "#A8BC92"]} />
+            <Confetti recycle={false} numberOfPieces={150} gravity={0.12} colors={["#62754C", "#8BA672", "#C9A84C", "#FDFDF8", "#A8BC92"]} />
             <motion.div
               initial={{ opacity: 0, scale: 0.88, y: 40 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}

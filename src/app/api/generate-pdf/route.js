@@ -8,10 +8,10 @@ import fs from "fs";
 import path from "path";
 
 // export async function POST(req) {
-//   const { data, quotation } = await req.json();
+//   const { data, quotation, decorImage, canvasImage } = await req.json();
 
 //   const pdfBuffer = await renderToBuffer(
-//     <EventPDF data={data} quotation={quotation} />
+//     <EventPDF data={data} quotation={quotation} decorImage={decorImage}  canvasImage={canvasImage}  />
 //   );
 
 //   const fileName = `event-${uuidv4()}.pdf`;

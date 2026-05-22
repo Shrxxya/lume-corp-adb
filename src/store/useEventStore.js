@@ -171,6 +171,9 @@ setFormValid: (val) => set({ formValid: val }),
         set({ timeline: [...newOrder] }),
       clearTimeline: () => set({ timeline: [] }),
 
+      timelineEventType: null,
+      setTimelineEventType: (type) => set({ timelineEventType: type }),
+
       // ==================== SCREEN 9: Extras (Entertainment) ====================
       entertainment: {
         selectedCategory: null,
