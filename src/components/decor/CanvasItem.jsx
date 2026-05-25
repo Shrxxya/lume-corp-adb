@@ -223,26 +223,26 @@ function ElementArt({ type, width, height, night }) {
   const dim = night ? "rgba(255,255,255,0.18)" : "rgba(20,24,42,0.08)";
   const accent = night ? "rgba(255,255,255,0.5)" : "rgba(20,24,42,0.25)";
 
-  const imageMap = {
-    "Award Desk": "/RnRAssets/awardsDesk.jpg",
-    "Photo Wall": "/RnRAssets/photoWall.jpg",
-    "VIP Table": "/RnRAssets/vip-table.png",
-    "Stage": "/RnRAssets/stage.jpg",
-    "Red Carpet": "/RnRAssets/redCarpet.jpg",
-    "Seating Area": "/RnRAssets/seating.jpg",
-    "Camera Zone": "/RnRAssets/cameraZone.jpg"
-  };
+//   const imageMap = {
+//     "Award Desk": "/RnRAssets/awardsDesk.jpg",
+//     "Photo Wall": "/RnRAssets/photoWall.jpg",
+//     "VIP Table": "/RnRAssets/vip-table.png",
+//     "Stage": "/RnRAssets/stage.jpg",
+//     "Red Carpet": "/RnRAssets/redCarpet.jpg",
+//     "Seating Area": "/RnRAssets/seating.jpg",
+//     "Camera Zone": "/RnRAssets/cameraZone.jpg"
+//   };
 
-  if (imageMap[type]) {
-  return (
-    <img
-      src={imageMap[type]}
-      alt={type}
-      className="absolute inset-0 w-full h-full object-contain pointer-events-none"
-      draggable={false}
-    />
-  );
-}
+//   if (imageMap[type]) {
+//   return (
+//     <img
+//       src={imageMap[type]}
+//       alt={type}
+//       className="absolute inset-0 w-full h-full object-contain pointer-events-none"
+//       draggable={false}
+//     />
+//   );
+// }
 
   switch (type) {
 

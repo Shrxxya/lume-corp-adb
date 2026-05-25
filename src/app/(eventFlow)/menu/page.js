@@ -347,7 +347,7 @@ export default function MenuBuilder({ onNext }) {
                 {/* CONTINUE */}
                 <motion.button
                   onClick={handleSubmit}
-                  className="w-full mt-6 px-6 py-4 rounded-full flex justify-center items-center gap-3"
+                  className="w-full mt-6 px-8 py-5 rounded-full flex justify-center items-center gap-3"
                   style={{
                     backgroundColor: "var(--color-dark)",
                     color: "var(--color-bg)",

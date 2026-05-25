@@ -548,7 +548,7 @@ useEffect(() => {
                   {openIndex === index && (
                     <div
                       onClick={(e) => e.stopPropagation()}
-                      className="absolute top-28 left-0 w-32 max-h-60 overflow-y-auto z-50"
+                      className="absolute top-28 left-0 w-32 max-h-60 overflow-y-auto z-50 custom-scrollbar"
                       style={{
                         backgroundColor: "var(--glass-fill)",
                         backdropFilter: "blur(12px)",
@@ -615,25 +615,13 @@ useEffect(() => {
           </div>
         </div>
 
-        {/* Continue */}
-        <motion.button
-          onClick={handleSubmit}
-          className="w-full px-8 py-5 rounded-full flex justify-center items-center gap-3"
-          style={{
-            backgroundColor: "var(--color-dark)",
-            color: "var(--color-bg)",
-          }}
-        >
-          Continue <ArrowRight size={20} />
-        </motion.button>
-
-        {/* Drag hint */}
+         {/* Drag hint */}
           {timeline.length > 1 && (
             <motion.p
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 1 }}
-              className="text-center mt-5"
+              className="text-center mb-5"
               style={{
                 fontFamily: "var(--font-body)",
                 fontSize: "0.72rem",
@@ -645,6 +633,18 @@ useEffect(() => {
               ⠿  Drag events to reorder · Click time to edit · Hover to delete
             </motion.p>
           )}  
+
+        {/* Continue */}
+        <motion.button
+          onClick={handleSubmit}
+          className="w-[30%] mx-auto px-8 py-5 rounded-full flex justify-center items-center gap-3"
+          style={{
+            backgroundColor: "var(--color-dark)",
+            color: "var(--color-bg)",
+          }}
+        >
+          Continue <ArrowRight size={20} />
+        </motion.button>
       </motion.div>
     </div>
     </div>

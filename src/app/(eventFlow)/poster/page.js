@@ -428,6 +428,8 @@ export default function PosterGenerator() {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
 
+  const FALLBACK_POSTER = "/default-poster.png"
+
   // utils
   const blobToBase64 = (blob) =>
     new Promise((resolve) => {
@@ -465,6 +467,30 @@ export default function PosterGenerator() {
     extra text, watermark, blurry, bad typography
   `;
 
+  // const generatePoster = async () => {
+  //   setPosterStatus("generating");
+  //   setLoading(true);
+
+  //   try {
+  //     const prompt = buildPrompt(summaryData, customPrompt);
+
+  //     const res = await fetch("/api/generate-poster", {
+  //       method: "POST",
+  //       body: JSON.stringify({ prompt }),
+  //     });
+
+  //     const blob = await res.blob();
+  //     const base64 = await blobToBase64(blob);
+
+  //     setPosterData(base64);
+
+  //     setPosterStatus("complete");
+  //   } catch (err) {
+  //     console.error("Poster generation failed", err);
+  //   }
+
+  //   setLoading(false);
+  // };
   const generatePoster = async () => {
     setPosterStatus("generating");
     setLoading(true);
@@ -477,17 +503,36 @@ export default function PosterGenerator() {
         body: JSON.stringify({ prompt }),
       });
 
+      // request failed
+      if (!res.ok) {
+        throw new Error("Generation failed");
+      }
+
       const blob = await res.blob();
+
+      // invalid image response
+      if (!blob || blob.size === 0) {
+        throw new Error("Empty image");
+      }
+
       const base64 = await blobToBase64(blob);
 
       setPosterData(base64);
-
       setPosterStatus("complete");
     } catch (err) {
       console.error("Poster generation failed", err);
-    }
 
-    setLoading(false);
+      // graceful fallback
+      setPosterData(FALLBACK_POSTER);
+
+      // either:
+      setPosterStatus("complete");
+
+      // OR:
+      // setPosterStatus("error");
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleSkip = () => {
@@ -709,7 +754,7 @@ export default function PosterGenerator() {
     {/* ================= LEFT PANEL ================= */}
     <div className="col-span-3 hidden lg:block">
       <div
-        className="w-full h-[100vh] mt-3"
+        className="w-full h-[100vh] mt-2"
         style={{
           backgroundImage: "url('https://images.squarespace-cdn.com/content/v1/61956e0ecf51420b77c68474/e2c72fef-080c-4af3-aeaf-33a7804c5f8b/CC-Stripe-Pattern-Sq.jpg')",
           backgroundSize: "cover",
@@ -920,7 +965,7 @@ export default function PosterGenerator() {
     {/* ================= RIGHT PANEL ================= */}
     <div className="col-span-3 hidden lg:block">
       <div
-        className="w-full h-[100vh] mt-3"
+        className="w-full h-[100vh] mt-2"
         style={{
           backgroundImage: "url('https://images.squarespace-cdn.com/content/v1/61956e0ecf51420b77c68474/e2c72fef-080c-4af3-aeaf-33a7804c5f8b/CC-Stripe-Pattern-Sq.jpg')",
           backgroundSize: "cover",
