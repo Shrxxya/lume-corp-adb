@@ -314,7 +314,7 @@ function CelebrityCard({ celebrity, isSelected, onClick }) {
     <motion.div
       onClick={onClick}
       className={`p-5 rounded-xl shadow-sm cursor-pointer ${
-        isSelected ? "ring-2 ring-[#62754c]" : "bg-white"
+        isSelected ? "ring-2 ring-[#58644B]" : "bg-white"
       }`}
       whileHover={{ scale: 1.02 }}
     >
@@ -325,7 +325,7 @@ function CelebrityCard({ celebrity, isSelected, onClick }) {
           <p className="text-sm text-gray-400">{celebrity.city}</p>
         </div>
 
-        <p className="font-bold text-green-600">{celebrity.cost}</p>
+        <p className="font-bold text-[#58644B]">{celebrity.cost}</p>
       </div>
     </motion.div>
   );

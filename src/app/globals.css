@@ -10,8 +10,8 @@
   --font-mono: 'JetBrains Mono', 'Courier New', monospace;
   
   /* Colors - Core Brand */
-  --color-primary: #62754C;
-  --color-bg: #FDFDF8;
+  --color-primary: #58644B;
+  --color-bg: #e7e7df;
   --color-dark: #14182A;
   
   /* Colors - Extended Green Scale */
@@ -71,7 +71,7 @@
   --dur-cinematic: 2500ms;
   
   /* Legacy/Compatibility */
-  --background: #FDFDF8;
+  --background: #e7e7df;
   --foreground: #14182A;
 }
 
@@ -116,7 +116,7 @@ input[type="number"] {
 
 .custom-scrollbar {
   scrollbar-width: thin;
-  scrollbar-color: #62754c transparent;
+  scrollbar-color: #58644B transparent;
 }
 
 /* Chrome / Safari */
@@ -130,7 +130,7 @@ input[type="number"] {
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb {
-  background: #62754c;
+  background: #58644B;
   border-radius: 10px;
 }
 
@@ -205,7 +205,7 @@ body {
 /* .splash {
   position: fixed;
   inset: 0;
-  background: #fdfdf8; 
+  background: #e7e7df; 
   display: flex;
   justify-content: center;
   align-items: center;
@@ -219,7 +219,7 @@ body {
 .splash {
   position: fixed;
   inset: 0;
-  background: #fdfdf8;
+  background: #e7e7df;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -236,35 +236,35 @@ body {
   );
 }
 .stage.dark {
-  background: #fdfdf8;
+  background: #e7e7df;
 }
 
 .stage.light {
-  background: #fdfdf8;
+  background: #e7e7df;
   transition: background 0.8s ease;
 }
 
 /* root theme */
 .rdp-root {
-  --rdp-accent-color: #62754c;
-  --rdp-background-color: rgba(98,117,76,0.1);
+  --rdp-accent-color: #58644B;
+  --rdp-background-color: #D9DCD6;
 }
 .rdp {
-  --rdp-accent-color: #62754c !important;
+  --rdp-accent-color: #58644B !important;
   --rdp-accent-background-color: rgba(98, 117, 76, 0.15) !important;
 }
 .rdp-button[aria-selected="true"] {
-  background-color: #62754c !important;
+  background-color: #58644B !important;
   color: white !important;
   border-radius: 12px !important;
 }
 
 .rdp .rdp-selected {
-  border: #62754c !important;
+  border: #58644B !important;
 }
 
 .rdp-today:not(.rdp-outside){
-  color:  #62754c !important;
+  color:  #58644B !important;
 }
 /* IMPORTANT: kill all default button styling */
 .rdp button {
@@ -281,14 +281,14 @@ body {
 
 /* SELECTED DAY (this is the real target) */
 .rdp button[aria-selected="true"] {
-  background-color: #62754c !important;
+  background-color: #58644B !important;
   color: white !important;
   border-radius: 12px !important;
 }
 
 /* TODAY */
 .rdp button[aria-current="date"] {
-  border: 1px solid #62754c;
+  border: 1px solid #58644B;
   font-weight: 600;
 }
 
@@ -304,11 +304,11 @@ body {
 }
 
 .rdp-selected .rdp-day_button{
-  border: 2px solid #62754c !important;
+  border: 2px solid #58644B !important;
 }
 
 .rdp-chevron{
-  fill: #62754c !important;
+  fill: #58644B !important;
 }
 
 /* Make all buttons show pointer cursor */

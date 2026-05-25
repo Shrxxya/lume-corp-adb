@@ -55,7 +55,7 @@ export function Palette() {
             placeholder="Add custom item..."
             className={cn(
               "w-full px-3 py-2 rounded-lg",
-              "bg-white/10 border border-white/20",
+              //"bg-white/10 border border-white/20",
               "outline-none transition-colors duration-300",
               "focus:border-white/40",
               "text-black placeholder:text-black/40"
@@ -66,7 +66,7 @@ export function Palette() {
           <div
             className={cn(
               "absolute left-0 bottom-0 h-[2px] w-full",
-              "bg-[#62754c]",
+              "bg-[#58644B]",
               "origin-left scale-x-0",
               "transition-transform duration-300",
               "group-focus-within:scale-x-100"
@@ -78,7 +78,7 @@ export function Palette() {
         {/* ADD BUTTON */}
         <button
           onClick={addCustomItem}
-          className="px-3 py-2 bg-white/20 rounded-lg hover:bg-white/30 cursor-pointer transition"
+          className="px-3 py-2 bg-[#e7e7df]/20 rounded-lg hover:bg-[#e7e7df]/30 cursor-pointer transition"
         >
           <Plus />
         </button>

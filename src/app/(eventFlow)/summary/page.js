@@ -191,7 +191,7 @@
 //   ];
 
 //   const budgetColors = {
-//     food: "#62754C",
+//     food: "#58644B",
 //     decor: "#8BA672",
 //     tech: "#A8BC92",
 //     Entertainment: "#C8D5B9",
@@ -415,7 +415,7 @@
 //                 setShowSuccess(false);
 //                 router.push("/");
 //               }}
-//               className="px-4 py-2 rounded-lg bg-[#62754c] text-white"
+//               className="px-4 py-2 rounded-lg bg-[#58644B] text-white"
 //             >
 //               Close
 //             </button>
@@ -1061,7 +1061,7 @@
 
 //                 <button
 //                   onClick={handlePayment}
-//                   className="px-6 py-3 rounded-xl bg-[#62754c] text-white"
+//                   className="px-6 py-3 rounded-xl bg-[#58644B] text-white"
 //                 >
 //                   Pay Booking Advance
 //                 </button>
@@ -1460,7 +1460,7 @@ function CountUp({ target, suffix = "" }) {
 
 // ── Budget bar ────────────────────────────────────────────────────────────────
 const budgetColors = {
-  food: "#62754C",
+  food: "#58644B",
   decor: "#8BA672",
   tech: "#A8BC92",
   Entertainment: "#C9A84C",
@@ -1736,7 +1736,7 @@ export default function FinalSummary({ appData, onReset }) {
   }, [showQR]);
 
   const stats = [
-    { icon: Calendar, label: "Event Date", value: formatDate(summaryData.date), accent: "#62754C" },
+    { icon: Calendar, label: "Event Date", value: formatDate(summaryData.date), accent: "#58644B" },
     { icon: MapPin, label: "Location", value: summaryData.location || "—", accent: "#8BA672" },
     { icon: Users, label: "Guests", value: summaryData.guestCount || "—", accent: "#A8BC92" },
     { icon: IndianRupee, label: "Budget", value: `₹${summaryData.budget}L`, accent: "#C9A84C" },
@@ -1809,7 +1809,7 @@ export default function FinalSummary({ appData, onReset }) {
             transition={{ duration: 0.6, delay: 0.1 }}
             className="inline-flex items-center gap-2 px-4 py-2 rounded-full mb-8"
             style={{
-              background: "rgba(98,117,76,0.1)",
+              background: "#D9DCD6",
               border: "1px solid rgba(98,117,76,0.25)",
             }}
           >
@@ -2306,7 +2306,7 @@ export default function FinalSummary({ appData, onReset }) {
       <AnimatePresence>
         {showPaymentSuccess && (
           <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-md">
-            <Confetti recycle={false} numberOfPieces={150} gravity={0.12} colors={["#62754C", "#8BA672", "#C9A84C", "#FDFDF8", "#A8BC92"]} />
+            <Confetti recycle={false} numberOfPieces={150} gravity={0.12} colors={["#58644B", "#8BA672", "#C9A84C", "#e7e7df", "#A8BC92"]} />
             <motion.div
               initial={{ opacity: 0, scale: 0.88, y: 40 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}

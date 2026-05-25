@@ -297,7 +297,7 @@
 //             whileTap={{ scale: 0.98 }}
 //             className="w-full px-8 py-5 rounded-full flex items-center justify-center gap-3"
 //             style={{
-//               backgroundColor: "#62754c",
+//               backgroundColor: "#58644B",
 //               color: "white"
 //             }}
 //           >
@@ -313,7 +313,7 @@
 //               transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
 //               className="inline-block"
 //             >
-//               <Sparkles size={32} style={{ color: "#62754c" }} />
+//               <Sparkles size={32} style={{ color: "#58644B" }} />
 //             </motion.div>
 
 //             <p className="mt-4 text-gray-500">
@@ -334,7 +334,7 @@
 //       {/* BUTTON */}
 //       <button
 //         onClick={generatePoster}
-//         className="px-6 py-3 bg-[#62754c] text-white rounded-xl"
+//         className="px-6 py-3 bg-[#58644B] text-white rounded-xl"
 //       >
 //         Regenerate Poster
 //       </button>
@@ -428,6 +428,8 @@ export default function PosterGenerator() {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
 
+  const FALLBACK_POSTER = "/default-poster.jpg";
+
   // utils
   const blobToBase64 = (blob) =>
     new Promise((resolve) => {
@@ -465,6 +467,31 @@ export default function PosterGenerator() {
     extra text, watermark, blurry, bad typography
   `;
 
+  // const generatePoster = async () => {
+  //   setPosterStatus("generating");
+  //   setLoading(true);
+
+  //   try {
+  //     const prompt = buildPrompt(summaryData, customPrompt);
+
+  //     const res = await fetch("/api/generate-poster", {
+  //       method: "POST",
+  //       body: JSON.stringify({ prompt }),
+  //     });
+
+  //     const blob = await res.blob();
+  //     const base64 = await blobToBase64(blob);
+
+  //     setPosterData(base64);
+
+  //     setPosterStatus("complete");
+  //   } catch (err) {
+  //     console.error("Poster generation failed", err);
+  //   }
+
+  //   setLoading(false);
+  // };
+
   const generatePoster = async () => {
     setPosterStatus("generating");
     setLoading(true);
@@ -477,17 +504,36 @@ export default function PosterGenerator() {
         body: JSON.stringify({ prompt }),
       });
 
+      // request failed
+      if (!res.ok) {
+        throw new Error("Generation failed");
+      }
+
       const blob = await res.blob();
+
+      // invalid image response
+      if (!blob || blob.size === 0) {
+        throw new Error("Empty image");
+      }
+
       const base64 = await blobToBase64(blob);
 
       setPosterData(base64);
-
       setPosterStatus("complete");
     } catch (err) {
       console.error("Poster generation failed", err);
-    }
 
-    setLoading(false);
+      // graceful fallback
+      setPosterData(FALLBACK_POSTER);
+
+      // either:
+      setPosterStatus("complete");
+
+      // OR:
+      // setPosterStatus("error");
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleSkip = () => {
@@ -573,7 +619,7 @@ export default function PosterGenerator() {
 //                 onClick={generatePoster}
 //                 whileHover={{ scale: 1.05 }}
 //                 whileTap={{ scale: 0.95 }}
-//                 className="absolute right-20 top-1/2 -translate-y-1/2 px-6 py-3 rounded-full bg-[#62754c] text-white shadow-lg"
+//                 className="absolute right-20 top-1/2 -translate-y-1/2 px-6 py-3 rounded-full bg-[#58644B] text-white shadow-lg"
 //               >
 //                 Generate
 //               </motion.button>
@@ -642,7 +688,7 @@ export default function PosterGenerator() {
 
 //   <button
 //     onClick={generatePoster}
-//     className="px-5 py-3 bg-[#62754c] text-white rounded-xl whitespace-nowrap"
+//     className="px-5 py-3 bg-[#58644B] text-white rounded-xl whitespace-nowrap"
 //   >
 //     Regenerate
 //   </button>
@@ -709,7 +755,7 @@ export default function PosterGenerator() {
     {/* ================= LEFT PANEL ================= */}
     <div className="col-span-3 hidden lg:block">
       <div
-        className="w-full h-[100vh] mt-3"
+        className="w-full h-[100vh] mt-2"
         style={{
           backgroundImage: "url('https://images.squarespace-cdn.com/content/v1/61956e0ecf51420b77c68474/e2c72fef-080c-4af3-aeaf-33a7804c5f8b/CC-Stripe-Pattern-Sq.jpg')",
           backgroundSize: "cover",
@@ -761,7 +807,7 @@ export default function PosterGenerator() {
             onClick={generatePoster}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            className="absolute right-10 top-1/2 -translate-y-1/2 px-6 py-3 rounded-full bg-[#62754c] text-white shadow-lg"
+            className="absolute right-10 top-1/2 -translate-y-1/2 px-6 py-3 rounded-full bg-[#58644B] text-white shadow-lg"
           >
             Generate
           </motion.button>
@@ -891,7 +937,7 @@ export default function PosterGenerator() {
 
             <button
               onClick={generatePoster}
-              className="px-5 py-3 bg-[#62754c] text-white rounded-xl"
+              className="px-5 py-3 bg-[#58644B] text-white rounded-xl"
             >
               Regenerate
             </button>
@@ -920,7 +966,7 @@ export default function PosterGenerator() {
     {/* ================= RIGHT PANEL ================= */}
     <div className="col-span-3 hidden lg:block">
       <div
-        className="w-full h-[100vh] mt-3"
+        className="w-full h-[100vh] mt-2"
         style={{
           backgroundImage: "url('https://images.squarespace-cdn.com/content/v1/61956e0ecf51420b77c68474/e2c72fef-080c-4af3-aeaf-33a7804c5f8b/CC-Stripe-Pattern-Sq.jpg')",
           backgroundSize: "cover",

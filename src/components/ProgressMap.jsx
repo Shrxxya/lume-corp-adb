@@ -41,7 +41,7 @@
 //                 <div
 //                   className={`h-1 w-12 ${
 //                     isCompleted || isActive
-//                       ? "bg-[#62754C]"
+//                       ? "bg-[#58644B]"
 //                       : ""
 //                   }`}
 //                 />
@@ -51,14 +51,14 @@
 //               <motion.div
 //                 className={`relative flex items-center justify-center w-12 h-12 rounded-full cursor-pointer transition-all ${
 //                   isActive
-//                     ? "bg-[#62754C] shadow-[0_0_10px_#62754C]"
+//                     ? "bg-[#58644B] shadow-[0_0_10px_#58644B]"
 //                     : isCompleted
-//                     ? "bg-[#62754C]"
+//                     ? "bg-[#58644B]"
 //                     : ""
 //                 }`}
 //                 whileHover={{
 //                   scale: 1.1,
-//                   boxShadow: isActive || isCompleted ? "0 0 15px #62754C" : "none",
+//                   boxShadow: isActive || isCompleted ? "0 0 15px #58644B" : "none",
 //                 }}
 //                 onClick={() => onStepClick(step.id)}
 //               >
@@ -239,13 +239,13 @@ export default function ProgressMap() {
                 <div
                   className={`h-1 w-12 ${
                     completedSteps.includes(step.id - 1)
-                      ? "bg-[#62754C]"
+                      ? "bg-[#58644B]"
                       : "bg-transparent"
                   }`}
                 />
               )} */}
               {index > 0 && (
-                <div className={`h-1 w-12 ${showConnector ? "bg-[#62754C]" : "bg-transparent"}`} />
+                <div className={`h-1 w-12 ${showConnector ? "bg-[#58644B]" : "bg-transparent"}`} />
                 )}
 
               {/* Node */}
@@ -271,9 +271,9 @@ export default function ProgressMap() {
                   }}
                   className={`w-12 h-12 flex items-center justify-center rounded-full cursor-pointer transition-all ${
                     isActive
-                      ? "bg-[#62754C]"
+                      ? "bg-[#58644B]"
                       : isCompleted
-                      ? "bg-[#62754C]"
+                      ? "bg-[#58644B]"
                       : "bg-white/10"
                   } ${!isClickable ? "opacity-40 cursor-not-allowed" : ""}`}
                   
@@ -281,9 +281,9 @@ export default function ProgressMap() {
                     isActive
                       ? {
                           boxShadow: [
-                            "0 0 6px #62754C",
-                            "0 0 18px #62754C",
-                            "0 0 6px #62754C",
+                            "0 0 6px #58644B",
+                            "0 0 18px #58644B",
+                            "0 0 6px #58644B",
                           ],
                         }
                       : { boxShadow: "none" }
@@ -324,7 +324,7 @@ export default function ProgressMap() {
           className="
             fixed z-[9999]
             px-3 py-1 rounded-full text-sm font-bold
-            bg-[#fdfdf8] text-[#62754c] shadow-md
+            bg-[#e7e7df] text-[#58644B] shadow-md
             pointer-events-none
             whitespace-nowrap
           "

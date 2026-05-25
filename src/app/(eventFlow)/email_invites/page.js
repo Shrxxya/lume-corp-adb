@@ -180,7 +180,7 @@ export default function InvitesEmail() {
   <div
     className="hidden md:block absolute right-0 top-0 h-[95%] w-[2px]"
     style={{
-      background: "#62754c",
+      background: "#58644B",
       boxShadow: "0 0 10px rgba(98,117,76,0.35)",
       opacity: 0.8,
     }}
@@ -333,11 +333,11 @@ export default function InvitesEmail() {
                   placeholder="Write your invitation message..."
                   className="w-full h-[260px] p-5 rounded-2xl outline-none resize-none hide-scrollbar"
                   style={{
-                    backgroundColor:
-                      "rgba(255,255,255,0.6)",
+                    //backgroundColor:
+                      //"rgba(255,255,255,0.6)",
 
-                    border:
-                      "1px solid rgba(0,0,0,0.06)",
+                    //border:
+                      //"1px solid rgba(0,0,0,0.06)",
 
                     fontFamily: "var(--font-body)",
                     fontSize: "0.95rem",
@@ -369,7 +369,7 @@ export default function InvitesEmail() {
                     className="text-center p-4 rounded-2xl mt-5"
                     style={{
                       backgroundColor:
-                        "rgba(98,117,76,0.1)",
+                        "#D9DCD6",
 
                       color: "var(--color-primary)",
                     }}

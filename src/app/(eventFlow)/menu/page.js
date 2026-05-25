@@ -181,8 +181,8 @@ export default function MenuBuilder({ onNext }) {
                         flexDirection: "column",
                         alignItems: "center",
                         justifyContent: "center",
-                        backgroundColor: "var(--glass-fill)",
-                        border: "1px solid var(--glass-border)",
+                        backgroundColor: "#e7e7df",
+                        //border: "1px solid var(--glass-border)",
                       }}
                     >
                       <div className="w-22 h-22 rounded-full mb-4 overflow-hidden flex items-center 
@@ -230,8 +230,8 @@ export default function MenuBuilder({ onNext }) {
                           whileTap={{ scale: 0.98 }}
                           className="p-6 rounded-3xl flex flex-col items-center text-center"
                           style={{
-                            backgroundColor: "var(--glass-fill)",
-                            border: "1px solid var(--glass-border)",
+                            backgroundColor: "#e7e7df",
+                            //border: "1px solid var(--glass-border)",
                           }}
                         >
                           {/* ROUND IMAGE */}
@@ -347,7 +347,7 @@ export default function MenuBuilder({ onNext }) {
                 {/* CONTINUE */}
                 <motion.button
                   onClick={handleSubmit}
-                  className="w-full mt-6 px-6 py-4 rounded-full flex justify-center items-center gap-3"
+                  className="w-full mt-6 px-8 py-5 rounded-full flex justify-center items-center gap-3"
                   style={{
                     backgroundColor: "var(--color-dark)",
                     color: "var(--color-bg)",
@@ -384,7 +384,7 @@ export default function MenuBuilder({ onNext }) {
         onClick={(e) => e.stopPropagation()}
         className="w-full max-w-2xl rounded-3xl p-7"
         style={{
-          backgroundColor: "#fdfdf8",
+          backgroundColor: "#e7e7df",
           backdropFilter: "blur(10px)",
           border: "1.5px solid var(--color-primary)",
           boxShadow: "0 8px 32px rgba(98,117,76,0.18)",

@@ -649,7 +649,7 @@ export const Canvas = forwardRef(function Canvas(_, ref) {
                 top: "5%", right: "15%",
                 width: 180, height: 180,
                 borderRadius: "50%",
-                background: "radial-gradient(circle, rgba(98,117,76,0.1), transparent 70%)",
+                background: "radial-gradient(circle, #D9DCD6, transparent 70%)",
                 filter: "blur(28px)",
                 zIndex: 1,
                 pointerEvents: "none",
