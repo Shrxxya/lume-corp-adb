@@ -10,7 +10,7 @@ import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 import { useState } from "react";
 import { useEventStore } from "@/store/useEventStore";
-
+import { LayoutReviewModal } from "../LayoutReviewModal";
 import { getNextRoute } from "@/lib/eventFlow";
 import { useRouter, usePathname } from "next/navigation";
 
@@ -34,7 +34,19 @@ const eventDetails = useEventStore((s) => s.eventDetails);
   const canvasItems = useCanvasStore((s) => s.items);
   const canvasRef = useRef(null);
 
+  const [reviewOpen, setReviewOpen] = useState(false);
+  const [reviewLoading, setReviewLoading] = useState(false);
+  const [review, setReview] = useState(null);
+  const [reviewData, setReviewData] = useState({ issues: [], score: 0 });
+
+  const getSummaryData      = useEventStore((s) => s.getSummaryData);
+  const summaryData      = getSummaryData();
+  const eventType = summaryData.eventType;
+  const hasHydrated = useEventStore((s) => s.hasHydrated);
+
   const setGeneratedCanvasImage = useEventStore((s) => s.setGeneratedCanvasImage);
+
+  if (!hasHydrated) return;
 
   // Save decor data to store
   const handleSaveDecor = () => {
@@ -114,6 +126,32 @@ setActiveStep("poster");
 
         return dataUrl;
         }
+    async function handleContinue() {
+      setReviewOpen(true);
+      setReviewLoading(true);
+
+      const payload = {
+        eventType,
+        venueSize: {
+          width: 880,
+          height: 668,
+        },
+        canvasItems,
+      };
+
+      const res = await fetch("/api/layout-review", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
+
+      const data = await res.json();
+
+      setReviewData(data);
+      setReviewLoading(false);
+    }
 
 
   return (
@@ -132,7 +170,7 @@ setActiveStep("poster");
 
     </div>
     <motion.button
-          onClick={handleSubmit}
+          onClick={handleContinue}
           className="w-[30%] mx-auto my-10 py-5 rounded-full flex justify-center items-center gap-2 disabled:opacity-40"
           style={{
             backgroundColor: "var(--color-dark)",
@@ -141,6 +179,15 @@ setActiveStep("poster");
         >
           Continue <ArrowRight size={18} />
         </motion.button>
+        <LayoutReviewModal
+          open={reviewOpen}
+          loading={reviewLoading}
+          review={review}
+          issues={reviewData.issues}
+          score={reviewData.score}
+          onClose={() => setReviewOpen(false)}
+          onContinue={handleSubmit}
+        />
   </DndContext>
   
 );

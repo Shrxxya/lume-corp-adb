@@ -5,6 +5,7 @@ import { DraggableItem } from "./DraggableItem";
 import { Monitor, Presentation, Projector, Plus } from "lucide-react";
 import { cn } from "@/components/utils.js";
 import { useEventStore } from "@/store/useEventStore";
+import { validateItem } from "@/lib/canvas/validateItem.js";
 
 const DEFAULT_ITEMS = [
   { id: "led", label: "LED Screen", icon: <Monitor size={18} /> },
@@ -18,6 +19,21 @@ export function Palette() {
   const addPaletteItem = useEventStore((state) => state.addPaletteItem);
 
   const [input, setInput] = useState("");
+  const [error, setError] = useState("");
+  const [itemSuggestion, setItemSuggestion] = useState("");
+
+  function handleItemSubmit() {
+  const result = validateItem(input);
+
+  if (!result.valid) {
+    setError("Unsupported event setup item");
+    setItemSuggestion(result.message);
+    return;
+  }
+
+  setError("");
+  addCustomItem(result.matched);
+}
 
   function addCustomItem() {
     if (!input.trim()) return;
@@ -49,7 +65,7 @@ export function Palette() {
             onKeyDown={(e) => {
               if (e.key === "Enter") {
                 e.preventDefault();
-                addCustomItem();
+                handleItemSubmit();
               }
             }}
             placeholder="Add custom item..."
@@ -82,13 +98,19 @@ export function Palette() {
         >
           <Plus />
         </button>
-
       </div>
+      {error && (
+        <p className="text-red-400 text-xs mt-1">
+          {error}<br/>{itemSuggestion}
+        </p>
+      )}
 
       {/* Items */}
-      {items.map((item) => (
-        <DraggableItem key={item.id} item={item} />
-      ))}
+      <div className="flex flex-col gap-3 overflow-y-auto max-h-[550px]">
+        {items.map((item) => (
+          <DraggableItem key={item.id} item={item} />
+        ))}
+      </div>
 
     </div>
   );
