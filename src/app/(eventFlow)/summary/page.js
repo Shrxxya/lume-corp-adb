@@ -2306,7 +2306,7 @@ export default function FinalSummary({ appData, onReset }) {
       <AnimatePresence>
         {showPaymentSuccess && (
           <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-md">
-            <Confetti recycle={false} numberOfPieces={150} gravity={0.12} colors={["#62754C", "#8BA672", "#C9A84C", "#FDFDF8", "#A8BC92"]} />
+            {/* <Confetti recycle={false} numberOfPieces={150} gravity={0.12} colors={["#62754C", "#8BA672", "#C9A84C", "#FDFDF8", "#A8BC92"]} /> */}
             <motion.div
               initial={{ opacity: 0, scale: 0.88, y: 40 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}

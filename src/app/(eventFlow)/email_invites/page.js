@@ -8,6 +8,7 @@ import {
   Send,
   FileSpreadsheet,
   Sparkles,
+  CheckCircle2 
 } from "lucide-react";
 
 import { useEventStore } from "@/store/useEventStore";
@@ -30,6 +31,7 @@ export default function InvitesEmail() {
   const completeStep = useEventStore((state) => state.completeStep);
   const setStep = useEventStore((state) => state.setStep);
   const setActiveStep = useEventStore((state) => state.setActiveStep);
+  const [showSuccess, setShowSuccess] = useState(false);
 
   // LOCAL STATE
   const [file, setFile] = useState(invites.file);
@@ -111,7 +113,7 @@ export default function InvitesEmail() {
       setSent(true);
       setInvitesSent(true);
 
-      handleSubmit();
+      setShowSuccess(true);
     }, 2000);
   };
 
@@ -397,6 +399,137 @@ export default function InvitesEmail() {
           </motion.button> */}
         </motion.div>
       </div>
+      <InviteSuccessModal
+        open={showSuccess}
+        onContinue={handleSubmit}
+      />
     </div>
+  );
+}
+
+function InviteSuccessModal({ open, onContinue }) {
+  if (!open) return null;
+
+  return (
+    <AnimatePresence>
+      <div className="fixed inset-0 z-50 flex items-center justify-center">
+        {/* backdrop */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          className="absolute inset-0"
+          style={{
+            background: "rgba(20,24,42,0.5)",
+            backdropFilter: "blur(8px)",
+          }}
+        />
+
+        {/* modal */}
+        <motion.div
+          initial={{ scale: 0.94, opacity: 0, y: 16 }}
+          animate={{ scale: 1, opacity: 1, y: 0 }}
+          exit={{ scale: 0.96, opacity: 0 }}
+          transition={{ ease: [0.16, 1, 0.3, 1] }}
+          style={{
+            position: "relative",
+            width: "90%",
+            maxWidth: 420,
+            background: "var(--color-bg, #FDFDF8)",
+            border: "1px solid rgba(20,24,42,0.08)",
+            borderRadius: 28,
+            overflow: "hidden",
+            boxShadow: "0 32px 80px rgba(0,0,0,0.18)",
+          }}
+        >
+          {/* top accent */}
+          <div
+            style={{
+              height: 3,
+              background:
+                "linear-gradient(90deg, #C9A84C, #62754C)",
+            }}
+          />
+
+          <div
+            style={{
+              padding: "40px 32px",
+              textAlign: "center",
+            }}
+          >
+            {/* icon */}
+            <motion.div
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ delay: 0.1 }}
+              style={{
+                width: 72,
+                height: 72,
+                margin: "0 auto 22px",
+                borderRadius: "50%",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                background:
+                  "rgba(98,117,76,0.12)",
+              }}
+            >
+              <CheckCircle2
+                size={36}
+                color="var(--color-primary)"
+              />
+            </motion.div>
+
+            {/* title */}
+            <h2
+              style={{
+                fontFamily:
+                  "var(--font-display, Georgia, serif)",
+                fontSize: "1.7rem",
+                fontWeight: 700,
+                fontStyle: "italic",
+                color: "var(--color-dark, #14182A)",
+                marginBottom: 12,
+              }}
+            >
+              Invitations Sent
+            </h2>
+
+            {/* text */}
+            <p
+              style={{
+                fontFamily:
+                  "var(--font-body, 'DM Sans', sans-serif)",
+                fontSize: 14,
+                lineHeight: 1.7,
+                color: "rgba(20,24,42,0.6)",
+                marginBottom: 28,
+              }}
+            >
+              Your guest invitations have been successfully sent.
+            </p>
+
+            {/* button */}
+            <button
+              onClick={onContinue}
+              style={{
+                padding: "12px 28px",
+                fontFamily:
+                  "var(--font-body, 'DM Sans', sans-serif)",
+                fontSize: 13,
+                fontWeight: 700,
+                background: "var(--color-dark, #14182A)",
+                color: "var(--color-bg, #FDFDF8)",
+                border: "none",
+                borderRadius: 14,
+                cursor: "pointer",
+              }}
+            >
+              Continue
+            </button>
+          </div>
+        </motion.div>
+      </div>
+    </AnimatePresence>
   );
 }
