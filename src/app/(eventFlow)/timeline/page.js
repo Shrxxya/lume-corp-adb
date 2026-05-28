@@ -377,7 +377,7 @@ useEffect(() => {
                     fontSize: "1.6rem", fontWeight: 700,
                     color: "var(--color-primary, #62754C)", lineHeight: 1,
                   }}>{timeline.length}</div>
-                  <div style={{ fontFamily: "var(--font-body)", fontSize: "0.7rem", opacity: 0.5, letterSpacing: "0.08em", textTransform: "uppercase" }}>Events</div>
+                  <div style={{ fontFamily: "var(--font-body)", fontSize: "0.7rem", opacity: 0.5, letterSpacing: "0.08em", textTransform: "uppercase" }}>Segments</div>
                 </div>
                 <div style={{ width: 1, height: 32, background: "rgba(20,24,42,0.12)" }} />
                 {totalDuration && (
@@ -444,7 +444,7 @@ useEffect(() => {
                 value={eventTitle}
                 onChange={(e) => setEventTitle(e.target.value)}
                 onKeyDown={(e) => e.key === "Enter" && addEvent()}
-                placeholder="Add an event — e.g. Dinner, Performance…"
+                placeholder="Add a segment — e.g. Dinner, Performance…"
                           className={cn(
                             "w-full px-3 py-2 rounded-lg",
                             "bg-white/10 border border-white/20",
@@ -630,7 +630,7 @@ useEffect(() => {
                 letterSpacing: "0.04em",
               }}
             >
-              ⠿  Drag events to reorder · Click time to edit · Hover to delete
+              ⠿  Drag segments to reorder · Click time to edit · Hover to delete
             </motion.p>
           )}  
 
