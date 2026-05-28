@@ -10,7 +10,7 @@
 //   Workshop: "#D6DCE8",
 //   Conference: "#E8D6E8",
 //   Gala: "#F0D8C8",
-//   Other: "#FDFDF8",
+//   Other: "#E7E7DF",
 // };
 
 // export default function BlueprintForm({ onNext }) {
@@ -24,7 +24,7 @@
 //     budget: "",
 //   });
 
-//   const [bgColor, setBgColor] = useState("#FDFDF8");
+//   const [bgColor, setBgColor] = useState("#E7E7DF");
 
 //   useEffect(() => {
 //     if (formData.eventName.toLowerCase().includes("award")) {
@@ -42,7 +42,7 @@
 //     ) {
 //       setBgColor(eventTypeColors[formData.eventType]);
 //     } else {
-//       setBgColor("#FDFDF8");
+//       setBgColor("#E7E7DF");
 //     }
 //   }, [formData.eventName, formData.eventType]);
 
@@ -148,7 +148,7 @@
 //         className="p-4 rounded-xl text-center flex-shrink-0"
 //         style={{
 //           width: "calc(50% - 0.75rem)", // Two buttons per row
-//           backgroundColor: isSelected ? "#62754c" : "rgba(0,0,0,0.03)",
+//           backgroundColor: isSelected ? "#58644B" : "rgba(0,0,0,0.03)",
 //           color: isSelected ? "white" : "var(--color-dark)",
 //         }}
 //       >
@@ -192,7 +192,7 @@
 //                       className="p-3 rounded-xl"
 //                       style={{
 //                         backgroundColor: isSelected
-//                           ? "#62754c"
+//                           ? "#58644B"
 //                           : "rgba(98,117,76,0.1)",
 //                         color: isSelected ? "white" : "var(--color-dark)",
 //                       }}
@@ -257,7 +257,7 @@
 //                     className="px-4 py-3 rounded-2xl transition-all duration-300"
 //                     style={{
 //                       backgroundColor:
-//                         formData.eventType === type ? "#62754c" : "var(--glass-fill)",
+//                         formData.eventType === type ? "#58644B" : "var(--glass-fill)",
 //                       color: formData.eventType === type ? "white" : "var(--color-dark)",
 //                     }}
 //                   >
@@ -366,12 +366,12 @@ import { useRouter, usePathname } from "next/navigation";
 
 
 const eventTypeColors = {
-  "Awards & Recognition": "#FDFDF8",
-  "Tech Launch": "#FDFDF8",
-  Workshop: "#FDFDF8",
-  Conference: "#FDFDF8",
-  Gala: "#FDFDF8",
-  Convention: "#FDFDF8",
+  "Awards & Recognition": "#E7E7DF",
+  "Tech Launch": "#E7E7DF",
+  Workshop: "#E7E7DF",
+  Conference: "#E7E7DF",
+  Gala: "#E7E7DF",
+  Convention: "#E7E7DF",
 };
 
   const themes = [
@@ -419,7 +419,7 @@ const [dtStep, setDtStep] = useState("date");
     venueType: eventDetails.venueType || "",
   });
 
-  const [bgColor, setBgColor] = useState("#FDFDF8");
+  const [bgColor, setBgColor] = useState("#E7E7DF");
 
   useEffect(() => {
     // Dynamically update background color based on event type or name
@@ -438,7 +438,7 @@ const [dtStep, setDtStep] = useState("date");
     ) {
       setBgColor(eventTypeColors[formData.eventType]);
     } else {
-      setBgColor("#FDFDF8");
+      setBgColor("#E7E7DF");
     }
   }, [formData.eventName, formData.eventType]);
 
@@ -687,8 +687,8 @@ const [dtStep, setDtStep] = useState("date");
                       className="p-2 rounded-lg text-sm cursor-pointer w-max"
                       style={{
                         backgroundColor: isSelected
-                          ? "#62754c"
-                          : "rgba(98,117,76,0.1)",
+                          ? "#58644B"
+                          : "#E7E7DF",
                         color: isSelected
                           ? "white"
                           : "var(--color-dark)",
@@ -803,8 +803,8 @@ const [dtStep, setDtStep] = useState("date");
                   style={{
                     backgroundColor:
                       formData.venueType === type
-                        ? "#62754c"
-                        : "rgba(98,117,76,0.1)",
+                        ? "#58644B"
+                        : "#D9DCD6",
                     color:
                       formData.venueType === type
                         ? "white"
@@ -863,7 +863,7 @@ const [dtStep, setDtStep] = useState("date");
                     className="px-4 py-3 rounded-2xl transition-all duration-300"
                     style={{
                       backgroundColor:
-                        formData.eventType === type ? "#62754c" : "rgba(98,117,76,0.1)",
+                        formData.eventType === type ? "#58644B" : "#D9DCD6",
                       color: formData.eventType === type ? "white" : "var(--color-dark)",
                     }}
                   >
@@ -926,7 +926,7 @@ const [dtStep, setDtStep] = useState("date");
                   {isSelected && (
                     <div
                       className="absolute top-3 right-3 w-8 h-8 rounded-full flex items-center justify-center"
-                      style={{ backgroundColor: "#62754c" }}
+                      style={{ backgroundColor: "#58644B" }}
                     >
                       <Check size={16} color="white" />
                     </div>
@@ -1003,7 +1003,7 @@ function FloatingInput({
         }}
         transition={{ duration: 0.25 }}
         style={{
-          backgroundColor: "#62754c",
+          backgroundColor: "#58644B",
           transformOrigin: "left",
         }}
       />

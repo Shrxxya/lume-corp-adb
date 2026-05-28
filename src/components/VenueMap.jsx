@@ -109,7 +109,7 @@ export default function VenueMap({
             <div style="
               display:inline-block;
               background:#eef2e6;
-              color:#62754c;
+              color:#58644B;
               padding:4px 10px;
               border-radius:999px;
               font-size:11px;
@@ -124,7 +124,7 @@ export default function VenueMap({
       `);
 
       const marker = new maplibregl.Marker({
-        color: "#62754c",
+        color: "#58644B",
       })
         .setLngLat([v.lon, v.lat])
         .addTo(mapRef.current);
@@ -168,7 +168,7 @@ export default function VenueMap({
         height: "500px",
         borderRadius: "20px",
         overflow: "hidden",
-        border: "1px solid #62754c",
+        border: "1px solid #58644B",
         // earthy green tint
         //filter: "hue-rotate(85deg) saturate(1.2)",
       }}

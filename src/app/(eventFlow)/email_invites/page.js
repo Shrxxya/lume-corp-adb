@@ -182,8 +182,8 @@ export default function InvitesEmail() {
   <div
     className="hidden md:block absolute right-0 top-0 h-[95%] w-[2px]"
     style={{
-      background: "#62754c",
-      boxShadow: "0 0 10px rgba(98,117,76,0.35)",
+      background: "#58644B",
+      boxShadow: "0 0 10px #E7E7DF",
       opacity: 0.8,
     }}
   />
@@ -214,13 +214,9 @@ export default function InvitesEmail() {
   onDrop={handleDrop}
   className="relative rounded-3xl border border-dashed p-8 overflow-hidden"
   style={{
-    backgroundColor: isDragging
-      ? "rgba(98,117,76,0.08)"
-      : "var(--glass-fill)",
+    backgroundColor: "#E7E7DF",
 
-    borderColor: isDragging
-      ? "var(--color-primary)"
-      : "var(--glass-border)",
+    borderColor: "#e7e7df",
 
     backdropFilter: "blur(var(--blur))",
     minHeight: "320px",
@@ -321,9 +317,9 @@ export default function InvitesEmail() {
               <div
                 className="p-5 rounded-3xl"
                 style={{
-                  backgroundColor: "var(--glass-fill)",
+                  backgroundColor: "#E7E7DF",
                   backdropFilter: "blur(var(--blur))",
-                  border: "1px solid var(--glass-border)",
+                  border: "1px solid #e7e7df",
                   minHeight: "320px",
                 }}
               >
@@ -371,7 +367,7 @@ export default function InvitesEmail() {
                     className="text-center p-4 rounded-2xl mt-5"
                     style={{
                       backgroundColor:
-                        "rgba(98,117,76,0.1)",
+                        "#E7E7DF",
 
                       color: "var(--color-primary)",
                     }}
@@ -435,7 +431,7 @@ function InviteSuccessModal({ open, onContinue }) {
             position: "relative",
             width: "90%",
             maxWidth: 420,
-            background: "var(--color-bg, #FDFDF8)",
+            background: "var(--color-bg, #E7E7DF)",
             border: "1px solid rgba(20,24,42,0.08)",
             borderRadius: 28,
             overflow: "hidden",
@@ -447,7 +443,7 @@ function InviteSuccessModal({ open, onContinue }) {
             style={{
               height: 3,
               background:
-                "linear-gradient(90deg, #C9A84C, #62754C)",
+                "linear-gradient(90deg, #C9A84C, #58644B)",
             }}
           />
 
@@ -471,7 +467,7 @@ function InviteSuccessModal({ open, onContinue }) {
                 alignItems: "center",
                 justifyContent: "center",
                 background:
-                  "rgba(98,117,76,0.12)",
+                  "#E7E7DF",
               }}
             >
               <CheckCircle2
@@ -519,7 +515,7 @@ function InviteSuccessModal({ open, onContinue }) {
                 fontSize: 13,
                 fontWeight: 700,
                 background: "var(--color-dark, #14182A)",
-                color: "var(--color-bg, #FDFDF8)",
+                color: "var(--color-bg, #E7E7DF)",
                 border: "none",
                 borderRadius: 14,
                 cursor: "pointer",

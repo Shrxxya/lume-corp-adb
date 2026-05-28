@@ -8,8 +8,8 @@ import {
 } from "@react-pdf/renderer";
 
 const COLORS = {
-  primary: "#62754c",
-  bg: "#Fdfdf8",
+  primary: "#58644B",
+  bg: "#E7E7DF",
   dark: "#14182a",
   border: "#e5e5e5",
 };
@@ -137,7 +137,7 @@ const styles = StyleSheet.create({
     left: 24,
     right: 24,
     bottom: 24,
-    border: "1px solid rgba(98,117,76,0.35)",
+    border: "1px solid #E7E7DF",
   },
 
   cornerTopLeftH: {

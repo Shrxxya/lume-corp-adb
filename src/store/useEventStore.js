@@ -74,7 +74,7 @@ setFormValid: (val) => set({ formValid: val }),
       weather: {
         temperatureUnit: "C",
         sliderValue: 12,
-        backgroundColor: "#fdfdf8",
+        backgroundColor: "#E7E7DF",
         sunPosition: 50,
       },
       setWeather: (weather) =>
@@ -292,7 +292,7 @@ setFormValid: (val) => set({ formValid: val }),
           weather: {
             temperatureUnit: "C",
             sliderValue: 12,
-            backgroundColor: "#fdfdf8",
+            backgroundColor: "#E7E7DF",
             sunPosition: 50,
           },
           budget: {

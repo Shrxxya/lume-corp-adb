@@ -191,7 +191,7 @@
 //   ];
 
 //   const budgetColors = {
-//     food: "#62754C",
+//     food: "#58644B",
 //     decor: "#8BA672",
 //     tech: "#A8BC92",
 //     Entertainment: "#C8D5B9",
@@ -415,7 +415,7 @@
 //                 setShowSuccess(false);
 //                 router.push("/");
 //               }}
-//               className="px-4 py-2 rounded-lg bg-[#62754c] text-white"
+//               className="px-4 py-2 rounded-lg bg-[#58644B] text-white"
 //             >
 //               Close
 //             </button>
@@ -1061,7 +1061,7 @@
 
 //                 <button
 //                   onClick={handlePayment}
-//                   className="px-6 py-3 rounded-xl bg-[#62754c] text-white"
+//                   className="px-6 py-3 rounded-xl bg-[#58644B] text-white"
 //                 >
 //                   Pay Booking Advance
 //                 </button>
@@ -1346,7 +1346,7 @@ function AmbientOrbs() {
 // ── Thin horizontal rule ──────────────────────────────────────────────────────
 function Divider() {
   return (
-    <div className="w-full h-px my-8" style={{ background: "linear-gradient(90deg, transparent, rgba(98,117,76,0.3), transparent)" }} />
+    <div className="w-full h-px my-8" style={{ background: "linear-gradient(90deg, transparent, #E7E7DF, transparent)" }} />
   );
 }
 
@@ -1359,8 +1359,8 @@ function SectionLabel({ children }) {
       viewport={{ once: true }}
       className="inline-flex items-center gap-2 px-3 py-1 rounded-full mb-4"
       style={{
-        background: "rgba(98,117,76,0.12)",
-        border: "1px solid rgba(98,117,76,0.25)",
+        background: "#E7E7DF",
+        border: "1px solid #E7E7DF",
         fontFamily: "var(--font-body)",
         fontSize: "0.7rem",
         fontWeight: 700,
@@ -1402,7 +1402,7 @@ function HeroStat({ icon: Icon, label, value, index, accent }) {
         background: "rgba(253,253,248,0.7)",
         backdropFilter: "blur(20px)",
         WebkitBackdropFilter: "blur(20px)",
-        border: "1px solid rgba(98,117,76,0.18)",
+        border: "1px solid #E7E7DF",
         boxShadow: "0 8px 32px rgba(20,24,42,0.08), inset 0 1px 0 rgba(255,255,255,0.8)",
       }}
     >
@@ -1460,7 +1460,7 @@ function CountUp({ target, suffix = "" }) {
 
 // ── Budget bar ────────────────────────────────────────────────────────────────
 const budgetColors = {
-  food: "#62754C",
+  food: "#58644B",
   decor: "#8BA672",
   tech: "#A8BC92",
   Entertainment: "#C9A84C",
@@ -1508,13 +1508,13 @@ function LoadingOverlay({ label, sub }) {
         <div className="relative flex items-center justify-center">
           <motion.div
             className="absolute w-24 h-24 rounded-full"
-            style={{ background: "radial-gradient(circle, rgba(98,117,76,0.6), transparent 70%)" }}
+            style={{ background: "radial-gradient(circle, #E7E7DF, transparent 70%)" }}
             animate={{ scale: [1, 1.4, 1], opacity: [0.6, 0.2, 0.6] }}
             transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
           />
           <motion.div
             className="w-14 h-14 rounded-full border-2 border-transparent"
-            style={{ borderTopColor: "var(--color-primary)", borderRightColor: "rgba(98,117,76,0.3)" }}
+            style={{ borderTopColor: "var(--color-primary)", borderRightColor: "#E7E7DF" }}
             animate={{ rotate: 360 }}
             transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
           />
@@ -1736,7 +1736,7 @@ export default function FinalSummary({ appData, onReset }) {
   }, [showQR]);
 
   const stats = [
-    { icon: Calendar, label: "Event Date", value: formatDate(summaryData.date), accent: "#62754C" },
+    { icon: Calendar, label: "Event Date", value: formatDate(summaryData.date), accent: "#58644B" },
     { icon: MapPin, label: "Location", value: summaryData.location || "—", accent: "#8BA672" },
     { icon: Users, label: "Guests", value: summaryData.guestCount || "—", accent: "#A8BC92" },
     { icon: IndianRupee, label: "Budget", value: `₹${summaryData.budget}L`, accent: "#C9A84C" },
@@ -1809,8 +1809,8 @@ export default function FinalSummary({ appData, onReset }) {
             transition={{ duration: 0.6, delay: 0.1 }}
             className="inline-flex items-center gap-2 px-4 py-2 rounded-full mb-8"
             style={{
-              background: "rgba(98,117,76,0.1)",
-              border: "1px solid rgba(98,117,76,0.25)",
+              background: "#E7E7DF",
+              border: "1px solid #E7E7DF",
             }}
           >
             <Sparkles size={14} style={{ color: "var(--color-primary)" }} />
@@ -1892,7 +1892,7 @@ export default function FinalSummary({ appData, onReset }) {
                     }}
                   >
                     {/* glow accent */}
-                    <div className="absolute top-0 right-0 w-48 h-48 rounded-full" style={{ background: "radial-gradient(circle, rgba(98,117,76,0.25), transparent 70%)", transform: "translate(30%, -30%)" }} />
+                    <div className="absolute top-0 right-0 w-48 h-48 rounded-full" style={{ background: "radial-gradient(circle,  rgba(98,117,76,0.25), transparent 70%)", transform: "translate(30%, -30%)" }} />
 
                     <p style={{ fontFamily: "var(--font-body)", fontSize: "0.7rem", fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase", color: "var(--color-accent)", marginBottom: "2rem" }}>
                       Estimated Planning Fee
@@ -1946,7 +1946,7 @@ export default function FinalSummary({ appData, onReset }) {
                       style={{
                         background: "rgba(253,253,248,0.8)",
                         backdropFilter: "blur(20px)",
-                        border: "1px solid rgba(98,117,76,0.15)",
+                        border: "1px solid #E7E7DF",
                         boxShadow: "0 4px 20px rgba(20,24,42,0.06)",
                       }}
                     >
@@ -1985,7 +1985,7 @@ export default function FinalSummary({ appData, onReset }) {
                         color: "var(--color-dark)",
                         background: "rgba(253,253,248,0.85)",
                         backdropFilter: "blur(12px)",
-                        border: "1px solid rgba(98,117,76,0.2)",
+                        border: "1px solid #E7E7DF",
                         boxShadow: "0 2px 8px rgba(20,24,42,0.06)",
                       }}
                     >
@@ -2019,14 +2019,14 @@ export default function FinalSummary({ appData, onReset }) {
                           <span style={{ fontFamily: "var(--font-mono)", fontSize: "0.8rem", fontWeight: 600, color: "var(--color-accent)" }}>{event.time || "--:--"}</span>
                         </div>
                         {/* dot */}
-                        <div className="w-3 h-3 rounded-full flex-shrink-0 ring-4" style={{ background: "var(--color-primary)", ringColor: "rgba(98,117,76,0.15)" }} />
+                        <div className="w-3 h-3 rounded-full flex-shrink-0 ring-4" style={{ background: "var(--color-primary)", ringColor: "#E7E7DF" }} />
                         <motion.div
                           whileHover={{ x: 4 }}
                           className="flex-1 py-3 px-5 rounded-2xl"
                           style={{
                             background: "rgba(253,253,248,0.7)",
                             backdropFilter: "blur(12px)",
-                            border: "1px solid rgba(98,117,76,0.12)",
+                            border: "1px solid #E7E7DF",
                           }}
                         >
                           <span style={{ fontFamily: "var(--font-body)", fontSize: "0.95rem", fontWeight: 500, color: "var(--color-dark)" }}>{event.title || "Event"}</span>
@@ -2057,7 +2057,7 @@ export default function FinalSummary({ appData, onReset }) {
                       key={i}
                       whileHover={{ x: 4 }}
                       className="flex items-center gap-4 p-4 rounded-2xl"
-                      style={{ background: "rgba(20,24,42,0.04)", border: "1px solid rgba(98,117,76,0.12)" }}
+                      style={{ background: "rgba(20,24,42,0.04)", border: "1px solid #E7E7DF" }}
                     >
                       <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: "var(--color-primary)" }}>
                         <Star size={16} color="white" />
@@ -2153,7 +2153,7 @@ export default function FinalSummary({ appData, onReset }) {
                 }}
               >
                 {/* Orbs inside card */}
-                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-96 h-48 rounded-full" style={{ background: "radial-gradient(ellipse, rgba(98,117,76,0.3), transparent 70%)", filter: "blur(40px)" }} />
+                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-96 h-48 rounded-full" style={{ background: "radial-gradient(ellipse,  rgba(98,117,76,0.3), transparent 70%)", filter: "blur(40px)" }} />
                 <div className="absolute bottom-0 left-0 w-64 h-64 rounded-full" style={{ background: "radial-gradient(circle, rgba(168,188,146,0.12), transparent 70%)", filter: "blur(30px)" }} />
 
                 <div className="relative">
@@ -2170,7 +2170,7 @@ export default function FinalSummary({ appData, onReset }) {
                   {/* Button row */}
                   <div className="flex flex-col sm:flex-row gap-3 justify-center">
                     <motion.button
-                      whileHover={{ scale: 1.03, boxShadow: "0 0 40px rgba(98,117,76,0.5)" }}
+                      whileHover={{ scale: 1.03, boxShadow: "0 0 40px #E7E7DF" }}
                       whileTap={{ scale: 0.97 }}
                       onClick={async () => {
                         if (isGenerating || isSending) return;
@@ -2235,12 +2235,12 @@ export default function FinalSummary({ appData, onReset }) {
                 style={{
                   background: "rgba(253,253,248,0.85)",
                   backdropFilter: "blur(24px)",
-                  border: "1px solid rgba(98,117,76,0.2)",
+                  border: "1px solid #E7E7DF",
                   boxShadow: "0 24px 80px rgba(20,24,42,0.1)",
                 }}
               >
                 <motion.div
-                  animate={{ boxShadow: ["0 0 0px rgba(98,117,76,0.3)", "0 0 40px rgba(98,117,76,0.5)", "0 0 0px rgba(98,117,76,0.3)"] }}
+                  animate={{ boxShadow: ["0 0 0px #E7E7DF", "0 0 40px #E7E7DF", "0 0 0px #E7E7DF"] }}
                   transition={{ duration: 3, repeat: Infinity }}
                   className="inline-block rounded-2xl overflow-hidden mb-6"
                 >
@@ -2306,7 +2306,7 @@ export default function FinalSummary({ appData, onReset }) {
       <AnimatePresence>
         {showPaymentSuccess && (
           <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-md">
-            {/* <Confetti recycle={false} numberOfPieces={150} gravity={0.12} colors={["#62754C", "#8BA672", "#C9A84C", "#FDFDF8", "#A8BC92"]} /> */}
+            {/* <Confetti recycle={false} numberOfPieces={150} gravity={0.12} colors={["#58644B", "#8BA672", "#C9A84C", "#E7E7DF", "#A8BC92"]} /> */}
             <motion.div
               initial={{ opacity: 0, scale: 0.88, y: 40 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
@@ -2316,18 +2316,18 @@ export default function FinalSummary({ appData, onReset }) {
               style={{
                 background: "rgba(253,253,248,0.92)",
                 backdropFilter: "blur(32px)",
-                border: "1px solid rgba(98,117,76,0.25)",
+                border: "1px solid #E7E7DF",
                 boxShadow: "0 40px 120px rgba(0,0,0,0.2)",
               }}
             >
-              <div className="absolute -top-24 left-1/2 -translate-x-1/2 w-72 h-72 rounded-full" style={{ background: "radial-gradient(circle, rgba(98,117,76,0.2), transparent 70%)", filter: "blur(30px)" }} />
+              <div className="absolute -top-24 left-1/2 -translate-x-1/2 w-72 h-72 rounded-full" style={{ background: "radial-gradient(circle, #E7E7DF, transparent 70%)", filter: "blur(30px)" }} />
 
               <motion.div
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}
                 transition={{ delay: 0.25, type: "spring", stiffness: 200, damping: 14 }}
                 className="w-20 h-20 rounded-full mx-auto flex items-center justify-center mb-6 relative"
-                style={{ background: "linear-gradient(135deg, var(--color-primary), #8BA672)", boxShadow: "0 12px 40px rgba(98,117,76,0.4)" }}
+                style={{ background: "linear-gradient(135deg, var(--color-primary), #8BA672)", boxShadow: "0 12px 40px #E7E7DF" }}
               >
                 <CheckCircle2 size={40} color="white" />
               </motion.div>
@@ -2341,7 +2341,7 @@ export default function FinalSummary({ appData, onReset }) {
                 </p>
               </div>
 
-              <div className="rounded-2xl p-5 space-y-3 mb-8" style={{ background: "rgba(98,117,76,0.06)", border: "1px solid rgba(98,117,76,0.15)" }}>
+              <div className="rounded-2xl p-5 space-y-3 mb-8" style={{ background: "#E7E7DF", border: "1px solid #E7E7DF" }}>
                 {[
                   { label: "Booking ID", value: paymentDetails.bookingId },
                   { label: "Payment Date", value: paymentDetails.date },
@@ -2351,7 +2351,7 @@ export default function FinalSummary({ appData, onReset }) {
                     <span style={{ fontFamily: "var(--font-mono)", fontSize: "0.85rem", fontWeight: 600, color: "var(--color-dark)" }}>{row.value}</span>
                   </div>
                 ))}
-                <div className="flex justify-between items-center pt-2" style={{ borderTop: "1px solid rgba(98,117,76,0.15)" }}>
+                <div className="flex justify-between items-center pt-2" style={{ borderTop: "1px solid #E7E7DF" }}>
                   <span style={{ fontFamily: "var(--font-body)", fontSize: "0.85rem", color: "var(--color-dark-mid)", opacity: 0.6 }}>Advance Paid</span>
                   <span style={{ fontFamily: "var(--font-mono)", fontSize: "1.2rem", fontWeight: 700, color: "var(--color-primary)" }}>{paymentDetails.amount}</span>
                 </div>
@@ -2368,7 +2368,7 @@ export default function FinalSummary({ appData, onReset }) {
                     a.click();
                   }}
                   className="w-full py-4 rounded-2xl text-white font-semibold flex items-center justify-center gap-2"
-                  style={{ fontFamily: "var(--font-body)", background: "linear-gradient(135deg, var(--color-primary), #7E9564)", boxShadow: "0 8px 32px rgba(98,117,76,0.35)" }}
+                  style={{ fontFamily: "var(--font-body)", background: "linear-gradient(135deg, var(--color-primary), #7E9564)", boxShadow: "0 8px 32px #E7E7DF" }}
                 >
                   <Download size={16} />
                   Download Receipt
@@ -2408,7 +2408,7 @@ export default function FinalSummary({ appData, onReset }) {
         style={{
           background: "rgba(253,253,248,0.92)",
           backdropFilter: "blur(24px)",
-          border: "1px solid rgba(98,117,76,0.2)",
+          border: "1px solid #E7E7DF",
           boxShadow: "0 40px 120px rgba(0,0,0,0.2)",
         }}
       >

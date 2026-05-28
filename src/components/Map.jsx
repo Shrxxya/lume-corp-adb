@@ -113,7 +113,7 @@ useEffect(() => {
                 className="mt-6 p-5 rounded-2xl"
                 style={{
                 background: "rgba(255,255,255,0.7)",
-                border: "1px solid rgba(98,117,76,0.25)",
+                border: "1px solid #E7E7DF",
                 backdropFilter: "blur(10px)",
                 }}
             >

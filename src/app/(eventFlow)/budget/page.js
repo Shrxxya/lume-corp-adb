@@ -203,7 +203,7 @@
 //             <span
 //               className="text-2xl font-semibold flex flex-col"
 //               style={{
-//                 color: isOverBudget ? "#d4183d" : "#62754c",
+//                 color: isOverBudget ? "#d4183d" : "#58644B",
 //               }}
 //             >
 //               {currentTotal}%
@@ -225,7 +225,7 @@
 //                 width: `${Math.min(currentTotal, 100)}%`,
 //                 backgroundColor: isOverBudget
 //                   ? "#d4183d"
-//                   : "#62754c",
+//                   : "#58644B",
 //               }}
 //               transition={{ duration: 0.3 }}
 //             />
@@ -406,7 +406,7 @@
 //           width: 20px;
 //           height: 20px;
 //           border-radius: 50%;
-//           background: #62754c;
+//           background: #58644B;
 //           border: 3px solid white;
 //         }
 //       `}</style>
@@ -427,7 +427,7 @@
 //       className="relative p-6 rounded-3xl max-w-md w-full"
 //       style={{
 //         backgroundColor: "var(--glass-fill)",
-//         border: "1px solid #62754c",
+//         border: "1px solid #58644B",
 //       }}
 //     >
 //       <h2 className="text-lg font-semibold mb-2">
@@ -561,7 +561,7 @@ function SliderRow({ slider, index, totalBudget, isOver, onChange }) {
             style={{
               fontFamily: "var(--font-mono, 'JetBrains Mono', monospace)",
               fontSize: 11, fontWeight: 500,
-              color: "var(--color-primary, #62754C)",
+              color: "var(--color-primary, #58644B)",
               display: "block", marginTop: 2,
             }}
           />
@@ -584,7 +584,7 @@ function SliderRow({ slider, index, totalBudget, isOver, onChange }) {
             borderRadius: 99,
             background: isOver
               ? "linear-gradient(90deg, #C0392B, #E74C3C)"
-              : "linear-gradient(90deg, var(--color-primary, #62754C), #8BA672)",
+              : "linear-gradient(90deg, var(--color-primary, #58644B), #8BA672)",
             width: `${fillPct}%`,
           }}
           animate={{ width: `${fillPct}%` }}
@@ -614,11 +614,11 @@ function SliderRow({ slider, index, totalBudget, isOver, onChange }) {
             position: "absolute",
             width: 20, height: 20,
             borderRadius: "50%",
-            background: "var(--color-bg, #FDFDF8)",
-            border: `2px solid ${isOver ? "#C0392B" : "var(--color-primary, #62754C)"}`,
+            background: "var(--color-bg, #E7E7DF)",
+            border: `2px solid ${isOver ? "#C0392B" : "var(--color-primary, #58644B)"}`,
             boxShadow: isOver
               ? "0 0 0 4px rgba(192,57,43,0.12), 0 2px 8px rgba(0,0,0,0.15)"
-              : "0 0 0 4px rgba(98,117,76,0.12), 0 2px 8px rgba(0,0,0,0.12)",
+              : "0 0 0 4px #E7E7DF, 0 2px 8px rgba(0,0,0,0.12)",
             pointerEvents: "none",
             zIndex: 1,
           }}
@@ -654,7 +654,7 @@ function SuggestionBubble({ suggestion, onApply, onDismiss }) {
       {/* top accent bar */}
       <div style={{
         height: 2,
-        background: "linear-gradient(90deg, var(--color-primary, #62754C), #C9A84C)",
+        background: "linear-gradient(90deg, var(--color-primary, #58644B), #C9A84C)",
       }} />
 
       <div style={{ padding: "16px 18px 18px" }}>
@@ -664,8 +664,8 @@ function SuggestionBubble({ suggestion, onApply, onDismiss }) {
             <div style={{
               width: 28, height: 28,
               borderRadius: 8,
-              background: "rgba(98,117,76,0.2)",
-              border: "1px solid rgba(98,117,76,0.3)",
+              background: "#E7E7DF",
+              border: "1px solid #E7E7DF",
               display: "flex", alignItems: "center", justifyContent: "center",
             }}>
               <Sparkles size={13} style={{ color: "#8BA672" }} />
@@ -767,7 +767,7 @@ function SuggestionBubble({ suggestion, onApply, onDismiss }) {
               padding: "9px 0",
               fontFamily: "var(--font-body, 'DM Sans', sans-serif)",
               fontSize: 12, fontWeight: 700,
-              background: "var(--color-primary, #62754C)",
+              background: "var(--color-primary, #58644B)",
               color: "white",
               border: "none",
               borderRadius: 10,
@@ -817,7 +817,7 @@ function BudgetModal({ currentTotal, onBack, onContinue }) {
         style={{
           position: "relative",
           width: "90%", maxWidth: 400,
-          background: "var(--color-bg, #FDFDF8)",
+          background: "var(--color-bg, #E7E7DF)",
           border: "1px solid rgba(20,24,42,0.1)",
           borderRadius: 24,
           overflow: "hidden",
@@ -829,7 +829,7 @@ function BudgetModal({ currentTotal, onBack, onContinue }) {
           height: 3,
           background: isOver
             ? "linear-gradient(90deg, #C0392B, #E74C3C)"
-            : "linear-gradient(90deg, #C9A84C, #62754C)",
+            : "linear-gradient(90deg, #C9A84C, #58644B)",
         }} />
 
         <div style={{ padding: "24px 28px 28px" }}>
@@ -876,7 +876,7 @@ function BudgetModal({ currentTotal, onBack, onContinue }) {
                   fontFamily: "var(--font-body, 'DM Sans', sans-serif)",
                   fontSize: 13, fontWeight: 700,
                   background: "var(--color-dark, #14182A)",
-                  color: "var(--color-bg, #FDFDF8)",
+                  color: "var(--color-bg, #E7E7DF)",
                   border: "none",
                   borderRadius: 12,
                   cursor: "pointer",
@@ -1014,7 +1014,7 @@ export default function BudgetOptimizer() {
   const dash  = circ * fillRatio;
 
   return (
-    <div className="min-h-screen relative" style={{ backgroundColor: "var(--color-bg, #FDFDF8)" }}>
+    <div className="min-h-screen relative" style={{ backgroundColor: "var(--color-bg, #E7E7DF)" }}>
 
       {/* Subtle dot grid */}
       <div className="fixed inset-0 pointer-events-none" style={{ zIndex: 0, opacity: 0.45 }}>
@@ -1029,7 +1029,7 @@ export default function BudgetOptimizer() {
       <div className="fixed pointer-events-none" style={{
         zIndex: 0, top: "-15%", right: "-8%",
         width: 520, height: 520, borderRadius: "50%",
-        background: "radial-gradient(circle, rgba(98,117,76,0.07), transparent 70%)",
+        background: "radial-gradient(circle, #E7E7DF, transparent 70%)",
         filter: "blur(60px)",
       }} />
       {/* Ambient orb — bottom left */}
@@ -1086,7 +1086,7 @@ export default function BudgetOptimizer() {
                   <motion.circle
                     cx={74} cy={74} r={R}
                     fill="none"
-                    stroke={isOver ? "#C0392B" : "var(--color-primary, #62754C)"}
+                    stroke={isOver ? "#C0392B" : "var(--color-primary, #58644B)"}
                     strokeWidth={stroke}
                     strokeLinecap="round"
                     strokeDasharray={`${circ}`}
@@ -1174,10 +1174,10 @@ export default function BudgetOptimizer() {
                   exit={{ opacity: 0, y: -6 }}
                   className="flex items-center gap-2 mt-5"
                 >
-                  <div style={{ width: 6, height: 6, borderRadius: "50%", background: "var(--color-primary, #62754C)" }} />
+                  <div style={{ width: 6, height: 6, borderRadius: "50%", background: "var(--color-primary, #58644B)" }} />
                   <span style={{
                     fontFamily: "var(--font-body, 'DM Sans', sans-serif)",
-                    fontSize: 12, color: "var(--color-primary, #62754C)", fontWeight: 600,
+                    fontSize: 12, color: "var(--color-primary, #58644B)", fontWeight: 600,
                   }}>Perfectly balanced</span>
                 </motion.div>
               )}
@@ -1226,7 +1226,7 @@ export default function BudgetOptimizer() {
               <span style={{
                 fontFamily: "var(--font-mono, 'JetBrains Mono', monospace)",
                 fontSize: 12, fontWeight: 500,
-                color: "var(--color-primary, #62754C)",
+                color: "var(--color-primary, #58644B)",
               }}>
                 ₹{Math.round((currentTotal / 100) * totalEventBudget * 10) / 10}L
               </span>

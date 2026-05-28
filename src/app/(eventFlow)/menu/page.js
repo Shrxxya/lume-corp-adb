@@ -384,7 +384,7 @@
 //         onClick={(e) => e.stopPropagation()}
 //         className="w-full max-w-2xl rounded-3xl p-7"
 //         style={{
-//           backgroundColor: "#fdfdf8",
+//           backgroundColor: "#E7E7DF",
 //           backdropFilter: "blur(10px)",
 //           border: "1.5px solid var(--color-primary)",
 //           boxShadow: "0 8px 32px rgba(98,117,76,0.18)",
@@ -586,7 +586,7 @@ const overage = rawRatio > 1;
     ? "#C0392B"
     : ratio > 0.85
     ? "#C9A84C"
-    : "var(--color-primary, #62754C)";
+    : "var(--color-primary, #58644B)";
 
   return (
     <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 6 }}>
@@ -662,19 +662,19 @@ const overage = rawRatio > 1;
 
       {/* status tag */}
       <div style={{
-        padding: "3px 10px",
+        padding: "0px 10px 3px 10px",
         borderRadius: 99,
         background: isOver
           ? "rgba(192,57,43,0.1)"
           : ratio > 0.85
           ? "rgba(201,168,76,0.12)"
-          : "rgba(98,117,76,0.1)",
-        border: `1px solid ${isOver ? "rgba(192,57,43,0.2)" : ratio > 0.85 ? "rgba(201,168,76,0.25)" : "rgba(98,117,76,0.2)"}`,
+          : "#E7E7DF",
+        border: `1px solid ${isOver ? "rgba(192,57,43,0.2)" : ratio > 0.85 ? "rgba(201,168,76,0.25)" : "#E7E7DF"}`,
       }}>
         <span style={{
           fontFamily: "var(--font-body, 'DM Sans', sans-serif)",
           fontSize: 10, fontWeight: 600,
-          color: isOver ? "#C0392B" : ratio > 0.85 ? "#7A5E1A" : "var(--color-primary, #62754C)",
+          color: isOver ? "#C0392B" : ratio > 0.85 ? "#7A5E1A" : "var(--color-primary, #58644B)",
         }}>
           {isOver
             ? `₹${(spentL - budgetL).toFixed(1)}L over budget`
@@ -752,7 +752,7 @@ export default function MenuBuilder({ onNext }) {
   if (!hasHydrated) return null;
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: "var(--color-bg, #FDFDF8)" }}>
+    <div className="min-h-screen" style={{ backgroundColor: "var(--color-bg, #E7E7DF)" }}>
         
 
       {/* Ambient */}
@@ -760,7 +760,7 @@ export default function MenuBuilder({ onNext }) {
         <div style={{
           position: "absolute", top: "-10%", right: "-5%",
           width: 450, height: 450, borderRadius: "50%",
-          background: "radial-gradient(circle, rgba(98,117,76,0.06), transparent 70%)",
+          background: "radial-gradient(circle, #E7E7DF, transparent 70%)",
           filter: "blur(60px)",
         }} />
       </div>
@@ -921,7 +921,7 @@ export default function MenuBuilder({ onNext }) {
                               <div style={{
                                 position: "absolute", top: 15, right: 50,
                                 width: 18, height: 18, borderRadius: "50%",
-                                background: "var(--color-primary, #62754C)",
+                                background: "var(--color-primary, #58644B)",
                                 display: "flex", alignItems: "center", justifyContent: "center",
                               }}>
                                 <svg width={10} height={10} viewBox="0 0 10 10">
@@ -935,7 +935,7 @@ export default function MenuBuilder({ onNext }) {
                             <div style={{
                               width: 94, height: 94, borderRadius: "50%",
                               overflow: "hidden",
-                              border: `1.5px solid ${onPlate ? "rgba(98,117,76,0.3)" : "rgba(20,24,42,0.08)"}`,
+                              border: `1.5px solid ${onPlate ? "#E7E7DF" : "rgba(20,24,42,0.08)"}`,
                               boxShadow: "0 2px 10px rgba(0,0,0,0.1)",
                             }}>
                               <img src={`/food/${dish.image}`} alt={dish.name}
@@ -1019,7 +1019,7 @@ export default function MenuBuilder({ onNext }) {
                     backgroundColor: "var(--glass-fill)",
                     backdropFilter: "blur(3px)",
                     border: "1.5px solid var(--color-primary)",
-                    boxShadow: "0 8px 32px rgba(98,117,76,0.25)",
+                    boxShadow: "0 8px 32px #E7E7DF",
                   }}
                 >
                   <div className="flex flex-col items-start gap-4">
@@ -1115,7 +1115,7 @@ export default function MenuBuilder({ onNext }) {
               onClick={(e) => e.stopPropagation()}
               style={{
                 width: "100%", maxWidth: 520,
-                background: "var(--color-bg, #FDFDF8)",
+                background: "var(--color-bg, #E7E7DF)",
                 border: "1px solid rgba(20,24,42,0.1)",
                 borderRadius: 24,
                 boxShadow: "0 32px 80px rgba(0,0,0,0.2)",
@@ -1123,7 +1123,7 @@ export default function MenuBuilder({ onNext }) {
               }}
             >
               {/* accent top */}
-              <div style={{ height: 3, background: "linear-gradient(90deg, var(--color-primary, #62754C), #8BA672)" }} />
+              <div style={{ height: 3, background: "linear-gradient(90deg, var(--color-primary, #58644B), #8BA672)" }} />
 
               <div style={{ padding: "24px 28px 28px" }}>
                 <div className="flex items-center justify-between mb-6">
@@ -1209,7 +1209,7 @@ export default function MenuBuilder({ onNext }) {
                   <span style={{
                     fontFamily: "var(--font-mono, 'JetBrains Mono', monospace)",
                     fontSize: 16, fontWeight: 700,
-                    color: spentL > foodBudgetL ? "#C0392B" : "var(--color-primary, #62754C)",
+                    color: spentL > foodBudgetL ? "#C0392B" : "var(--color-primary, #58644B)",
                   }}>₹{spentL.toFixed(1)}L</span>
                 </div>
               </div>
@@ -1323,7 +1323,7 @@ export default function MenuBuilder({ onNext }) {
 //     ? "#C0392B"
 //     : ratio > 0.85
 //     ? "#C9A84C"
-//     : "#62754C";
+//     : "#58644B";
 
 //   return (
 //     <motion.div
@@ -1414,7 +1414,7 @@ export default function MenuBuilder({ onNext }) {
 //             : ratio > 0.85
 //             ? "rgba(201,168,76,0.12)"
 //             : "rgba(98,117,76,0.1)",
-//           color: isOver ? "#C0392B" : ratio > 0.85 ? "#7A5E1A" : "#62754C",
+//           color: isOver ? "#C0392B" : ratio > 0.85 ? "#7A5E1A" : "#58644B",
 //         }}>
 //           {isOver
 //             ? `+₹${(spentL - budgetL).toFixed(1)}L over`
@@ -1763,7 +1763,7 @@ export default function MenuBuilder({ onNext }) {
 //               onClick={(e) => e.stopPropagation()}
 //               className="w-full max-w-2xl rounded-3xl p-7"
 //               style={{
-//                 backgroundColor: "#fdfdf8",
+//                 backgroundColor: "#E7E7DF",
 //                 backdropFilter: "blur(10px)",
 //                 border: "1.5px solid var(--color-primary)",
 //                 boxShadow: "0 8px 32px rgba(98,117,76,0.18)",
