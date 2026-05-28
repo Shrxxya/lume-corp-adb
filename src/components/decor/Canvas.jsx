@@ -150,6 +150,7 @@ import { forwardRef, useEffect, useState } from "react";
 import { useEventStore } from "@/store/useEventStore";
 import { motion, AnimatePresence } from "framer-motion";
 import { Sun, Moon } from "lucide-react";
+import { validateLayout } from "@/lib/canvas/layoutValidation";
 
 // ── Layout presets (unchanged from original) ──────────────────────────────────
 const awardsLayout = [
@@ -584,6 +585,8 @@ export const Canvas = forwardRef(function Canvas(_, ref) {
   const initializedEventType = useCanvasStore((s) => s.initializedEventType);
 
   const [night, setNight] = useState(false);
+  const [layoutIssues, setLayoutIssues] = useState([]);
+  const [warningsOpen, setWarningsOpen] = useState(true);
 
   useEffect(() => {
     if (!eventType) return;
@@ -592,6 +595,12 @@ export const Canvas = forwardRef(function Canvas(_, ref) {
     if (!layout) return;
     loadLayout(layout.map((item) => ({ ...item })), eventType);
   }, [eventType, initializedEventType]);
+
+  useEffect(() => {
+    const issues = validateLayout(items, 880, 668);
+
+    setLayoutIssues(issues);
+  }, [items]);
 
   return (
     <div
@@ -606,6 +615,51 @@ export const Canvas = forwardRef(function Canvas(_, ref) {
         background: night ? "#0e1218" : "#F5F0E8",
       }}
     >
+      {layoutIssues.length > 0 && (
+  <div className="absolute top-4 right-4 z-50 w-[320px] rounded-xl bg-red-950/90 border border-red-500/30 backdrop-blur-xl overflow-hidden p-1">
+
+    {/* Header (clickable) */}
+    <button
+      onClick={() => setWarningsOpen((v) => !v)}
+      className="w-full flex items-center justify-between px-4 py-3 text-left"
+    >
+      <div className="text-sm font-semibold text-red-300">
+        Layout Warnings
+      </div>
+
+      <div className="flex items-center gap-2">
+        <span className="text-xs px-2 py-0.5 rounded-full bg-red-500/20 text-red-200 border border-red-500/30">
+          {layoutIssues.length}
+        </span>
+
+        <span className="text-red-300 text-xs">
+          {warningsOpen ? "▾" : "▸"}
+        </span>
+      </div>
+    </button>
+
+    {/* Body */}
+    {warningsOpen && (
+      <div className="px-4 pb-4 space-y-2 max-h-[300px] overflow-auto">
+        {layoutIssues.map((issue, idx) => (
+          <div
+            key={idx}
+            className={`
+              text-xs rounded-lg p-2
+              ${
+                issue.type === "critical"
+                  ? "bg-red-500/10 text-red-200"
+                  : "bg-yellow-500/10 text-yellow-200"
+              }
+            `}
+          >
+            {issue.message}
+          </div>
+        ))}
+      </div>
+    )}
+  </div>
+)}
       {/* Animated venue background */}
       <motion.div
         className="absolute inset-0"
@@ -668,7 +722,7 @@ export const Canvas = forwardRef(function Canvas(_, ref) {
 
       {/* Day / Night toggle */}
       <div style={{ position: "absolute", inset: 0, zIndex: 10, pointerEvents: "none" }}>
-        <div style={{ pointerEvents: "all", position: "absolute", top: 12, right: 12 }}>
+        <div style={{ pointerEvents: "all", position: "absolute", top: 12, left: 110 }}>
           <NightToggle night={night} onToggle={() => setNight((n) => !n)} />
         </div>
       </div>

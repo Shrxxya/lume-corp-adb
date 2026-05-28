@@ -68,7 +68,7 @@ export function DraggableItem({ item }) {
           ? `translate(${transform.x}px, ${transform.y}px)`
           : undefined,
       }}
-      className="relative cursor-grab active:cursor-grabbing p-4 rounded-xl bg-white/10 backdrop-blur-lg border border-white/20 shadow-lg"
+      className="relative cursor-grab active:cursor-grabbing p-4 rounded-xl bg-white/10 backdrop-blur-lg border border-white/20 shadow-lg mr-[10px]"
     >
       <div className="flex items-center gap-2">
         {renderIcon()}
