@@ -1,7 +1,7 @@
 "use client";
 
 import { motion, AnimatePresence } from "framer-motion";
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useMemo } from "react";
 import { ArrowRight, Music, Mic, Lightbulb, X } from "lucide-react";
 import { useEventStore } from "@/store/useEventStore";
 import ProgressMap from "@/components/ProgressMap";
@@ -9,28 +9,135 @@ import { getNextRoute } from "@/lib/eventFlow";
 import { useRouter, usePathname } from "next/navigation";
 
 const performanceArtists = [
-  { name: "Arijit Singh", specialty: "Bollywood Playback", city: "Mumbai", cost: "₹25-35L", agency: "SA Entertainment" },
-  { name: "Shreya Ghoshal", specialty: "Classical Fusion", city: "Mumbai", cost: "₹20-30L", agency: "Ghoshal Productions" },
-  { name: "Sunidhi Chauhan", specialty: "Contemporary Pop", city: "Delhi", cost: "₹15-25L", agency: "Chauhan Collective" },
-  { name: "Neha Kakkar", specialty: "Dance Numbers", city: "Mumbai", cost: "₹18-28L", agency: "NK Events" },
-  { name: "Sonu Nigam", specialty: "Versatile Performer", city: "Mumbai", cost: "₹22-32L", agency: "Nigam Enterprises" }
+  { name: "Arijit Singh", specialty: "Bollywood Playback", city: "Mumbai", cost: "₹7-10L", agency: "SA Entertainment" },
+  { name: "Shreya Ghoshal", specialty: "Classical Fusion", city: "Mumbai", cost: "₹8-11L", agency: "Ghoshal Productions" },
+  { name: "Sunidhi Chauhan", specialty: "Contemporary Pop", city: "Delhi", cost: "₹8-10L", agency: "Chauhan Collective" },
+  { name: "Neha Kakkar", specialty: "Dance Numbers", city: "Mumbai", cost: "₹3-5L", agency: "NK Events" },
+  { name: "Sonu Nigam", specialty: "Versatile Performer", city: "Mumbai", cost: "₹5-8L", agency: "Nigam Enterprises" }
 ];
 
 const hosts = [
-  { name: "Karan Johar", specialty: "Corporate Events", city: "Mumbai", cost: "₹12-18L", agency: "Dharma Events" },
-  { name: "Kapil Sharma", specialty: "Comedy Host", city: "Mumbai", cost: "₹10-15L", agency: "K9 Productions" },
-  { name: "Cyrus Broacha", specialty: "Tech Events", city: "Mumbai", cost: "₹6-10L", agency: "Broacha & Co" },
-  { name: "Mini Mathur", specialty: "Award Shows", city: "Mumbai", cost: "₹8-12L", agency: "MM Hosting" },
-  { name: "Manish Paul", specialty: "Live Events", city: "Delhi", cost: "₹7-11L", agency: "Paul Productions" }
+  { name: "Karan Johar", specialty: "Corporate Events", city: "Mumbai", cost: "₹5-8L", agency: "Dharma Events" },
+  { name: "Kapil Sharma", specialty: "Comedy Host", city: "Mumbai", cost: "₹3-5L", agency: "K9 Productions" },
+  { name: "Cyrus Broacha", specialty: "Tech Events", city: "Mumbai", cost: "₹6-8L", agency: "Broacha & Co" },
+  { name: "Mini Mathur", specialty: "Award Shows", city: "Mumbai", cost: "₹4-6L", agency: "MM Hosting" },
+  { name: "Manish Paul", specialty: "Live Events", city: "Delhi", cost: "₹2-5L", agency: "Paul Productions" }
 ];
 
 const lightShows = [
-  { name: "Laserlume Studios", specialty: "3D Projection Mapping", city: "Bangalore", cost: "₹15-25L", agency: "Direct" },
-  { name: "Spectrum Events", specialty: "LED Choreography", city: "Mumbai", cost: "₹12-20L", agency: "Direct" },
-  { name: "Neon Dreams", specialty: "Interactive Lighting", city: "Gurgaon", cost: "₹10-18L", agency: "Direct" },
-  { name: "Prism Productions", specialty: "Laser Shows", city: "Hyderabad", cost: "₹8-14L", agency: "Direct" },
-  { name: "Aurora Lights", specialty: "Ambient Design", city: "Pune", cost: "₹6-12L", agency: "Direct" }
+  { name: "Laserlume Studios", specialty: "3D Projection Mapping", city: "Bangalore", cost: "₹3-5L", agency: "Direct" },
+  { name: "Spectrum Events", specialty: "LED Choreography", city: "Mumbai", cost: "₹4-5L", agency: "Direct" },
+  { name: "Neon Dreams", specialty: "Interactive Lighting", city: "Gurgaon", cost: "₹4-6L", agency: "Direct" },
+  { name: "Prism Productions", specialty: "Laser Shows", city: "Hyderabad", cost: "₹3-5L", agency: "Direct" },
+  { name: "Aurora Lights", specialty: "Ambient Design", city: "Pune", cost: "₹3-6L", agency: "Direct" }
 ];
+
+// ── SVG ring ──────────────────────────────────────────────────────────────────
+function BudgetRing({ spentL, budgetL }) {
+  //const ratio     = budgetL > 0 ? Math.min(spentL / budgetL, 1) : 0;
+  const isOver    = budgetL > 0 && spentL > budgetL;
+  const rawRatio = budgetL > 0 ? spentL / budgetL : 0;
+const ratio = Math.min(rawRatio, 1);
+  const pct = Math.round(rawRatio * 100);
+  const R         = 52, stroke = 5;
+  const circ      = 2 * Math.PI * R;
+
+  const color = isOver
+    ? "#C0392B"
+    : ratio > 0.85 && ratio < 0.99 
+    ? "#C9A84C"
+    : "var(--color-primary, #62754C)";
+
+  return (
+    <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 6 }}>
+      <div style={{ position: "relative", width: 120, height: 120 }}>
+        <svg width={120} height={120} style={{ transform: "rotate(-90deg)" }}>
+          {/* track */}
+          <circle cx={60} cy={60} r={R} fill="none"
+            stroke="rgba(20,24,42,0.07)" strokeWidth={stroke} />
+          {/* fill */}
+          <motion.circle
+  cx={60}
+  cy={60}
+  r={R}
+  fill="none"
+  stroke={color}
+  strokeWidth={stroke}
+  strokeLinecap="round"
+  strokeDasharray={`${circ} ${circ}`}
+  initial={{ strokeDashoffset: circ }}
+  animate={{
+    strokeDashoffset: circ - circ * ratio,
+  }}
+  transition={{
+    duration: 0.6,
+    ease: [0.16, 1, 0.3, 1],
+  }}
+/>
+        </svg>
+
+        {/* center */}
+        <div style={{
+          position: "absolute", inset: 0,
+          display: "flex", flexDirection: "column",
+          alignItems: "center", justifyContent: "center",
+          gap: 1,
+        }}>
+          <span style={{
+            fontFamily: "var(--font-mono, 'JetBrains Mono', monospace)",
+            fontSize: 17, fontWeight: 700,
+            color, lineHeight: 1,
+          }}>{pct}%</span>
+          <span style={{
+            fontFamily: "var(--font-body, 'DM Sans', sans-serif)",
+            fontSize: 8.5, fontWeight: 600,
+            color: "rgba(20,24,42,0.35)",
+            letterSpacing: "0.06em", textTransform: "uppercase",
+          }}>
+            {isOver ? "over" : "used"}
+          </span>
+        </div>
+      </div>
+
+      {/* labels below ring */}
+      <div style={{ textAlign: "center" }}>
+        <p style={{
+          fontFamily: "var(--font-mono, 'JetBrains Mono', monospace)",
+          fontSize: 12, fontWeight: 700,
+          color: "var(--color-dark, #14182A)",
+          lineHeight: 1,
+        }}>
+          ₹{spentL.toFixed(1)}L
+          <span style={{ fontWeight: 400, color: "rgba(20,24,42,0.35)" }}>
+            {" "}/ ₹{budgetL.toFixed(1)}L
+          </span>
+        </p>
+      </div>
+
+      {/* status tag */}
+      <div style={{
+        padding: "3px 10px",
+        borderRadius: 99,
+        background: isOver
+          ? "rgba(192,57,43,0.1)"
+          : ratio > 0.85
+          ? "rgba(201,168,76,0.12)"
+          : "rgba(98,117,76,0.1)",
+        border: `1px solid ${isOver ? "rgba(192,57,43,0.2)" : ratio > 0.85 ? "rgba(201,168,76,0.25)" : "rgba(98,117,76,0.2)"}`,
+      }}>
+        <span style={{
+          fontFamily: "var(--font-body, 'DM Sans', sans-serif)",
+          fontSize: 10, fontWeight: 600,
+          color: isOver ? "#C0392B" : ratio > 0.85 ? "#7A5E1A" : "var(--color-primary, #62754C)",
+        }}>
+          {isOver
+            ? `₹${(spentL - budgetL).toFixed(1)}L over budget`
+            : `₹${(budgetL - spentL).toFixed(1)}L remaining`}
+        </span>
+      </div>
+    </div>
+  );
+}
 
 export default function EntertainmentSelection() {
   const router = useRouter();
@@ -43,6 +150,14 @@ export default function EntertainmentSelection() {
   const completeStep = useEventStore((state) => state.completeStep);
   const setStep = useEventStore((state) => state.setStep);
   const setActiveStep = useEventStore((state) => state.setActiveStep);
+
+  const budget       = useEventStore((s) => s.budget);
+  const getSummaryData      = useEventStore((s) => s.getSummaryData);
+  const summaryData      = getSummaryData();
+  const hasHydrated = useEventStore((s) => s.hasHydrated);
+  const totalBudgetL = Number(summaryData?.budget || 0);   
+  const extrasPct      = budget?.allocations?.performance || 15;           
+  const extrasBudgetL  = (extrasPct / 100) * totalBudgetL;  
 
   const listRef = useRef(null);
 
@@ -66,6 +181,22 @@ export default function EntertainmentSelection() {
     if (category === "LightShow") return lightShows;
     return [];
   };
+
+  const parseCost = (costString) => {
+    // "₹25-35L" -> 30
+    const cleaned = costString.replace("₹", "").replace("L", "");
+    const [min, max] = cleaned.split("-").map(Number);
+
+    if (max) return (min + max) / 2;
+    return min || 0;
+  };
+
+  const spentL = useMemo(() => {
+    return Object.values(selections).reduce((sum, item) => {
+      if (!item) return sum;
+      return sum + parseCost(item.cost);
+    }, 0);
+  }, [selections]);
 
   const handleCategorySelect = (categoryId) => {
     setSelectedCategory(categoryId);
@@ -112,6 +243,8 @@ export default function EntertainmentSelection() {
     });
   }, [entertainment]);
 
+  if (!hasHydrated) return;
+
   return (
     <div className="min-h-screen dark:bg-black">
       <div className="pt-20 pb-20 px-8">
@@ -121,7 +254,10 @@ export default function EntertainmentSelection() {
           transition={{ duration: 0.6 }}
           className="max-w-6xl mx-auto"
         >
-          {/* HEADINGS */}
+          <div className="flex">
+            {/*------------ LEFT SIDE ------------*/}
+            <div className="flex-[2]">
+            {/* HEADINGS */}
           <h1
             style={{
               fontFamily: 'var(--font-serif)',
@@ -143,10 +279,10 @@ export default function EntertainmentSelection() {
           </p>
 
           {/* GRID */}
-          <div className="grid grid-cols-12 gap-10 mt-10">
+          <div className="w-[95%] mt-10">
 
             {/* LEFT SIDE */}
-            <div className="col-span-8">
+            <div className="">
 
               {/* CATEGORY CARDS */}
               <div className="grid grid-cols-3 gap-6 mb-12">
@@ -222,10 +358,31 @@ export default function EntertainmentSelection() {
                 </motion.div>
               )}
             </div>
-
-            {/* RIGHT SIDE */}
-            <div className="col-span-4">
+            </div>
+          </div>
+          {/* RIGHT SIDE */}
+            <div className="col-span-4 flex-[1]">
               <div className="sticky top-24">
+                {/* Budget ring card */}
+                              <motion.div
+                                initial={{ opacity: 0, y: 16 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ delay: 0.2, duration: 0.55 }}
+                                style={{
+                                  padding: "24px 20px",
+                                  // background: "rgba(20,24,42,0.025)",
+                                  //border: "1px solid rgba(20,24,42,0.09)",
+                                  borderRadius: 20,
+                                  display: "flex",
+                                  flexDirection: "column",
+                                  alignItems: "center",
+                                }}
+                              >
+                                <BudgetRing
+                                  spentL={spentL}
+                                  budgetL={extrasBudgetL}
+                                />
+                              </motion.div>
 
                 {/* LINEUP */}
                 {/* <div className="p-6 rounded-3xl bg-white shadow-sm mb-6"> */}
@@ -300,7 +457,6 @@ export default function EntertainmentSelection() {
 
               </div>
             </div>
-
           </div>
         </motion.div>
       </div>
