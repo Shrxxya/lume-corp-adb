@@ -643,7 +643,7 @@ useEffect(() => {
         {/* Continue */}
         <motion.button
           onClick={handleSubmit}
-          className="w-[30%] mx-auto px-8 py-5 rounded-full flex justify-center items-center gap-3"
+          className="w-[25vw] mx-auto px-8 py-5 rounded-full flex justify-center items-center gap-3"
           style={{
             backgroundColor: "var(--color-dark)",
             color: "var(--color-bg)",

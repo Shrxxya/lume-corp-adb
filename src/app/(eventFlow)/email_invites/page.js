@@ -508,6 +508,7 @@ function InviteSuccessModal({ open, onContinue }) {
             {/* button */}
             <button
               onClick={onContinue}
+              className="w-[25vw]"
               style={{
                 padding: "12px 28px",
                 fontFamily:

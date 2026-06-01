@@ -1152,7 +1152,7 @@ export default function WeatherPage() {
         <div className="flex justify-center">
           <button
             onClick={handleContinue}
-            className="w-[25%] py-5 px-8 rounded-full bg-[var(--color-dark)] text-white flex items-center justify-center gap-2"
+            className="w-[25vw] py-5 px-8 rounded-full bg-[var(--color-dark)] text-white flex items-center justify-center gap-2"
           >
             Continue <ArrowRight size={18} />
           </button>

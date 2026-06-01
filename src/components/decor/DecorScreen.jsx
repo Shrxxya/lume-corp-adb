@@ -171,7 +171,7 @@ setActiveStep("poster");
     </div>
     <motion.button
           onClick={handleContinue}
-          className="w-[30%] mx-auto my-10 py-5 rounded-full flex justify-center items-center gap-2 disabled:opacity-40"
+          className="w-[25vw] mx-auto my-10 py-5 rounded-full flex justify-center items-center gap-2 disabled:opacity-40"
           style={{
             backgroundColor: "var(--color-dark)",
             color: "var(--color-bg)",

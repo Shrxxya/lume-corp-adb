@@ -1239,7 +1239,7 @@ export default function BudgetOptimizer() {
             disabled={isOver}
             whileHover={!isOver ? { scale: 1.02 } : undefined}
             whileTap={!isOver ? { scale: 0.98 } : undefined}
-            className="w-[30%] mx-auto px-8 py-5 rounded-full flex items-center justify-center gap-3"
+            className="w-[25vw] mx-auto px-8 py-5 rounded-full flex items-center justify-center gap-3"
             style={{
               backgroundColor: isOver
                 ? "rgba(20,24,42,0.2)"

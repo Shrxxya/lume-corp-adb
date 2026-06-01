@@ -941,7 +941,7 @@ const [dtStep, setDtStep] = useState("date");
             disabled={!isComplete}
             whileHover={isComplete ? { scale: 1.02 } : {}}
             whileTap={isComplete ? { scale: 0.98 } : {}}
-            className="w-[52%] mx-auto mt-12 px-8 py-5 rounded-full flex items-center justify-center gap-3 transition-all duration-300 disabled:opacity-40 disabled:cursor-not-allowed"
+            className="w-[25vw] mx-auto mt-12 px-8 py-5 rounded-full flex items-center justify-center gap-3 transition-all duration-300 disabled:opacity-40 disabled:cursor-not-allowed"
             style={{
               backgroundColor: "var(--color-dark)",
               color: "var(--color-bg)",
