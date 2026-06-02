@@ -1564,6 +1564,11 @@ export default function FinalSummary({ appData, onReset }) {
     }
 
     const advanceAmount = Math.round(quotation.total * 0.15 * 100000);
+    let url = pdfUrl;
+
+    if (!url) {
+      url = await generatePdfIfNeeded();
+    }
 
     const res = await fetch("/api/cashfree/create-order", {
       method: "POST",
