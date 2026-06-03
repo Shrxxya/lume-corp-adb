@@ -1,7 +1,7 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import {
   ArrowRight,
   Upload,
@@ -18,6 +18,8 @@ import { useRouter, usePathname } from "next/navigation";
 export default function InvitesEmail() {
   const router = useRouter();
   const pathname = usePathname();
+
+  const fileInputRef = useRef(null);
 
   const eventDetails = useEventStore((s) => s.eventDetails);
 
@@ -77,26 +79,53 @@ export default function InvitesEmail() {
   }
 };
 
+const processFile = (selectedFile) => {
+  if (
+    selectedFile &&
+    (selectedFile.name.endsWith(".xlsx") ||
+      selectedFile.name.endsWith(".xls"))
+  ) {
+    setFile(selectedFile);
+    setInvitesFile(selectedFile);
+
+  }
+};
+
   // DROP HANDLER
+  // const handleDrop = (e) => {
+  //   e.preventDefault();
+  //   setIsDragging(false);
+
+  //   const droppedFile = e.dataTransfer.files[0];
+
+  //   if (
+  //     droppedFile &&
+  //     (droppedFile.name.endsWith(".xlsx") ||
+  //       droppedFile.name.endsWith(".xls"))
+  //   ) {
+  //     setFile(droppedFile);
+  //     setInvitesFile(droppedFile);
+
+  //     // setTimeout(() => {
+  //     //   generateDraft();
+  //     // }, 600);
+  //   }
+  // };
   const handleDrop = (e) => {
-    e.preventDefault();
-    setIsDragging(false);
+  e.preventDefault();
+  setIsDragging(false);
 
-    const droppedFile = e.dataTransfer.files[0];
+  const droppedFile = e.dataTransfer.files?.[0];
+  processFile(droppedFile);
+};
 
-    if (
-      droppedFile &&
-      (droppedFile.name.endsWith(".xlsx") ||
-        droppedFile.name.endsWith(".xls"))
-    ) {
-      setFile(droppedFile);
-      setInvitesFile(droppedFile);
+const handleFileSelect = (e) => {
+  const selectedFile = e.target.files?.[0];
 
-      // setTimeout(() => {
-      //   generateDraft();
-      // }, 600);
-    }
-  };
+  if (selectedFile) {
+    processFile(selectedFile);
+  }
+};
 
   // TEXTAREA EDIT
   const handleEmailDraftChange = (value) => {
@@ -202,32 +231,37 @@ export default function InvitesEmail() {
       Upload Guest List
     </h3>
     </div>
-
+      <input
+  ref={fileInputRef}
+  type="file"
+  accept=".xlsx,.xls"
+  className="hidden"
+  onChange={handleFileSelect}
+/>
     {/* rest of your LEFT content */}
 
               <div
+  onClick={() => fileInputRef.current?.click()}
   onDragOver={(e) => {
     e.preventDefault();
     setIsDragging(true);
   }}
   onDragLeave={() => setIsDragging(false)}
   onDrop={handleDrop}
-  className="relative rounded-3xl border border-dashed p-8 overflow-hidden"
+  className="relative rounded-3xl border border-dashed p-8 overflow-hidden cursor-pointer"
   style={{
     backgroundColor: "#E7E7DF",
-
     borderColor: "#e7e7df",
-
     backdropFilter: "blur(var(--blur))",
     minHeight: "320px",
-
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
   }}
 >
-  {/* FIXED LAYOUT WRAPPER (IMPORTANT) */}
   <div className="relative w-full h-full flex items-center justify-center">
+    
+    {/* EMPTY STATE */}
     <motion.div
       animate={{ opacity: file ? 0 : 1 }}
       transition={{ duration: 0.25 }}
@@ -244,20 +278,44 @@ export default function InvitesEmail() {
       >
         <Upload
           size={56}
-          style={{ color: "var(--color-primary)", opacity: 0.5 }}
+          style={{
+            color: "var(--color-primary)",
+            opacity: 0.5,
+          }}
         />
       </motion.div>
 
       <p className="mt-6 text-[1rem] text-[var(--color-dark)]">
-        {isDragging ? "Drop your file here" : "Drag & drop your Excel file"}
+        {isDragging
+          ? "Drop your file here"
+          : "Drag & drop your Excel file"}
       </p>
 
       <p className="mt-2 text-[0.85rem] text-[var(--color-dark)] opacity-50">
+        or browse from your device
+      </p>
+
+      <button
+        type="button"
+        onClick={(e) => {
+          e.stopPropagation();
+          fileInputRef.current?.click();
+        }}
+        className="mt-6 px-5 py-3 rounded-xl"
+        style={{
+          backgroundColor: "var(--color-primary)",
+          color: "var(--color-bg)",
+        }}
+      >
+        Browse Files
+      </button>
+
+      <p className="mt-3 text-[0.75rem] opacity-40">
         Supports .xlsx and .xls formats
       </p>
     </motion.div>
 
-    {/* FILE STATE (NO SCALE ANIMATION) */}
+    {/* FILE UPLOADED STATE */}
     <motion.div
       animate={{ opacity: file ? 1 : 0 }}
       transition={{ duration: 0.25 }}
@@ -266,7 +324,9 @@ export default function InvitesEmail() {
     >
       <FileSpreadsheet
         size={72}
-        style={{ color: "var(--color-primary)" }}
+        style={{
+          color: "var(--color-primary)",
+        }}
       />
 
       <p className="mt-4 text-[1rem] font-semibold text-[var(--color-dark)]">
@@ -276,6 +336,21 @@ export default function InvitesEmail() {
       <p className="mt-2 text-[0.85rem] text-[var(--color-primary)]">
         File uploaded successfully
       </p>
+
+      <button
+        type="button"
+        onClick={(e) => {
+          e.stopPropagation();
+          fileInputRef.current?.click();
+        }}
+        className="mt-5 px-5 py-3 rounded-xl"
+        style={{
+          backgroundColor: "var(--color-primary)",
+          color: "var(--color-bg)",
+        }}
+      >
+        Replace File
+      </button>
     </motion.div>
   </div>
 </div>

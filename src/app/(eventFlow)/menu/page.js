@@ -728,6 +728,8 @@ export default function MenuBuilder({ onNext }) {
     return { spentRupees: total, spentL: total / 100000 };
   }, [plate, guestCount]);
 
+  const isOverBudget = spentL > foodBudgetL;
+
   const isDishOnPlate = (dishName) => plate.some((d) => d.name === dishName);
 
   const handleDishToggle = (dish, cuisineId) => {
@@ -1080,12 +1082,27 @@ export default function MenuBuilder({ onNext }) {
                 </motion.div>
 
                 {/* CONTINUE */}
-                <motion.button
+                {/* <motion.button
                   onClick={handleSubmit}
                   className="w-[25vw] mx-auto mt-6 px-8 py-5 rounded-full flex justify-center items-center gap-3"
                   style={{
                     backgroundColor: "var(--color-dark)",
                     color: "var(--color-bg)",
+                  }}
+                >
+                  Continue <ArrowRight size={20} />
+                </motion.button> */}
+                <motion.button
+                  onClick={handleSubmit}
+                  disabled={isOverBudget}
+                  className="w-[25vw] mx-auto mt-6 px-8 py-5 rounded-full flex justify-center items-center gap-3"
+                  style={{
+                    backgroundColor: isOverBudget
+                      ? "rgba(20,24,42,0.4)"
+                      : "var(--color-dark)",
+                    color: "var(--color-bg)",
+                    cursor: isOverBudget ? "not-allowed" : "pointer",
+                    opacity: isOverBudget ? 0.6 : 1,
                   }}
                 >
                   Continue <ArrowRight size={20} />

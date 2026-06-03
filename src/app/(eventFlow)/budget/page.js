@@ -1065,11 +1065,13 @@ export default function BudgetOptimizer() {
                   Balance
                 </h1>
                 {mounted && (
-                <p style={{
+                <div style={{
                   fontFamily: "var(--font-body, 'DM Sans', sans-serif)",
                   fontSize: "0.9rem",
                   color: "rgba(20,24,42,0.4)",
-                }}>Distribute your ₹{totalEventBudget}L</p>)}
+                }}>Distribute your ₹{totalEventBudget}L <p style={{
+                  fontSize: "0.7rem",
+                }}>*Does not include platform service fee</p></div>)}
               </div>
 
               {/* SVG allocation ring */}

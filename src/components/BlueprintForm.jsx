@@ -375,12 +375,12 @@ const eventTypeColors = {
 };
 
   const themes = [
-    { id: "royal-amber", label: "Royal Amber", image: "/themes/CharcoalGraynCopper.png" },
-    { id: "emerald-glow", label: "Emerald Glow", image: "/themes/ForestGreennBeige.png" },
-    { id: "gold-elegance", label: "Gold Elegance", image: "/themes/GoldnBlack.png" },
-    { id: "midnight-luxe", label: "Midnight Luxe", image: "/themes/NavyBluenSilver.png" },
-    { id: "festive-crimson", label: "Festive Crimson", image: "/themes/RednWhite.png" },
-    { id: "sunrise-clarity", label: "Sunrise Clarity", image: "/themes/YellownWhite.png" },
+    { id: "royal-amber", label: "Royal Amber", image: "/themes/copNgray.png" },
+    { id: "emerald-glow", label: "Emerald Glow", image: "/themes/greenNbeige.png" },
+    { id: "gold-elegance", label: "Purple Elegance", image: "/themes/pinkNwhite.jpeg" },
+    { id: "midnight-luxe", label: "Midnight Luxe", image: "/themes/blueNwhite.png" },
+    { id: "festive-crimson", label: "Festive Crimson", image: "/themes/redNwhite1.png" },
+    { id: "sunrise-clarity", label: "Sunrise Clarity", image: "/themes/yellowNwhite1.png" },
   ];
 
 export default function BlueprintForm() {
@@ -817,7 +817,7 @@ const [dtStep, setDtStep] = useState("date");
             </div>
           </div>
 
-          <FloatingInput
+          {/* <FloatingInput
             inputRef={guestCountRef}
             label="Expected Guests Count"
             value={formData.guestCount}
@@ -825,15 +825,42 @@ const [dtStep, setDtStep] = useState("date");
             type="number"
             placeholder="Number of attendees"
             onWheel={(e) => e.target.blur()}
+          /> */}
+          <FloatingInput
+            inputRef={guestCountRef}
+            label="Expected Guests Count"
+            value={formData.guestCount}
+            onChange={(v) => {
+              if (v === "" || Number(v) > 0) {
+                handleChange("guestCount", v);
+              }
+            }}
+            type="number"
+            min={1}
+            placeholder="Number of attendees"
+            onWheel={(e) => e.target.blur()}
           />
 
-          <FloatingInput
+          {/* <FloatingInput
             label="Budget (₹ Lakhs)"
             value={formData.budget}
             onChange={(v) => handleChange("budget", v)}
             type="number"
             placeholder="Total budget in lakhs"
             onWheel={(e) => e.target.blur()} // Prevent scroll change
+          /> */}
+          <FloatingInput
+            label="Budget (₹ in Lakhs)"
+            value={formData.budget}
+            onChange={(v) => {
+              if (v === "" || Number(v) >= 0.1) {
+                handleChange("budget", v);
+              }
+            }}
+            type="number"
+            min={0}
+            placeholder="Total budget in lakhs"
+            onWheel={(e) => e.target.blur()}
           />
 
           <div className="space-y-3 flex flex-col">
@@ -918,7 +945,11 @@ const [dtStep, setDtStep] = useState("date");
                   <div className="absolute inset-0" />
 
                   {/* LABEL */}
-                  <div className="absolute bottom-3 left-4 text-white font-medium">
+                  {/* <div className="absolute bottom-3 left-4 px-3 py-1 rounded-full backdrop-blur-md bg-white/20 border border-white/30 text-black font-medium">
+                    {theme.label}
+                  </div> */}
+                  <div className="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-black/50 to-transparent" />
+                  <div className="absolute bottom-3 left-4 px-3 py-1 rounded-full backdrop-blur-md bg-white/20 border border-white/30 text-white font-medium">
                     {theme.label}
                   </div>
 
@@ -949,6 +980,7 @@ const [dtStep, setDtStep] = useState("date");
               fontSize: "1.125rem",
               fontWeight: 600,
               letterSpacing: "0.02em",
+              cursor: !isComplete ? "not-allowed" : "pointer",
             }}
           >
             Continue

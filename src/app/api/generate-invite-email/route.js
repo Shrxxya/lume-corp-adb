@@ -70,20 +70,23 @@ export async function POST(req) {
   try {
     const { summaryData } = await req.json();
 
-    // keep payload compact
-    const compactEventData = {
-      eventName: summaryData.eventName,
-      date: summaryData.date,
-      location: summaryData.location,
-    };
+    const formattedDate = new Intl.DateTimeFormat("en-GB", {
+      weekday: "short",
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+    }).format(new Date(summaryData.date));
 
     const prompt = `
 You are an elite corporate event planner.
 
 Write a polished invitation email for guests.
 
-Event details:
-${JSON.stringify(compactEventData, null, 2)}
+Event details (DO NOT MODIFY):
+  Event Date - ${formattedDate}
+  Event Time - ${summaryData.time}
+  Event Name - ${summaryData.eventName}
+  Location - ${summaryData.location}
 
 Rules:
 - professional
@@ -93,6 +96,17 @@ Rules:
 - no placeholders like [Guest Name]
 - no subject line
 - plain text only
+
+You MUST follow this exact structure:
+
+Greetings,
+
+<EMAIL_BODY>
+
+Thankyou
+
+- Replace <EMAIL_BODY> with the invitation content only
+- Do not add anything outside this structure
 `;
 
     const completion =

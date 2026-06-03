@@ -1534,6 +1534,7 @@ export default function FinalSummary({ appData, onReset }) {
   const QRRef = useRef(null);
   const heroRef = useRef(null);
   const [currentStep] = useState(12);
+  const [receiptUrl, setReceiptUrl] = useState(null);
 
   const { scrollYProgress } = useScroll({ target: heroRef });
   const heroY = useTransform(scrollYProgress, [0, 1400], [0, -80]);
@@ -1552,6 +1553,7 @@ export default function FinalSummary({ appData, onReset }) {
     document.body.appendChild(script);
   });
 
+
   const generateBookingId = () => `BK-${Math.floor(100000 + Math.random() * 900000)}`;
 
   const handlePayment = async (leadData) => {
@@ -1563,7 +1565,8 @@ export default function FinalSummary({ appData, onReset }) {
       return;
     }
 
-    const advanceAmount = Math.round(quotation.total * 0.15 * 100000);
+    const totalRupees = quotation.total * 100000;
+    const advanceAmount = Math.round(totalRupees * 0.15);
     let url = pdfUrl;
 
     if (!url) {
@@ -1599,8 +1602,22 @@ export default function FinalSummary({ appData, onReset }) {
     console.log("Cashfree Result:", result);
 
     // Payment completed successfully
+    // if (!result.error) {
+    //   // setPaymentDetails({
+    //   //   bookingId: generateBookingId(),
+    //   //   amount: `₹${advanceAmount.toLocaleString("en-IN")}`,
+    //   //   date: new Date().toLocaleDateString("en-IN", {
+    //   //     day: "2-digit",
+    //   //     month: "short",
+    //   //     year: "numeric",
+    //   //   }),
+    //   // });
+
+    //   setShowPaymentSuccess(true);
+    // }
+
     if (!result.error) {
-      setPaymentDetails({
+      const paymentInfo = {
         bookingId: generateBookingId(),
         amount: `₹${advanceAmount.toLocaleString("en-IN")}`,
         date: new Date().toLocaleDateString("en-IN", {
@@ -1608,7 +1625,17 @@ export default function FinalSummary({ appData, onReset }) {
           month: "short",
           year: "numeric",
         }),
+        transactionId: result?.transactionId || "N/A",
+      };
+
+      setPaymentDetails(paymentInfo);
+
+      //const receipt = await generateReceiptPdf(leadData, paymentInfo);
+      const receipt = await generateReceiptPdf(leadData, {
+        ...paymentInfo,
+        amount: `₹${advanceAmount.toLocaleString("en-IN")}`,
       });
+      setReceiptUrl(receipt);
 
       setShowPaymentSuccess(true);
     }
@@ -1630,6 +1657,8 @@ export default function FinalSummary({ appData, onReset }) {
   }
 };
 
+
+
   const [showPaymentSuccess, setShowPaymentSuccess] = useState(false);
   const [paymentDetails, setPaymentDetails] = useState({ bookingId: "", amount: "", date: "" });
   const [showQR, setShowQR] = useState(false);
@@ -1648,12 +1677,30 @@ export default function FinalSummary({ appData, onReset }) {
   const [showLeadModal, setShowLeadModal] = useState(false);
   const [pendingAction, setPendingAction] = useState(null);
 
+  const validateEmail = (email) => {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  };
+
+  const validatePhone = (phone) => {
+    // simple Indian-friendly validation (10 digits, optional +91)
+    return /^(?:\+91)?[6-9]\d{9}$/.test(phone);
+  };
+  const [errors, setErrors] = useState({
+    email: "",
+    phone: "",
+  });
+
   const [leadForm, setLeadForm] = useState({
     name: "",
     email: "",
     phone: "",
     company: "",
   });
+
+  const isFormValid =
+  leadForm.name?.trim() &&
+  validateEmail(leadForm.email) &&
+  validatePhone(leadForm.phone);
 
   const formatDate = (date) => {
     if (!date) return "—";
@@ -1697,6 +1744,24 @@ export default function FinalSummary({ appData, onReset }) {
       return url;
     } catch (err) { console.error(err); }
     finally { setIsGenerating(false); }
+  };
+
+  const generateReceiptPdf = async (leadData, paymentInfo) => {
+    const res = await fetch("/api/generate-receipt-pdf", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        summaryData,
+        quotation,
+        leadData,
+        paymentInfo,
+      }),
+    });
+
+    const data = await res.json();
+    return data.url;
   };
 
   const handleSubmitRequest = async (leadData) => {
@@ -2364,13 +2429,28 @@ export default function FinalSummary({ appData, onReset }) {
 
               <div className="flex flex-col gap-3">
                 <button
+                  // onClick={async () => {
+                  //   const url = await generatePdfIfNeeded();
+                  //   if (!url) return;
+                  //   const a = document.createElement("a");
+                  //   a.href = url;
+                  //   a.download = `receipt-${paymentDetails.bookingId}.pdf`;
+                  //   a.click();
+                  // }}
                   onClick={async () => {
-                    const url = await generatePdfIfNeeded();
-                    if (!url) return;
+                    let url = receiptUrl;
+
+                    if (!url) {
+                      url = await generateReceiptPdf(leadForm, paymentDetails);
+                      setReceiptUrl(url);
+                    }
+
                     const a = document.createElement("a");
                     a.href = url;
                     a.download = `receipt-${paymentDetails.bookingId}.pdf`;
+                    document.body.appendChild(a);
                     a.click();
+                    document.body.removeChild(a);
                   }}
                   className="w-full py-4 rounded-2xl text-white font-semibold flex items-center justify-center gap-2"
                   style={{ fontFamily: "var(--font-body)", background: "linear-gradient(135deg, var(--color-primary), #7E9564)", boxShadow: "0 8px 32px #E7E7DF" }}
@@ -2485,19 +2565,32 @@ export default function FinalSummary({ appData, onReset }) {
           <LuxuryInput
             label="Work Email"
             value={leadForm.email}
-            onChange={(v) =>
-              setLeadForm((p) => ({ ...p, email: v }))
-            }
+            onChange={(v) => {
+              setLeadForm((p) => ({ ...p, email: v }));
+
+              setErrors((e) => ({
+                ...e,
+                email: v && !validateEmail(v) ? "Enter a valid email" : "",
+              }));
+            }}
             type="email"
+            error={errors.email}
           />
 
           <LuxuryInput
             label="Phone Number"
             value={leadForm.phone}
-            onChange={(v) =>
-              setLeadForm((p) => ({ ...p, phone: v }))
-            }
+            onChange={(v) => {
+              setLeadForm((p) => ({ ...p, phone: v }));
+
+              setErrors((e) => ({
+                ...e,
+                phone:
+                  v && !validatePhone(v) ? "Enter valid 10-digit number" : "",
+              }));
+            }}
             type="tel"
+            error={errors.phone}
           />
         </div>
 
@@ -2505,9 +2598,20 @@ export default function FinalSummary({ appData, onReset }) {
         <motion.button
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
-          disabled={!leadForm.name || !leadForm.email}
+          disabled={!isFormValid}
           onClick={async () => {
             try {
+              const isValid =
+                validateEmail(leadForm.email) &&
+                validatePhone(leadForm.phone);
+
+              if (!isValid) {
+                setErrors({
+                  email: validateEmail(leadForm.email) ? "" : "Invalid email",
+                  phone: validatePhone(leadForm.phone) ? "" : "Invalid phone number",
+                });
+                return;
+              }
               // CLOSE MODAL FIRST
               setShowLeadModal(false);
 
@@ -2526,7 +2630,7 @@ export default function FinalSummary({ appData, onReset }) {
               console.error(e);
             }
           }}
-          className="w-[40%] mx-auto mt-10 py-4 rounded-2xl flex items-center justify-center gap-3 disabled:opacity-40"
+          className="w-[50%] mx-auto mt-10 py-4 rounded-2xl flex items-center justify-center gap-3 disabled:opacity-40"
           style={{
             background: "var(--color-dark)",
             color: "var(--color-bg)",
@@ -2550,13 +2654,7 @@ export default function FinalSummary({ appData, onReset }) {
 }
 
 
-function LuxuryInput({
-  label,
-  value,
-  onChange,
-  type = "text",
-  autoFocus = false,
-}) {
+function LuxuryInput({ label, value, onChange, type = "text", autoFocus = false, error }) {
   const [focused, setFocused] = useState(false);
 
   return (
@@ -2607,6 +2705,16 @@ function LuxuryInput({
           color: "var(--color-dark)",
         }}
       />
+      {error && (
+      <p style={{
+        fontSize: "0.75rem",
+        color: "#e11d48",
+        marginTop: 6,
+        fontFamily: "var(--font-body)"
+      }}>
+        {error}
+      </p>
+    )}
     </div>
   );
 }

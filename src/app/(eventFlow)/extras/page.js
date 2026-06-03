@@ -198,6 +198,8 @@ export default function EntertainmentSelection() {
     }, 0);
   }, [selections]);
 
+  const isOverBudget = spentL > extrasBudgetL;
+
   const handleCategorySelect = (categoryId) => {
     setSelectedCategory(categoryId);
     setEntertainment({ selectedCategory: categoryId });
@@ -444,12 +446,31 @@ export default function EntertainmentSelection() {
                 </div>
 
                 {/* CONTINUE */}
-                <motion.button
+                {/* <motion.button
                   onClick={handleSubmit}
                   className="w-[25vw] mx-auto px-8 py-5 rounded-full flex justify-center items-center gap-3"
                   style={{
                     backgroundColor: "var(--color-dark)",
                     color: "var(--color-bg)",
+                  }}
+                >
+                  Continue <ArrowRight size={20} />
+                </motion.button> */}
+                <motion.button
+                  onClick={handleSubmit}
+                  disabled={isOverBudget}
+                  whileHover={!isOverBudget ? { scale: 1.02 } : undefined}
+                  whileTap={!isOverBudget ? { scale: 0.98 } : undefined}
+                  className="w-[25vw] mx-auto px-8 py-5 rounded-full flex justify-center items-center gap-3"
+                  style={{
+                    backgroundColor: isOverBudget
+                      ? "rgba(20,24,42,0.4)"
+                      : "var(--color-dark)",
+                    color: isOverBudget
+                      ? "rgba(253,253,248,0.6)"
+                      : "var(--color-bg)",
+                    cursor: isOverBudget ? "not-allowed" : "pointer",
+                    opacity: isOverBudget ? 0.6 : 1,
                   }}
                 >
                   Continue <ArrowRight size={20} />

@@ -327,6 +327,7 @@ setFormValid: (val) => set({ formValid: val }),
         return {
           eventName: state.eventDetails.eventName || "North Star",
           date: state.eventDetails.date || "TBD",
+          time: state.eventDetails.time || "TBD",
           eventType: state.eventDetails.eventType || "TBD",
           location: state.eventDetails.location || "TBD",
           guestCount: state.eventDetails.guestCount || state.guests.length || 0,

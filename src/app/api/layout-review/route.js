@@ -147,7 +147,7 @@ export async function POST(req) {
       issues: [
         {
           type: "warning",
-          message: "AI review failed",
+          message: "AI layout review is currently unavailable. You may proceed with the current layout or try again later.",
         },
       ],
     });
