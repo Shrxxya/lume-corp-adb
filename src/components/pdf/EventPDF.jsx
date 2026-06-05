@@ -9,7 +9,7 @@ import {
 
 const COLORS = {
   primary: "#58644B",
-  bg: "#E7E7DF",
+  bg: "#FAFAF7",
   dark: "#14182a",
   border: "#e5e5e5",
 };
@@ -203,6 +203,31 @@ const styles = StyleSheet.create({
     height: 54,
     borderRight: `2px solid ${COLORS.primary}`,
   },
+
+  imageRow: {
+    flexDirection: "row",
+    gap: 12,
+  },
+
+  imageCard: {
+    flex: 1,
+    border: `1px solid ${COLORS.border}`,
+    padding: 8,
+    borderRadius: 6,
+  },
+
+  imageLabel: {
+    fontSize: 10,
+    fontWeight: 700,
+    marginBottom: 6,
+    color: COLORS.primary,
+  },
+
+  smallImage: {
+    width: "100%",
+    height: 140,
+    objectFit: "contain",
+  },
 });
 
 export default function EventPDF({ data, quotation, decorImage }) {
@@ -301,27 +326,35 @@ export default function EventPDF({ data, quotation, decorImage }) {
           ))}
         </View>
 
-        {/* EVENT POSTER */}
-        {data.poster && (
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Event Poster</Text>
-            <Image
-              src={safeImage(data.poster)}
-              style={styles.poster}
-            />
-          </View>
-        )}
+        {(data.poster || data.generatedCanvasImage) && (
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Visual Preview</Text>
 
-        {/*CANVAS GENERATED IMAGE */}
-        {data.generatedCanvasImage && (
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Final Day Setup</Text>
-            <Image
-              src={safeImage(data.generatedCanvasImage)}
-              style={styles.poster}
-            />
+          <View style={styles.imageRow}>
+
+            {data.poster && (
+              <View style={styles.imageCard}>
+                <Text style={styles.imageLabel}>Poster</Text>
+                <Image
+                  src={safeImage(data.poster)}
+                  style={styles.smallImage}
+                />
+              </View>
+            )}
+
+            {data.generatedCanvasImage && (
+              <View style={styles.imageCard}>
+                <Text style={styles.imageLabel}>Setup</Text>
+                <Image
+                  src={safeImage(data.generatedCanvasImage)}
+                  style={styles.smallImage}
+                />
+              </View>
+            )}
+
           </View>
-        )}
+        </View>
+      )}
 
         {/* QUOTATION */}
         <View style={styles.section}>

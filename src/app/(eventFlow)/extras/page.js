@@ -222,8 +222,23 @@ export default function EntertainmentSelection() {
     });
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+  const clearSelection = () => {
+    setSelections({
+      Performance: null,
+      Host: null,
+      LightShow: null,
+    });
+
+    setEntertainment({
+      selectedArtist: null,
+      selectedHost: null,
+      selectedLightShow: null,
+      selectedCategory: null,
+    });
+  };
+
+  const handleSubmit = () => {
+    //e.preventDefault();
     completeStep(currentStep);
     setStep("decor");
     setActiveStep("decor");
@@ -249,14 +264,14 @@ export default function EntertainmentSelection() {
 
   return (
     <div className="min-h-screen dark:bg-black">
-      <div className="pt-20 pb-20 px-8">
+      <div className="pt-20 px-8">
         <motion.div
           initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
           className="max-w-6xl mx-auto"
         >
-          <div className="flex">
+          <div className="flex mt-12">
             {/*------------ LEFT SIDE ------------*/}
             <div className="flex-[2]">
             {/* HEADINGS */}
@@ -333,7 +348,7 @@ export default function EntertainmentSelection() {
                   ref={listRef}
                   initial={{ opacity: 0, y: 40 }}
                   animate={{ opacity: 1, y: 0 }}
-                  className="space-y-4"
+                  className="space-y-4 pb-14"
                 >
                   <div className="flex justify-between items-center">
                     <h3 className="text-xl font-semibold">
@@ -365,6 +380,26 @@ export default function EntertainmentSelection() {
           {/* RIGHT SIDE */}
             <div className="col-span-4 flex-[1]">
               <div className="sticky top-24">
+
+                <motion.button
+                onClick={() => {
+                  clearSelection();
+                  handleSubmit();
+                }}
+                whileHover={{ x: 2 }}
+                whileTap={{ scale: 0.98 }}
+                className="absolute top-0 right-0 flex items-center gap-2 px-4 py-2 rounded-full"
+                style={{
+                  // backgroundColor: "rgba(20,24,42,0.05)",
+                  // border: "1px solid rgba(20,24,42,0.08)",
+                  color: "rgba(20,24,42,0.40)",
+                  fontSize: "0.875rem",
+                  fontWeight: 500,
+                }}
+              >
+                Skip for now
+                <ArrowRight size={14} />
+              </motion.button>
                 {/* Budget ring card */}
                               <motion.div
                                 initial={{ opacity: 0, y: 16 }}

@@ -145,8 +145,7 @@ const routeToStep = Object.fromEntries(
 export default function ProgressMap() {
   const stepRefs = useRef({});
   const containerRef = useRef(null);
-  const [hovered, setHovered] = useState(null);
-  const [tooltipPos, setTooltipPos] = useState({ top: 0, left: 0 });
+
   //const currentStep = useEventStore((state) => state.currentStep);
   const completedSteps = useEventStore((state) => state.completedSteps);
   const activeStep = useEventStore((s) => s.activeStep);
@@ -205,8 +204,9 @@ export default function ProgressMap() {
   return (
     <div className="fixed top-0 left-1/2 w-[95%] -translate-x-1/2 z-50">
       <div
-      ref={containerRef}
-      className="glassmorphic-container mx-auto px-4 py-3 flex items-center overflow-x-auto space-x-6 hide-scrollbar">
+        ref={containerRef}
+        className="glassmorphic-container mx-auto px-4 py-2 flex items-start overflow-x-auto space-x-6 hide-scrollbar"
+      >
 
         {steps.map((step, index) => {
           // const isActive = step.id === currentStep;
@@ -245,98 +245,74 @@ export default function ProgressMap() {
                 />
               )} */}
               {index > 0 && (
-                <div className={`h-1 w-12 ${showConnector ? "bg-[#58644B]" : "bg-transparent"}`} />
+                <div className={`h-1 w-12 mb-5 ${showConnector ? "bg-[#58644B]" : "bg-transparent"}`} />
                 )}
 
               {/* Node */}
-              <motion.div
-                  onMouseEnter={(e) => {
-                    const rect = e.currentTarget.getBoundingClientRect();
+              <div className="flex flex-col items-center gap-2">
+  <motion.div
+    ref={(el) => (stepRefs.current[step.name] = el)}
+    onClick={() => {
+      if (isClickable) {
+        setActiveStep(step.name);
+        router.push(stepRoutes[step.name]);
+      }
+    }}
+    className={`w-10 h-10 flex items-center justify-center rounded-full cursor-pointer transition-all ${
+      isActive
+        ? "bg-[#58644B]"
+        : isCompleted
+        ? "bg-[#666d5e]"
+        : "bg-white/10"
+    } ${!isClickable ? "opacity-40 cursor-not-allowed" : ""}`}
+    animate={
+      isActive
+        ? {
+            boxShadow: [
+              "0 0 6px #58644B",
+              "0 0 18px #58644B",
+              "0 0 6px #58644B",
+            ],
+          }
+        : { boxShadow: "none" }
+    }
+    transition={
+      isActive
+        ? {
+            duration: 2,
+            repeat: Infinity,
+            ease: "easeInOut",
+          }
+        : {}
+    }
+    whileHover={{ scale: 1.05 }}
+  >
+    <step.icon
+      size={18}
+      style={{
+        color:
+          isCompleted || isActive
+            ? "#ffffff"
+            : "var(--color-dark)",
+        opacity: isCompleted || isActive ? 1 : 0.4,
+      }}
+    />
+  </motion.div>
 
-                    setTooltipPos({
-                      top: rect.bottom + 15,
-                      left: rect.left + rect.width / 2 - 62,
-                    });
-
-                    setHovered(step.label);
-                  }}
-                  onMouseLeave={() => setHovered(null)}
-                  ref={(el) => (stepRefs.current[step.name] = el)}
-                  onClick={() => {
-                    if (isClickable) {
-                      // setStep(step.id);
-                      setActiveStep(step.name);
-                      router.push(stepRoutes[step.name]);
-                    }
-                  }}
-                  className={`w-12 h-12 flex items-center justify-center rounded-full cursor-pointer transition-all ${
-                    isActive
-                      ? "bg-[#58644B]"
-                      : isCompleted
-                      ? "bg-[#58644B]"
-                      : "bg-white/10"
-                  } ${!isClickable ? "opacity-40 cursor-not-allowed" : ""}`}
-                  
-                  animate={
-                    isActive
-                      ? {
-                          boxShadow: [
-                            "0 0 6px #58644B",
-                            "0 0 18px #58644B",
-                            "0 0 6px #58644B",
-                          ],
-                        }
-                      : { boxShadow: "none" }
-                  }
-                  transition={
-                    isActive
-                      ? {
-                          duration: 2,
-                          repeat: Infinity,
-                          ease: "easeInOut",
-                        }
-                      : {}
-                  }
-
-                  whileHover={{ scale: 1.1 }}
-                >
-                <step.icon
-                  size={20}
-                  style={{
-                    color: isCompleted
-                      ? "#ffffff"
-                      : isActive
-                      ? "#ffffff"
-                      : "var(--color-dark)",
-                    opacity: isCompleted || isActive ? 1 : 0.4,
-                  }}
-                />
-              </motion.div>
+  <span
+    className={`text-[11px] font-medium whitespace-nowrap ${
+      isActive || isCompleted
+        ? "text-[#58644B]"
+        : "text-black/50"
+    }`}
+  >
+    {step.label}
+  </span>
+</div>
             </div>
           );
         })}
       </div> {/* end of glassmorphic-container */}
-
-      {hovered && (
-        <motion.div
-          initial={{ opacity: 0, y: -4 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="
-            fixed z-[9999]
-            px-3 py-1 rounded-full text-sm font-bold
-            bg-[#E7E7DF] text-[#58644B] shadow-md
-            pointer-events-none
-            whitespace-nowrap
-          "
-          style={{
-            top: tooltipPos.top,
-            left: tooltipPos.left,
-            transform: "translateX(-50%)",
-          }}
-        >
-          {hovered}
-        </motion.div>
-      )}
 
       <style jsx>{`
         .glassmorphic-container {

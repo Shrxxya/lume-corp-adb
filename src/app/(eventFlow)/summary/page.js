@@ -2031,6 +2031,57 @@ export default function FinalSummary({ appData, onReset }) {
           )}
 
           {/* ── MENU ────────────────────────────────────────────────────────── */}
+          {summaryData.menu.length <= 0 && (
+            <section>
+              <Reveal>
+                <SectionLabel>Curated Menu</SectionLabel>
+                <h2 style={{ fontFamily: "var(--font-display)", fontSize: "clamp(2rem, 4vw, 3rem)", fontWeight: 700, color: "var(--color-dark)", lineHeight: 1.1, marginBottom: "2rem" }}>
+                  The <em>Taste</em>
+                </h2>
+                <div
+        style={{
+          padding: "24px",
+          borderRadius: 16,
+          background: "rgba(20,24,42,0.03)",
+          border: "1px dashed rgba(20,24,42,0.15)",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "flex-start",
+          gap: 12,
+        }}
+      >
+        <p
+          style={{
+            fontFamily: "var(--font-body)",
+            fontSize: "0.95rem",
+            color: "rgba(20,24,42,0.6)",
+          }}
+        >
+          Menu not selected yet
+        </p>
+
+        <button
+          onClick={() => router.push("/menu")}
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: 8,
+            padding: "10px 16px",
+            borderRadius: 999,
+            background: "var(--color-primary)",
+            color: "var(--color-bg)",
+            fontFamily: "var(--font-body)",
+            fontSize: "0.85rem",
+            fontWeight: 600,
+            cursor: "pointer",
+          }}
+        >
+          Add Menu →
+        </button>
+      </div>
+              </Reveal>
+            </section>
+          )}
           {summaryData.menu.length > 0 && (
             <section>
               <Reveal>
@@ -2111,6 +2162,57 @@ export default function FinalSummary({ appData, onReset }) {
 
           {/* ── ENTERTAINMENT + DECOR ───────────────────────────────────────── */}
           <section className="grid md:grid-cols-2 gap-8">
+            {!hasEntertainment && (
+            <section>
+              <Reveal>
+                <SectionLabel>Entertainment</SectionLabel>
+                <h2 style={{ fontFamily: "var(--font-display)", fontSize: "2rem", fontWeight: 700, color: "var(--color-dark)", lineHeight: 1.1, marginBottom: "1.5rem" }}>
+                  The <em>Act</em>
+                </h2>
+                <div
+        style={{
+          padding: "24px",
+          borderRadius: 16,
+          background: "rgba(20,24,42,0.03)",
+          border: "1px dashed rgba(20,24,42,0.15)",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "flex-start",
+          gap: 12,
+        }}
+      >
+        <p
+          style={{
+            fontFamily: "var(--font-body)",
+            fontSize: "0.95rem",
+            color: "rgba(20,24,42,0.6)",
+          }}
+        >
+          Entertainment not selected yet
+        </p>
+
+        <button
+          onClick={() => router.push("/extras")}
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: 8,
+            padding: "10px 16px",
+            borderRadius: 999,
+            background: "var(--color-primary)",
+            color: "var(--color-bg)",
+            fontFamily: "var(--font-body)",
+            fontSize: "0.85rem",
+            fontWeight: 600,
+            cursor: "pointer",
+          }}
+        >
+          Add Entertainment →
+        </button>
+      </div>
+              </Reveal>
+            </section>
+          )}
             {hasEntertainment && (
               <Reveal>
                 <SectionLabel>Entertainment</SectionLabel>
@@ -2240,7 +2342,11 @@ export default function FinalSummary({ appData, onReset }) {
                   {/* Button row */}
                   <div className="flex flex-col sm:flex-row gap-3 justify-center">
                     <motion.button
-                      whileHover={{ scale: 1.03, boxShadow: "0 0 40px #E7E7DF" }}
+                      whileHover={{
+                        scale: 1.03,
+                        y: -2,
+                        boxShadow: "0 14px 35px rgba(0,0,0,0.12)",
+                      }}
                       whileTap={{ scale: 0.97 }}
                       onClick={async () => {
                         if (isGenerating || isSending) return;
@@ -2259,7 +2365,11 @@ export default function FinalSummary({ appData, onReset }) {
                     </motion.button>
 
                     <motion.button
-                      whileHover={{ scale: 1.03 }}
+                      whileHover={{
+                        scale: 1.03,
+                        y: -2,
+                        boxShadow: "0 14px 35px rgba(0,0,0,0.12)",
+                      }}
                       whileTap={{ scale: 0.97 }}
                       onClick={async () => {
                         if (isGenerating || isSending) return;
@@ -2274,7 +2384,11 @@ export default function FinalSummary({ appData, onReset }) {
                     </motion.button>
 
                     <motion.button
-                      whileHover={{ scale: 1.03, boxShadow: "0 0 30px rgba(201,168,76,0.4)" }}
+                      whileHover={{
+                        scale: 1.03,
+                        y: -2,
+                        boxShadow: "0 14px 35px rgba(0,0,0,0.12)",
+                      }}
                       whileTap={{ scale: 0.97 }}
                       onClick={() => {
                         setPendingAction("payment");

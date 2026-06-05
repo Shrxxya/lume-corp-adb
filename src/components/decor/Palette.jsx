@@ -106,7 +106,7 @@ export function Palette() {
       )}
 
       {/* Items */}
-      <div className="flex flex-col gap-3 overflow-y-auto max-h-[550px]">
+      <div className="flex flex-col gap-3 overflow-y-auto max-h-[550px] pb-4">
         {items.map((item) => (
           <DraggableItem key={item.id} item={item} />
         ))}

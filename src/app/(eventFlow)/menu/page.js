@@ -694,6 +694,7 @@ export default function MenuBuilder({ onNext }) {
   const menu                = useEventStore((s) => s.menu);
   const addDishToPlate      = useEventStore((s) => s.addDishToPlate);
   const removeDishFromPlate = useEventStore((s) => s.removeDishFromPlate);
+  const clearPlate           = useEventStore((s) => s.clearMenu);
   const currentStep         = useEventStore((s) => s.currentStep);
   const completeStep        = useEventStore((s) => s.completeStep);
   const setStep             = useEventStore((s) => s.setStep);
@@ -987,6 +988,26 @@ export default function MenuBuilder({ onNext }) {
         </div>
         {/* ── RIGHT: sticky panel ──────────────────────────────────── */}
             <div className="flex-[1]" style={{ position: "sticky", top: 88 }}>
+
+              <motion.button
+                onClick={() => {
+                  clearPlate();
+                  handleSubmit();
+                }}
+                whileHover={{ x: 2 }}
+                whileTap={{ scale: 0.98 }}
+                className="absolute top-0 right-0 flex items-center gap-2 px-4 py-2 rounded-full"
+                style={{
+                  // backgroundColor: "rgba(20,24,42,0.05)",
+                  // border: "1px solid rgba(20,24,42,0.08)",
+                  color: "rgba(20,24,42,0.40)",
+                  fontSize: "0.875rem",
+                  fontWeight: 500,
+                }}
+              >
+                Skip for now
+                <ArrowRight size={14} />
+              </motion.button>
 
               {/* Budget ring card */}
               <motion.div

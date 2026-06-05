@@ -349,7 +349,7 @@
 
 import { motion } from "framer-motion";
 import { useState, useEffect, useRef } from "react";
-import { ArrowRight, ArrowLeft, Check, Calendar, Clock } from "lucide-react";
+import { ArrowRight, ArrowLeft, Check, Calendar, Clock, CloudCheck } from "lucide-react";
 import { useEventStore } from "@/store/useEventStore";
 import { DayPicker } from "react-day-picker";
 import "react-day-picker/dist/style.css";
@@ -404,6 +404,9 @@ const [dtStep, setDtStep] = useState("date");
   const setStep = useEventStore((state) => state.setStep);
   const setActiveStep = useEventStore((state) => state.setActiveStep);
   const setFormValid = useEventStore((state) => state.setFormValid);
+
+  const [weatherSuggestion, setWeatherSuggestion] = useState(null);
+  const [weatherTrigger, setWeatherTrigger] = useState(0);
 
   const hasHydrated = useEventStore((s) => s.hasHydrated);
 
@@ -525,19 +528,110 @@ const [dtStep, setDtStep] = useState("date");
 }, [formData]);
 
   useEffect(() => {
-  if (!hasHydrated) return;
+    if (!hasHydrated) return;
 
-  setFormData({
-    eventName: eventDetails.eventName || "",
-    date: eventDetails.date || "",
-    time: eventDetails.time || "",
-    location: eventDetails.location || "",
-    guestCount: eventDetails.guestCount || "",
-    eventType: eventDetails.eventType || "",
-    budget: eventDetails.budget || "",
-    venueType: eventDetails.venueType || "",
-  });
-}, [hasHydrated]);
+    setFormData({
+      eventName: eventDetails.eventName || "",
+      date: eventDetails.date || "",
+      time: eventDetails.time || "",
+      location: eventDetails.location || "",
+      guestCount: eventDetails.guestCount || "",
+      eventType: eventDetails.eventType || "",
+      budget: eventDetails.budget || "",
+      venueType: eventDetails.venueType || "",
+    });
+  }, [hasHydrated]);
+
+  useEffect(() => {
+    if (
+      !formData.date ||
+      !formData.location
+    ) {
+      return;
+    }
+
+    const fetchWeatherInsight = async () => {
+      try {
+        const geo = await fetch(
+          `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(
+            formData.location
+          )}&count=1`
+        );
+
+        const geoData = await geo.json();
+
+        if (!geoData?.results?.length) return;
+
+        const { latitude, longitude } = geoData.results[0];
+
+        const weatherRes = await fetch(
+          `/api/weather?lat=${latitude}&lon=${longitude}`
+        );
+
+        const weather = await weatherRes.json();
+
+        const selectedDate = new Date(formData.date)
+          .toISOString()
+          .split("T")[0];
+
+        const weatherIndex = weather.time.findIndex(
+          (d) => d.split("T")[0] === selectedDate
+        );
+
+        const rain =
+          weather.precipitation?.[weatherIndex] ?? 0;
+
+        const rainChance =
+          weather.precipitationProbability?.[weatherIndex] ?? 0;
+
+        const maxTemp =
+          weather.maxTemp?.[weatherIndex] ?? 0;
+
+        let suggestion = null;
+
+        if (rainChance > 60 || rain > 8) {
+          suggestion = {
+            type: "rain",
+            title: "Rain expected",
+            text:
+              "Forecast suggests rainfall on your event day. Indoor venues are recommended.",
+          };
+        } else if (maxTemp > 34) {
+          suggestion = {
+            type: "heat",
+            title: "Strong sunlight expected",
+            text:
+              "High temperatures forecasted. Indoor or shaded venues are recommended.",
+          };
+        } else {
+          suggestion = {
+            type: "good",
+            title: "Weather looks favorable",
+            text:
+              "Current forecast supports an outdoor venue setup.",
+          };
+        }
+
+        setWeatherSuggestion(suggestion);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+
+    fetchWeatherInsight();
+  }, [
+    formData.date,
+    formData.time,
+    weatherTrigger,
+  ]);
+
+  useEffect(() => {
+    setWeatherSuggestion(null);
+  }, [
+    formData.date,
+    formData.time,
+    formData.location
+  ]);
 
   if (!hasHydrated) return null; // or loading skeleton
 
@@ -756,6 +850,7 @@ const [dtStep, setDtStep] = useState("date");
             label="City"
             value={formData.location}
             onChange={(v) => handleChange("location", v)}
+            onBlur={() => setWeatherTrigger((p) => p + 1)}
             placeholder="Enter city"
             inputRef={locationRef}
           />
@@ -767,56 +862,6 @@ const [dtStep, setDtStep] = useState("date");
             placeholder="Enter venue"
           /> */}
 
-          <div className="space-y-3 flex flex-col">
-            <label
-              style={{
-                fontFamily: "var(--font-body)",
-                fontSize: "0.875rem",
-                color: "var(--color-dark)",
-                opacity: 0.7,
-                letterSpacing: "0.05em",
-                textTransform: "uppercase",
-              }}
-            >
-              Venue Type
-            </label>
-
-            <div className="grid grid-cols-2 gap-3 mb-4">
-              {["Open Air", "Indoor"].map((type) => (
-                <motion.button
-                  key={type}
-                  type="button"
-                  onClick={() => {
-                    handleChange("venueType", type);
-
-                    setTimeout(() => {
-                      guestCountRef.current?.focus();
-                      guestCountRef.current?.scrollIntoView({
-                        behavior: "smooth",
-                        block: "center",
-                      });
-                    }, 0);
-                  }}
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                  className="px-4 py-3 rounded-2xl transition-all duration-300"
-                  style={{
-                    backgroundColor:
-                      formData.venueType === type
-                        ? "#58644B"
-                        : "#D9DCD6",
-                    color:
-                      formData.venueType === type
-                        ? "white"
-                        : "var(--color-dark)",
-                  }}
-                >
-                  {type}
-                </motion.button>
-              ))}
-            </div>
-          </div>
-
           {/* <FloatingInput
             inputRef={guestCountRef}
             label="Expected Guests Count"
@@ -827,7 +872,7 @@ const [dtStep, setDtStep] = useState("date");
             onWheel={(e) => e.target.blur()}
           /> */}
           <FloatingInput
-            inputRef={guestCountRef}
+            //inputRef={guestCountRef}
             label="Expected Guests Count"
             value={formData.guestCount}
             onChange={(v) => {
@@ -862,6 +907,96 @@ const [dtStep, setDtStep] = useState("date");
             placeholder="Total budget in lakhs"
             onWheel={(e) => e.target.blur()}
           />
+
+          <div className="space-y-3 flex flex-col">
+            <label
+              style={{
+                fontFamily: "var(--font-body)",
+                fontSize: "0.875rem",
+                color: "var(--color-dark)",
+                opacity: 0.7,
+                letterSpacing: "0.05em",
+                textTransform: "uppercase",
+              }}
+            >
+              Venue Type
+            </label>
+
+            <div className="grid grid-cols-2 gap-3 mb-4">
+              {["Open Air", "Indoor"].map((type) => (
+                <motion.button
+                  key={type}
+                  type="button"
+                  onClick={() => {
+                    handleChange("venueType", type);
+                    setWeatherSuggestion(null);
+                    setTimeout(() => {
+                      guestCountRef.current?.focus();
+                      guestCountRef.current?.scrollIntoView({
+                        behavior: "smooth",
+                        block: "center",
+                      });
+                    }, 0);
+                  }}
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  className="px-4 py-3 rounded-2xl transition-all duration-300"
+                  style={{
+                    backgroundColor:
+                      formData.venueType === type
+                        ? "#58644B"
+                        : "#D9DCD6",
+                    color:
+                      formData.venueType === type
+                        ? "white"
+                        : "var(--color-dark)",
+                  }}
+                >
+                  {type}
+                </motion.button>
+              ))}
+            </div>
+            {weatherSuggestion && (
+  <motion.div
+    initial={{ opacity: 0, y: -10 }}
+    animate={{ opacity: 1, y: 0 }}
+    className="rounded-2xl p-4 flex justify-between items-start"
+    style={{
+      background:
+        weatherSuggestion.type === "rain"
+          ? "#E6F0FF"
+          : weatherSuggestion.type === "heat"
+          ? "#FFF3E6"
+          : "#ECF8EE",
+      border: "1px solid rgba(0,0,0,0.06)",
+    }}
+  >
+    <div>
+      <p
+        className="font-semibold flex gap-2"
+        style={{ color: "var(--color-dark)" }}
+      >
+        <CloudCheck/> {weatherSuggestion.title}
+      </p>
+
+      <p
+        className="text-sm mt-1 opacity-70"
+        style={{ color: "var(--color-dark)" }}
+      >
+        {weatherSuggestion.text}
+      </p>
+    </div>
+
+    <button
+      type="button"
+      onClick={() => setWeatherSuggestion(null)}
+      className="ml-4 opacity-50 hover:opacity-100"
+    >
+      ✕
+    </button>
+  </motion.div>
+)}
+          </div>
 
           <div className="space-y-3 flex flex-col">
             <label
@@ -997,6 +1132,7 @@ function FloatingInput({
   label,
   value,
   onChange,
+  onBlur,
   type = "text",
   placeholder,
   onWheel,
@@ -1046,7 +1182,11 @@ function FloatingInput({
         value={value}
         onChange={(e) => onChange(e.target.value)}
         onFocus={() => setFocused(true)}
-        onBlur={() => setFocused(false)}
+        //onBlur={() => setFocused(false)}
+         onBlur={(e) => {
+          setFocused(false);
+          onBlur?.(e);
+        }}
         placeholder={focused ? placeholder : ""}
         onWheel={onWheel}
         className="w-full px-0 bg-transparent outline-none transition-all duration-300 appearance-none"
