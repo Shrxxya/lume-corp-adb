@@ -438,6 +438,25 @@ export default function PosterGenerator() {
       reader.readAsDataURL(blob);
     });
 
+  const getSafeGraphics = (eventType) => {
+    switch (eventType?.toLowerCase()) {
+      case "awards":
+        return "elegant lighting, abstract celebration patterns, decorative ribbons, premium stage design, luxury textures";
+
+      case "tech":
+        return "modern conference stage, abstract geometric shapes, premium business aesthetic";
+
+      case "networking":
+        return "professional gathering, modern architectural lines, abstract connection patterns";
+
+      case "gala":
+        return "luxury lighting, elegant drapery, premium decorative elements, sophisticated ambience";
+
+      default:
+        return "minimal abstract premium event visuals";
+    }
+  };
+
   const buildPrompt = (data, custom) => `
     minimal luxury corporate event poster, ultra realistic, cinematic lighting, 4k
 
@@ -453,18 +472,42 @@ export default function PosterGenerator() {
     ${data.time || data.date || "TBD"}
 
     rules:
-    no extra text, no paragraphs, no branding
+    no extra text, no paragraphs, no branding,
+    professional corporate aesthetic,
+    family-friendly imagery
+
+    STRICT REQUIREMENT:
+    No alcohol.
+    No wine glasses.
+    No champagne flutes.
+    No beer bottles.
+    No cocktails.
+    No beverages in hands.
+    No bar counters.
+    No drinking scenes.
+    
+    show:
+    professional event atmosphere,
+    people networking,
+    conference environment,
+    stage lighting,
+    premium decor,
+    abstract luxury visuals,
+    architectural elements,
+    elegant floral arrangements,
+    modern event branding space,
+    business celebration
 
     theme:
     ${data.theme || data.decor}
 
     graphics:
-    subtle visuals based on ${data.eventType}
+    ${getSafeGraphics(data.eventType)}
 
     ${custom || ""}
 
-    negative prompt:
-    extra text, watermark, blurry, bad typography
+    STRICT negative prompt:
+    extra text, watermark, blurry, bad typography,
   `;
 
   // const generatePoster = async () => {

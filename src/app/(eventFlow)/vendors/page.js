@@ -111,7 +111,7 @@ setActiveStep("menu");
     <div className="min-h-screen dark:bg-black">
         {/* <ProgressMap currentStep={currentStep} onStepClick={handleStepClick}/> */}
         <div
-      className="pt-16 pb-1 px-8 min-h-screen"
+      className="pt-20 pb-1 px-8 min-h-screen"
       style={{ backgroundColor: "var(--color-bg)" }}
     >
       <motion.div

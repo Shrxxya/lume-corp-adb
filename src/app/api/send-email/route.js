@@ -172,7 +172,7 @@ export async function POST(req) {
         <p>Attached is your full PDF proposal.</p>
         <p>
           Regards,<br/>
-          EventCraft Team
+          LumeCorp Team
         </p>
 
       </div>
