@@ -163,7 +163,7 @@ setActiveStep("menu");
         <div className="overflow-x-auto mb-6 custom-scrollbar"
         // style={{
         //             scrollbarWidth: "thin",
-        //             scrollbarColor: "#58644B transparent",
+        //             scrollbarColor: "#62754C transparent",
         //             scrollbarbutton: "none",
         //         }}
                 >
@@ -284,7 +284,7 @@ setActiveStep("menu");
                     className="absolute top-4 right-4 w-12 h-12 rounded-full flex items-center justify-center"
                     style={{
                       backgroundColor: isShortlisted
-                        ? "#58644B"
+                        ? "#62754C"
                         : "rgba(253,253,248,0.9)",
                     }}
                     whileHover={{ scale: 1.1 }}

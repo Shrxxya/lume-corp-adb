@@ -211,8 +211,8 @@ const handleFileSelect = (e) => {
   <div
     className="hidden md:block absolute right-0 top-0 h-[95%] w-[2px]"
     style={{
-      background: "#58644B",
-      boxShadow: "0 0 10px #E7E7DF",
+      background: "#62754C",
+      boxShadow: "0 0 10px rgba(98,117,76,0.35)",
       opacity: 0.8,
     }}
   />
@@ -250,8 +250,8 @@ const handleFileSelect = (e) => {
   onDrop={handleDrop}
   className="relative rounded-3xl border border-dashed p-8 overflow-hidden cursor-pointer"
   style={{
-    backgroundColor: "#E7E7DF",
-    borderColor: "#e7e7df",
+    backgroundColor: "#FDFDF8",
+    borderColor: "#FDFDF8",
     backdropFilter: "blur(var(--blur))",
     minHeight: "320px",
     display: "flex",
@@ -392,9 +392,9 @@ const handleFileSelect = (e) => {
               <div
                 className="p-5 rounded-3xl"
                 style={{
-                  backgroundColor: "#E7E7DF",
+                  backgroundColor: "#FDFDF8",
                   backdropFilter: "blur(var(--blur))",
-                  border: "1px solid #e7e7df",
+                  border: "1px solid #FDFDF8",
                   minHeight: "320px",
                 }}
               >
@@ -442,7 +442,7 @@ const handleFileSelect = (e) => {
                     className="text-center p-4 rounded-2xl mt-5"
                     style={{
                       backgroundColor:
-                        "#E7E7DF",
+                        "#FDFDF8",
 
                       color: "var(--color-primary)",
                     }}
@@ -506,7 +506,7 @@ function InviteSuccessModal({ open, onContinue }) {
             position: "relative",
             width: "90%",
             maxWidth: 420,
-            background: "var(--color-bg, #E7E7DF)",
+            background: "var(--color-bg, #FDFDF8)",
             border: "1px solid rgba(20,24,42,0.08)",
             borderRadius: 28,
             overflow: "hidden",
@@ -518,7 +518,7 @@ function InviteSuccessModal({ open, onContinue }) {
             style={{
               height: 3,
               background:
-                "linear-gradient(90deg, #C9A84C, #58644B)",
+                "linear-gradient(90deg, #C9A84C, #62754C)",
             }}
           />
 
@@ -542,7 +542,7 @@ function InviteSuccessModal({ open, onContinue }) {
                 alignItems: "center",
                 justifyContent: "center",
                 background:
-                  "#E7E7DF",
+                  "#FDFDF8",
               }}
             >
               <CheckCircle2
@@ -591,7 +591,7 @@ function InviteSuccessModal({ open, onContinue }) {
                 fontSize: 13,
                 fontWeight: 700,
                 background: "var(--color-dark, #14182A)",
-                color: "var(--color-bg, #E7E7DF)",
+                color: "var(--color-bg, #FDFDF8)",
                 border: "none",
                 borderRadius: 14,
                 cursor: "pointer",

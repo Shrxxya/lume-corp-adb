@@ -296,7 +296,7 @@ function ButtonGlobal({ onStartPlanning }) {
 
   return (
     <div
-      className="absolute backdrop-blur-md bg-[#58644B] border border-[#58644B]/20 shadow-xl shadow-black/20 flex items-center justify-center left-1/2 px-[22px] py-3 rounded-[38px] -translate-x-1/2 -translate-y-1/2 transition-all duration-300 hover:bg-white/30 hover:border-white/50 hover:shadow-2xl hover:shadow-black/30 hover:scale-105 active:scale-95 group overflow-visible z-20 cursor-pointer"
+      className="absolute backdrop-blur-md bg-[#62754C] border border-[#62754C]/20 shadow-xl shadow-black/20 flex items-center justify-center left-1/2 px-[22px] py-3 rounded-[38px] -translate-x-1/2 -translate-y-1/2 transition-all duration-300 hover:bg-white/30 hover:border-white/50 hover:shadow-2xl hover:shadow-black/30 hover:scale-105 active:scale-95 group overflow-visible z-20 cursor-pointer"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       onClick={() => {
@@ -342,7 +342,7 @@ function ButtonGlobal({ onStartPlanning }) {
                 exit={{ opacity: 0, scale: 0 }}
                 transition={{ duration: 0.1, delay: cursor.delay }}
               >
-                <MousePointer className="w-5 h-5 text-[#58644B]" />
+                <MousePointer className="w-5 h-5 text-[#62754C]" />
               </motion.div>
             ))}
           </motion.div>
@@ -354,7 +354,7 @@ function ButtonGlobal({ onStartPlanning }) {
       className="relative z-10 text-lg font-medium"
       animate={
         isHovered || isActive
-          ? { color: "#58644B" }
+          ? { color: "#62754C" }
           : { color: "#ffffff" }
       }
       transition={{ duration: 0.3 }}

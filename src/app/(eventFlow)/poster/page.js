@@ -297,7 +297,7 @@
 //             whileTap={{ scale: 0.98 }}
 //             className="w-full px-8 py-5 rounded-full flex items-center justify-center gap-3"
 //             style={{
-//               backgroundColor: "#58644B",
+//               backgroundColor: "#62754C",
 //               color: "white"
 //             }}
 //           >
@@ -313,7 +313,7 @@
 //               transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
 //               className="inline-block"
 //             >
-//               <Sparkles size={32} style={{ color: "#58644B" }} />
+//               <Sparkles size={32} style={{ color: "#62754C" }} />
 //             </motion.div>
 
 //             <p className="mt-4 text-gray-500">
@@ -334,7 +334,7 @@
 //       {/* BUTTON */}
 //       <button
 //         onClick={generatePoster}
-//         className="px-6 py-3 bg-[#58644B] text-white rounded-xl"
+//         className="px-6 py-3 bg-[#62754C] text-white rounded-xl"
 //       >
 //         Regenerate Poster
 //       </button>
@@ -661,7 +661,7 @@ export default function PosterGenerator() {
 //                 onClick={generatePoster}
 //                 whileHover={{ scale: 1.05 }}
 //                 whileTap={{ scale: 0.95 }}
-//                 className="absolute right-20 top-1/2 -translate-y-1/2 px-6 py-3 rounded-full bg-[#58644B] text-white shadow-lg"
+//                 className="absolute right-20 top-1/2 -translate-y-1/2 px-6 py-3 rounded-full bg-[#62754C] text-white shadow-lg"
 //               >
 //                 Generate
 //               </motion.button>
@@ -730,7 +730,7 @@ export default function PosterGenerator() {
 
 //   <button
 //     onClick={generatePoster}
-//     className="px-5 py-3 bg-[#58644B] text-white rounded-xl whitespace-nowrap"
+//     className="px-5 py-3 bg-[#62754C] text-white rounded-xl whitespace-nowrap"
 //   >
 //     Regenerate
 //   </button>
@@ -849,7 +849,7 @@ export default function PosterGenerator() {
             onClick={generatePoster}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            className="absolute right-10 top-1/2 -translate-y-1/2 px-6 py-3 rounded-full bg-[#58644B] text-white shadow-lg"
+            className="absolute right-10 top-1/2 -translate-y-1/2 px-6 py-3 rounded-full bg-[#62754C] text-white shadow-lg"
           >
             Generate
           </motion.button>
@@ -979,7 +979,7 @@ export default function PosterGenerator() {
 
             <button
               onClick={generatePoster}
-              className="px-5 py-3 bg-[#58644B] text-white rounded-xl"
+              className="px-5 py-3 bg-[#62754C] text-white rounded-xl"
             >
               Regenerate
             </button>

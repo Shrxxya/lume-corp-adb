@@ -10,8 +10,8 @@
   --font-mono: 'JetBrains Mono', 'Courier New', monospace;
   
   /* Colors - Core Brand */
-  --color-primary: #58644B;
-  --color-bg: #E7E7DF;
+  --color-primary: #62754C;
+  --color-bg: #FDFDF8;
   --color-dark: #14182A;
   
   /* Colors - Extended Green Scale */
@@ -71,7 +71,7 @@
   --dur-cinematic: 2500ms;
   
   /* Legacy/Compatibility */
-  --background: #E7E7DF;
+  --background: #FDFDF8;
   --foreground: #14182A;
 }
 
@@ -116,7 +116,7 @@ input[type="number"] {
 
 .custom-scrollbar {
   scrollbar-width: thin;
-  scrollbar-color: #58644B transparent;
+  scrollbar-color: #62754C transparent;
 }
 
 /* Chrome / Safari */
@@ -130,7 +130,7 @@ input[type="number"] {
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb {
-  background: #58644B;
+  background: #62754C;
   border-radius: 10px;
 }
 
@@ -205,7 +205,7 @@ body {
 /* .splash {
   position: fixed;
   inset: 0;
-  background: #E7E7DF; 
+  background: #FDFDF8; 
   display: flex;
   justify-content: center;
   align-items: center;
@@ -219,7 +219,7 @@ body {
 .splash {
   position: fixed;
   inset: 0;
-  background: #E7E7DF;
+  background: #FDFDF8;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -236,35 +236,35 @@ body {
   );
 }
 .stage.dark {
-  background: #E7E7DF;
+  background: #FDFDF8;
 }
 
 .stage.light {
-  background: #E7E7DF;
+  background: #FDFDF8;
   transition: background 0.8s ease;
 }
 
 /* root theme */
 .rdp-root {
-  --rdp-accent-color: #58644B;
-  --rdp-background-color: #e7e7df;
+  --rdp-accent-color: #62754C;
+  --rdp-background-color: #FDFDF8;
 }
 .rdp {
-  --rdp-accent-color: #58644B !important;
+  --rdp-accent-color: #62754C !important;
   --rdp-accent-background-color: rgba(98, 117, 76, 0.15) !important;
 }
 .rdp-button[aria-selected="true"] {
-  background-color: #58644B !important;
+  background-color: #62754C !important;
   color: white !important;
   border-radius: 12px !important;
 }
 
 .rdp .rdp-selected {
-  border: #58644B !important;
+  border: #62754C !important;
 }
 
 .rdp-today:not(.rdp-outside){
-  color:  #58644B !important;
+  color:  #62754C !important;
 }
 /* IMPORTANT: kill all default button styling */
 .rdp button {
@@ -281,20 +281,20 @@ body {
 
 /* SELECTED DAY (this is the real target) */
 .rdp button[aria-selected="true"] {
-  background-color: #58644B !important;
+  background-color: #62754C !important;
   color: white !important;
   border-radius: 12px !important;
 }
 
 /* TODAY */
 .rdp button[aria-current="date"] {
-  border: 1px solid #58644B;
+  border: 1px solid #62754C;
   font-weight: 600;
 }
 
 /* HOVER */
 .rdp button:hover:not([aria-selected="true"]) {
-  background-color: #E7E7DF;
+  background-color: #FDFDF8;
 }
 
 /* REMOVE BLUE FOCUS GLOW */
@@ -304,11 +304,11 @@ body {
 }
 
 .rdp-selected .rdp-day_button{
-  border: 2px solid #58644B !important;
+  border: 2px solid #62754C !important;
 }
 
 .rdp-chevron{
-  fill: #58644B !important;
+  fill: #62754C !important;
 }
 
 /* Make all buttons show pointer cursor */
@@ -327,7 +327,7 @@ button {
 /* Firefox */
 * {
   scrollbar-width: thin;
-  scrollbar-color: #58644B transparent;
+  scrollbar-color: #62754C transparent;
 }
 
 /* Chrome / Safari / Edge */
@@ -341,7 +341,7 @@ button {
 }
 
 *::-webkit-scrollbar-thumb {
-  background: #58644B;
+  background: #62754C;
   border-radius: 999px;
 }
 

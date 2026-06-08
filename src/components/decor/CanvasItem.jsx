@@ -146,7 +146,7 @@ import { motion, AnimatePresence } from "framer-motion";
 const elementGlow = {
   "Stage":               "0 0 32px rgba(201,168,76,0.55), 0 0 8px rgba(201,168,76,0.3)",
   "LED Stage":           "0 0 40px rgba(80,160,255,0.55), 0 0 12px rgba(80,160,255,0.3)",
-  "Live Band Stage":     "0 0 32px #E7E7DF,  0 0 8px #E7E7DF",
+  "Live Band Stage":     "0 0 32px #FDFDF8,  0 0 8px #FDFDF8",
   "Instructor Stage":    "0 0 28px rgba(201,168,76,0.5), 0 0 8px rgba(201,168,76,0.25)",
   "Main Stage":          "0 0 32px rgba(201,168,76,0.55),0 0 8px rgba(201,168,76,0.3)",
   "Dance Floor":         "0 0 36px rgba(180,80,220,0.5), 0 0 10px rgba(180,80,220,0.25)",
@@ -156,8 +156,8 @@ const elementGlow = {
   "Projector Screen":    "0 0 32px rgba(200,220,255,0.45),0 0 8px rgba(200,220,255,0.2)",
   "Demo Pod":            "0 0 20px rgba(98,200,160,0.45),0 0 6px rgba(98,200,160,0.2)",
   "Press Zone":          "0 0 20px rgba(255,200,60,0.4), 0 0 6px rgba(255,200,60,0.2)",
-  "Seating Area":        "0 0 16px #E7E7DF",
-  "Audience Block":      "0 0 16px #E7E7DF",
+  "Seating Area":        "0 0 16px #FDFDF8",
+  "Audience Block":      "0 0 16px #FDFDF8",
   "Networking Lounge":   "0 0 20px rgba(140,180,140,0.35)",
   "Networking Zone":     "0 0 20px rgba(140,180,140,0.35)",
   "Registration Desk":   "0 0 16px rgba(255,255,255,0.2)",
@@ -166,7 +166,7 @@ const elementGlow = {
   "VIP Table":           "0 0 20px rgba(201,168,76,0.5)",
   "Lounge Sofa":         "0 0 16px rgba(160,120,80,0.35)",
   "Candle Tables":       "0 0 24px rgba(255,160,40,0.5)",
-  "Sponsor Booth":       "0 0 18px #E7E7DF",
+  "Sponsor Booth":       "0 0 18px #FDFDF8",
   "Food Court":          "0 0 20px rgba(255,160,60,0.4)",
   "Exhibit Booth":       "0 0 18px rgba(98,200,180,0.35)",
   "Workshop Table":      "0 0 14px rgba(255,255,255,0.15)",
@@ -407,10 +407,10 @@ function ElementArt({ type, width, height, night }) {
               <g key={`${r}-${c}`} transform={`translate(${10 + c * 14}, ${10 + r * 14})`}>
                 {/* seat back */}
                 <rect x={0} y={0} width={10} height={7} rx={2}
-                  fill={night ? "#E7E7DF" : "#E7E7DF"} />
+                  fill={night ? "#FDFDF8" : "#FDFDF8"} />
                 {/* seat base */}
                 <rect x={1} y={7} width={8} height={5} rx={1}
-                  fill={night ? "#E7E7DF" : "#E7E7DF"} />
+                  fill={night ? "#FDFDF8" : "#FDFDF8"} />
               </g>
             ))
           )}
@@ -517,7 +517,7 @@ function ElementArt({ type, width, height, night }) {
               <rect key={i}
                 x={cx4 + cr * Math.cos(a) - 7} y={cy4 + cr * Math.sin(a) - 5}
                 width={14} height={10} rx={3}
-                fill={night ? "#E7E7DF" : "#E7E7DF"}
+                fill={night ? "#FDFDF8" : "#FDFDF8"}
                 transform={`rotate(${i * 60}, ${cx4 + cr * Math.cos(a)}, ${cy4 + cr * Math.sin(a)})`}
               />
             );
@@ -703,12 +703,12 @@ function ElementArt({ type, width, height, night }) {
             <g key={i}>
               {nodes.slice(i + 1).map((other, j) => (
                 <line key={j} x1={node.cx} y1={node.cy} x2={other.cx} y2={other.cy}
-                  stroke={night ? "rgba(140,200,140,0.25)" : "#E7E7DF"}
+                  stroke={night ? "rgba(140,200,140,0.25)" : "#FDFDF8"}
                   strokeWidth={1} />
               ))}
               <circle cx={node.cx} cy={node.cy} r={6}
-                fill={night ? "rgba(98,200,140,0.7)" : "#E7E7DF"}
-                stroke={night ? "rgba(140,255,180,0.5)" : "#E7E7DF"} strokeWidth={1.5} />
+                fill={night ? "rgba(98,200,140,0.7)" : "#FDFDF8"}
+                stroke={night ? "rgba(140,255,180,0.5)" : "#FDFDF8"} strokeWidth={1.5} />
             </g>
           ))}
         </svg>
@@ -750,7 +750,7 @@ function ElementArt({ type, width, height, night }) {
           <rect x={4} y={4} width={w - 8} height={h - 8} rx={4} fill={dim} />
           {/* back wall */}
           <rect x={8} y={8} width={w - 16} height={h * 0.4} rx={3}
-            fill={night ? "#E7E7DF" : "#E7E7DF"}
+            fill={night ? "#FDFDF8" : "#FDFDF8"}
             stroke={accent} strokeWidth={1} />
           {/* banner */}
           <rect x={12} y={12} width={w - 24} height={h * 0.25} rx={2}
@@ -917,7 +917,7 @@ export function CanvasItem({ item, night = false }) {
         boxShadow: hovered
           ? (night
               ? (elementGlow[item.type] || "0 0 20px rgba(255,255,255,0.2)") + ", 0 0 0 1.5px rgba(255,255,255,0.35)"
-              : "0 8px 32px rgba(20,24,42,0.14), 0 0 0 1.5px #E7E7DF")
+              : "0 8px 32px rgba(20,24,42,0.14), 0 0 0 1.5px #FDFDF8")
           : glow,
         background: bg,
         backdropFilter: "blur(8px)",
@@ -974,7 +974,7 @@ export function CanvasItem({ item, night = false }) {
               transform: "translateX(-50%)",
               background: "rgba(20,24,42,0.92)",
               backdropFilter: "blur(12px)",
-              border: "1px solid #E7E7DF",
+              border: "1px solid #FDFDF8",
               borderRadius: 8,
               padding: "5px 10px",
               whiteSpace: "nowrap",
@@ -994,8 +994,8 @@ export function CanvasItem({ item, night = false }) {
             <div style={{
               position: "absolute", bottom: -4, left: "50%", transform: "translateX(-50%)",
               width: 8, height: 8, background: "rgba(20,24,42,0.92)",
-              borderRight: "1px solid #E7E7DF",
-              borderBottom: "1px solid #E7E7DF",
+              borderRight: "1px solid #FDFDF8",
+              borderBottom: "1px solid #FDFDF8",
               rotate: "45deg",
             }} />
           </motion.div>
@@ -1010,7 +1010,7 @@ export function CanvasItem({ item, night = false }) {
       >
         <svg width={14} height={14} viewBox="0 0 14 14">
           <path d="M2 12 L12 2 M6 12 L12 6 M10 12 L12 10"
-            stroke={night ? "rgba(255,255,255,0.7)" : "#E7E7DF"}
+            stroke={night ? "rgba(255,255,255,0.7)" : "#FDFDF8"}
             strokeWidth={1.5} strokeLinecap="round" />
         </svg>
       </div>
@@ -1020,7 +1020,7 @@ export function CanvasItem({ item, night = false }) {
         onMouseDown={handleRotate}
         className="absolute -top-5 left-1/2 -translate-x-1/2 w-4 h-4 rounded-full cursor-grab opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center z-20"
         style={{
-          background: night ? "#E7E7DF" : "#E7E7DF",
+          background: night ? "#FDFDF8" : "#FDFDF8",
           border: "1px solid rgba(255,255,255,0.4)",
           boxShadow: "0 2px 6px rgba(0,0,0,0.3)",
         }}

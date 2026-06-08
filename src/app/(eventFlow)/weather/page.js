@@ -50,7 +50,7 @@
 //   // Pre-fill from store
 //   const [temperatureUnit, setTemperatureUnit] = useState(weather.temperatureUnit || "C");
 //   const [sliderValue, setSliderValue] = useState(weather.sliderValue || 12);
-//   const [backgroundColor, setBackgroundColor] = useState(weather.backgroundColor || "#E7E7DF");
+//   const [backgroundColor, setBackgroundColor] = useState(weather.backgroundColor || "#FDFDF8");
 //   const [sunPosition, setSunPosition] = useState(weather.sunPosition || 50);
 
 //   const hourlyForecast = [
@@ -116,7 +116,7 @@
 //       <motion.div
 //         className="w-1/4 p-6 flex flex-col justify-between"
 //         style={{
-//           background: `linear-gradient(180deg, ${backgroundColor}, #E7E7DF)`,
+//           background: `linear-gradient(180deg, ${backgroundColor}, #FDFDF8)`,
 //           backdropFilter: "blur(10px)",
 //         }}
 //         animate={{ backgroundColor }}
@@ -134,7 +134,7 @@
 //           </div>
 //           <button
 //             onClick={toggleTemperatureUnit}
-//             className="mt-4 px-4 py-2 bg-[#58644B] text-white rounded-full"
+//             className="mt-4 px-4 py-2 bg-[#62754C] text-white rounded-full"
 //           >
 //             Toggle to {temperatureUnit === "C" ? "Fahrenheit" : "Celsius"}
 //           </button>
@@ -185,7 +185,7 @@
 //               <Line
 //                 type="monotone"
 //                 dataKey="precipitation"
-//                 stroke="#58644B"
+//                 stroke="#62754C"
 //                 strokeWidth={2}
 //                 dot={{ r: 4 }}
 //               />
@@ -207,7 +207,7 @@
 //               {detail.type === "progress" && (
 //                 <div className="w-full bg-gray-300 rounded-full h-2 mt-2">
 //                   <div
-//                     className="bg-[#58644B] h-2 rounded-full"
+//                     className="bg-[#62754C] h-2 rounded-full"
 //                     style={{ width: `${detail.progress}%` }}
 //                   ></div>
 //                 </div>
@@ -230,7 +230,7 @@
 //                     <div
 //                       key={i}
 //                       className={`w-2 h-4 mx-1 ${
-//                         i < detail.barValue ? "bg-[#58644B]" : "bg-gray-300"
+//                         i < detail.barValue ? "bg-[#62754C]" : "bg-gray-300"
 //                       }`}
 //                     ></div>
 //                   ))}
@@ -335,7 +335,7 @@
 
 //           <button
 //             onClick={handleContinue}
-//             className="mt-6 px-6 py-3 rounded-full bg-[#58644B] text-white"
+//             className="mt-6 px-6 py-3 rounded-full bg-[#62754C] text-white"
 //           >
 //             Continue
 //           </button>
@@ -407,7 +407,7 @@
 //             <Tooltip />
 //             <Line type="monotone" dataKey="max" stroke="#ff6b6b" />
 //             <Line type="monotone" dataKey="min" stroke="#4e9cff" />
-//             <Line type="monotone" dataKey="rain" stroke="#58644B" />
+//             <Line type="monotone" dataKey="rain" stroke="#62754C" />
 //           </LineChart>
 //         </ResponsiveContainer>
 //       </div>
@@ -435,7 +435,7 @@
 //       <div className="max-w-4xl mx-auto">
 //         <button
 //           onClick={handleContinue}
-//           className="w-full py-4 rounded-full bg-[#58644B] text-white flex items-center justify-center gap-2"
+//           className="w-full py-4 rounded-full bg-[#62754C] text-white flex items-center justify-center gap-2"
 //         >
 //           Continue <ArrowRight size={18} />
 //         </button>
@@ -763,7 +763,7 @@
 //             <Tooltip />
 //             <Line type="monotone" dataKey="max" stroke="#ff6b6b" />
 //             <Line type="monotone" dataKey="min" stroke="#4e9cff" />
-//             <Line type="monotone" dataKey="rain" stroke="#58644B" />
+//             <Line type="monotone" dataKey="rain" stroke="#62754C" />
 //           </LineChart>
 //         </ResponsiveContainer>
 //       </div>
@@ -1143,7 +1143,7 @@ export default function WeatherPage() {
               <Tooltip />
               <Line type="monotone" dataKey="max" stroke="#ff6b6b" />
               <Line type="monotone" dataKey="min" stroke="#4e9cff" />
-              <Line type="monotone" dataKey="rain" stroke="#58644B" />
+              <Line type="monotone" dataKey="rain" stroke="#62754C" />
             </LineChart>
           </ResponsiveContainer>
         </div>

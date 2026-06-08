@@ -46,7 +46,7 @@ const ratio = Math.min(rawRatio, 1);
     ? "#C0392B"
     : ratio > 0.85 && ratio < 0.99 
     ? "#C9A84C"
-    : "var(--color-primary, #58644B)";
+    : "var(--color-primary, #62754C)";
 
   return (
     <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 6 }}>
@@ -122,13 +122,13 @@ const ratio = Math.min(rawRatio, 1);
           ? "rgba(192,57,43,0.1)"
           : ratio > 0.85
           ? "rgba(201,168,76,0.12)"
-          : "#E7E7DF",
-        border: `1px solid ${isOver ? "rgba(192,57,43,0.2)" : ratio > 0.85 ? "rgba(201,168,76,0.25)" : "#E7E7DF"}`,
+          : "#FDFDF8",
+        border: `1px solid ${isOver ? "rgba(192,57,43,0.2)" : ratio > 0.85 ? "rgba(201,168,76,0.25)" : "#FDFDF8"}`,
       }}>
         <span style={{
           fontFamily: "var(--font-body, 'DM Sans', sans-serif)",
           fontSize: 10, fontWeight: 600,
-          color: isOver ? "#C0392B" : ratio > 0.85 ? "#7A5E1A" : "var(--color-primary, #58644B)",
+          color: isOver ? "#C0392B" : ratio > 0.85 ? "#7A5E1A" : "var(--color-primary, #62754C)",
         }}>
           {isOver
             ? `₹${(spentL - budgetL).toFixed(1)}L over budget`
@@ -429,7 +429,7 @@ export default function EntertainmentSelection() {
                     backgroundColor: "var(--glass-fill)",
                     backdropFilter: "blur(6px)",
                     border: "1.5px solid var(--color-primary)",
-                    boxShadow: "0 8px 32px #E7E7DF",
+                    boxShadow: "0 8px 32px #FDFDF8",
                   }}
                 >
                   <h3 className="font-semibold mb-4">
@@ -450,7 +450,7 @@ export default function EntertainmentSelection() {
                             backgroundColor: "var(--color-primary)",
                             color: "var(--color-bg)",
                             fontSize: "0.85rem",
-                            boxShadow: "0 4px 14px #E7E7DF",
+                            boxShadow: "0 4px 14px #FDFDF8",
                           }}
                         >
                           <span>{item.name}</span>
@@ -526,7 +526,7 @@ function CelebrityCard({ celebrity, isSelected, onClick }) {
     <motion.div
       onClick={onClick}
       className={`p-5 rounded-xl shadow-sm cursor-pointer ${
-        isSelected ? "ring-2 ring-[#58644B]" : "bg-white"
+        isSelected ? "ring-2 ring-[#62754C]" : "bg-white"
       }`}
       whileHover={{ scale: 1.02 }}
     >

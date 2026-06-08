@@ -36,7 +36,7 @@ export function LayoutReviewModal({
           position: "relative",
           width: "90%",
           maxWidth: 520,
-          background: "var(--color-bg, #E7E7DF)",
+          background: "var(--color-bg, #FDFDF8)",
           border: "1px solid rgba(20,24,42,0.1)",
           borderRadius: 24,
           overflow: "hidden",
@@ -47,7 +47,7 @@ export function LayoutReviewModal({
         <div
           style={{
             height: 3,
-            background:  "linear-gradient(90deg, #C9A84C, #58644B)",
+            background:  "linear-gradient(90deg, #C9A84C, #62754C)",
           }}
         />
 
@@ -198,7 +198,7 @@ export function LayoutReviewModal({
                   fontSize: 13,
                   fontWeight: 700,
                   background: "var(--color-dark, #14182A)",
-                  color: "var(--color-bg, #E7E7DF)",
+                  color: "var(--color-bg, #FDFDF8)",
                   border: "none",
                   borderRadius: 12,
                   cursor: "pointer",

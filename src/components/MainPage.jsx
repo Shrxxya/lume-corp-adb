@@ -151,7 +151,7 @@
 //                     <button
 //                         onClick={() => setActiveTab("photos")}
 //                         className={`px-6 py-2 text-sm font-light transition-all ${activeTab === "photos"
-//                                 ? "text-[#58644B] border-b-2 border-[#58644B]"
+//                                 ? "text-[#62754C] border-b-2 border-[#62754C]"
 //                                 : "text-gray-600 dark:text-gray-400"
 //                             }`}
 //                     >
@@ -160,7 +160,7 @@
 //                     <button
 //                         onClick={() => setActiveTab("videos")}
 //                         className={`px-6 py-2 text-sm font-light transition-all ${activeTab === "videos"
-//                                 ? "text-[#58644B] border-b-2 border-[#58644B]"
+//                                 ? "text-[#62754C] border-b-2 border-[#62754C]"
 //                                 : "text-gray-600 dark:text-gray-400"
 //                             }`}
 //                     >
@@ -221,7 +221,7 @@
 //                 onClick={onClick}
 //                 className="shadow-[0_0_25px_rgba(98,117,76,0.6)]
 //     active:shadow-[0_0_15px_rgba(98,117,76,0.8)] px-8 py-3 rounded-full font-light text-white transition-all"
-//                 style={{ backgroundColor: "#58644B" }}
+//                 style={{ backgroundColor: "#62754C" }}
 //             >
 //                 Explore Our Work
 //             </motion.button>
@@ -434,7 +434,7 @@ export default function MainPage({ setNavbarVisible }) {
             onClick={() => setActiveTab("photos")}
             className={`px-6 py-2 text-sm font-light transition-all ${
               activeTab === "photos"
-                ? "text-[#58644B] border-b-2 border-[#58644B]"
+                ? "text-[#62754C] border-b-2 border-[#62754C]"
                 : "text-gray-600 dark:text-gray-400"
             }`}
           >
@@ -444,7 +444,7 @@ export default function MainPage({ setNavbarVisible }) {
             onClick={() => setActiveTab("videos")}
             className={`px-6 py-2 text-sm font-light transition-all ${
               activeTab === "videos"
-                ? "text-[#58644B] border-b-2 border-[#58644B]"
+                ? "text-[#62754C] border-b-2 border-[#62754C]"
                 : "text-gray-600 dark:text-gray-400"
             }`}
           >
@@ -538,10 +538,10 @@ function GravityButton({ onClick }) {
         ref={buttonRef}
         animate={{ x: position.x, y: position.y }}
         onClick={onClick}
-        className="shadow-[0_0_25px_#515139]
-        active:shadow-[0_0_15px_#E7E7DF]
+        className="shadow-[0_0_25px_#62754C]
+        active:shadow-[0_0_15px_#FDFDF8]
         px-10 py-4 text-[1.05rem] tracking-wide rounded-full font-light text-white transition-all"
-        style={{ backgroundColor: "#58644B" }}
+        style={{ backgroundColor: "#62754C" }}
       >
         Explore Our Work
       </motion.button>
@@ -560,7 +560,7 @@ function TestimonialScroll({ testimonials }) {
                 className="flex gap-6 overflow-x-auto pb-6 scroll-smooth"
                 style={{
                     scrollbarWidth: "thin",
-                    scrollbarColor: "#58644B transparent",
+                    scrollbarColor: "#62754C transparent",
                     scrollbarbutton: "none",
                 }}
             >
@@ -594,7 +594,7 @@ function TestimonialScroll({ testimonials }) {
   display: none;
 }
         div::-webkit-scrollbar-thumb {
-          background: #58644B;
+          background: #62754C;
           border-radius: 10px;
         }
         div::-webkit-scrollbar-thumb:hover {

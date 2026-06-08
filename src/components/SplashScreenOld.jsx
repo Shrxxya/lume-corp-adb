@@ -82,7 +82,7 @@ export default function SplashScreenOld({ onFinish }) {
         transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
         className="absolute w-[400px] h-[400px] rounded-full"
         style={{
-          background: "radial-gradient(circle, #58644B 0%, transparent 70%)",
+          background: "radial-gradient(circle, #62754C 0%, transparent 70%)",
           filter: "blur(60px)",
         }}
       />

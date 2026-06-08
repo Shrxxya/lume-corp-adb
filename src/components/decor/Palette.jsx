@@ -82,7 +82,7 @@ export function Palette() {
           <div
             className={cn(
               "absolute left-0 bottom-0 h-[2px] w-full",
-              "bg-[#58644B]",
+              "bg-[#62754C]",
               "origin-left scale-x-0",
               "transition-transform duration-300",
               "group-focus-within:scale-x-100"
