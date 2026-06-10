@@ -1,36 +1,75 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Lume Corp Event Planning Platform
+
+This repository contains a full-stack event planning application built with **Next.js 16**, **React 19**, and integrated AI, mapping, layout, and export workflows.
+
+> Latest full project branch: `fix2/ui-sot`
+
+## Project Overview
+
+This platform is designed for venue planners, event designers, and operations teams who need a single interface for:
+
+- Creating and validating venue layouts with a visual drag-and-drop canvas.
+- Generating AI-driven event recommendations for budgets, menus, vendors, and collateral.
+- Using geospatial data to plan location-specific details with maps and POI lookups.
+- Exporting production-ready documents like PDFs, posters, and invitation assets.
+- Managing review workflows with email invites and layout review support.
+
+## Key Features
+
+- Visual event design and layout builder
+- Budget optimization and vendor/menu recommendation engine
+- Map integration with venue selection and POI/location support
+- AI-powered content generation and planning assistance
+- PDF/poster generation, QR code exports, and email invite workflows
+- Weather lookup and event timeline planning
+- 3D/visual effects support for immersive presentation
+
+## Technology Stack
+
+### Frontend
+- Next.js + React 19
+- Tailwind CSS, PostCSS, Autoprefixer
+- `@dnd-kit/core` for drag-and-drop
+- `framer-motion`, `gsap` for animations
+- `three`, `@react-three/fiber`, `@react-three/drei`, `maath` for graphics
+- `maplibre-gl`, `leaflet`, `react-leaflet` for maps
+- `recharts`, `lucide-react`, `clsx`, `html-to-image`, `qrcode`
+
+### Backend / Integrations
+- Next.js API routes
+- `nodemailer` for emails
+- `cashfree-pg` for payments/order workflows
+- `cloudinary` for media handling
+- `openmeteo` for weather data
+- `uuid` for utilities
+
+### AI / ML
+- `openai`
+- `@google/genai`, `@google/generative-ai`
+- `@huggingface/inference`
 
 ## Getting Started
 
-First, run the development server:
+Install dependencies:
+
+```bash
+npm install
+```
+
+Run the development server:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+## Branch Note
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+The current complete implementation is available on branch `fix2/ui-sot`, which includes the full event workflow, AI enhancements, map integration, and UI polish.
 
-## Learn More
+## Notes
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- Environment secrets and API keys should be configured in `.env.local`.
+- The application is organized under `src/app` with a dedicated `(eventFlow)` route for the event planning workflow.
+- Components and utilities are located in `src/components`, `src/lib`, and `src/store`.
