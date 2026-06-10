@@ -2,7 +2,7 @@
 
 This repository contains a full-stack event planning application built with **Next.js 16**, **React 19**, and integrated AI, mapping, layout, and export workflows.
 
-> Latest full project branch: `fix2/ui-sot`
+> Latest full project branch: `master`
 
 ## Project Overview
 
@@ -66,7 +66,7 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 ## Branch Note
 
-The current complete implementation is available on branch `fix2/ui-sot`, which includes the full event workflow, AI enhancements, map integration, and UI polish.
+The current complete implementation is available on branch `master`, which includes the full event workflow, AI enhancements, map integration, and UI polish.
 
 ## Notes
 
