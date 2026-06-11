@@ -1009,9 +1009,14 @@ export default function WeatherPage() {
       day: "numeric",
       month: "short",
     }),
-    max: Number(weatherData.maxTemp[i].toFixed(2)),
-    min: Number(weatherData.minTemp[i].toFixed(2)),
-    rain: Number(weatherData.precipitation[i].toFixed(2)),
+    max:
+      weatherData.maxTemp[i] != null
+        ? Number(weatherData.maxTemp[i].toFixed(2))
+        : null,
+    min:
+      weatherData.minTemp[i] != null
+        ? Number(weatherData.minTemp[i].toFixed(2))
+        : null,
   }));
 
   const eventDay = chartData[daysUntilEvent];
@@ -1025,7 +1030,9 @@ export default function WeatherPage() {
   const isRainy = eventDayWeather?.rain > 5;
   const isHot = eventDayWeather?.max > 32;
 
-  const rainMM = Number(eventDay.rain).toFixed(2);
+  const rainMM = eventDay?.rain != null
+  ? Number(eventDay.rain).toFixed(2)
+  : "0.00";
 
   const eventTemp = Math.round(
     (eventDay.max + eventDay.min) / 2
